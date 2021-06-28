@@ -91,11 +91,14 @@ export default {
           this.projects.push(p);
         });
 
-        // Sort alphabetically by name
+        // Sort by name
         this.projects.sort((a, b) => a.name.localeCompare(b.name));
 
-        // Sort challenges to bottom
-        this.projects.sort((a, b) => a.is_challenge || b == null);
+        // Sort by score
+        //this.projects.sort((a, b) => a.score > b.score);
+
+        // Sort out challenges
+        //this.projects.sort((a, b) => a.is_challenge || b.is_challenge);
       })
       .catch((error) => {
         this.errorMessage = error;
@@ -175,7 +178,8 @@ export default {
   padding: 0px;
 }
 .project {
-  display: inline-block;
+  display: block;
+  width: auto;
   margin: 0px;
   padding: 0.5em 1em;
   background: rgba(255, 255, 255, 1);
