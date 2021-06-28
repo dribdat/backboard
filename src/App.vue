@@ -1,13 +1,9 @@
 <template>
   <div id="app">
-    <div class="header">
-      <h1 class="title">Challenge Backboard</h1>
-    </div>
-    <VoteBox
-      class="votebox"
-      href="https://docs.google.com/forms/d/e/1FAIpQLSdD7yWFhgBXHpcLhvVzcYra8zJyxnIrC5Djzea7MLFVG83aug/viewform?embedded=true"
-    />
-    <ChallengeGrid src="https://hack.opendata.ch/api/event/35/projects.json" />
+    <VoteBox class="votebox" :href="voteUrl" v-show="voteUrl" />
+    <ChallengeGrid :src="dribdatApi" />
+    <tt><a :href="dribdatHome" target="_blank">home page</a>
+      ~ powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
   </div>
 </template>
 
@@ -21,6 +17,15 @@ export default {
     ChallengeGrid,
     VoteBox,
   },
+  data() {
+    return {
+      dribdatHome: process.env.VUE_APP_DRIBDAT_URL, 
+      dribdatApi: process.env.VUE_APP_DRIBDAT_URL + 
+        "/api/event/" + process.env.VUE_APP_DRIBDAT_EVENT + 
+        "/projects.json",
+      voteUrl: process.env.VUE_APP_GOOGLE_FORM_URL || '',
+    }
+  }
 };
 </script>
 
@@ -33,26 +38,10 @@ export default {
 }
 body {
   color: #fff;
-  background-color: #3cf;
+  background-color: rgb(241, 238, 219);
 }
-.header {
-  height: 500px;
-  width: 100%;
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/2011-365-127_Even_When_Unevenly_Distributed_The_Future_May_-_%285702592254%29.jpg/800px-2011-365-127_Even_When_Unevenly_Distributed_The_Future_May_-_%285702592254%29.jpg");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-h1.title {
-  font-style: italic;
-  position: relative;
-  top: 13em;
-  color: black;
-  margin: 0px;
-  line-height: 0px;
-}
+tt { color: black; }
 .votebox {
-  position: relative;
-  margin-top: -35px;
+  margin: 2em;
 }
 </style>

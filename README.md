@@ -2,7 +2,19 @@
 
 This is a one page application that shows the challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat).
 
-To run, install Node.js and Yarn, then to start a development server:
+## Usage
+
+Deploy this application with any service that supports Vue.js - for example [Vercel](https://vercel.com).
+
+Configure with the following environment variables:
+
+- `VUE_APP_DRIBDAT_EVENT` - id of your event (e.g. 1)
+- `VUE_APP_DRIBDAT_URL` - link to the home page of your dribdat server, including `https://` and no trailing slash
+- `VUE_APP_GOOGLE_FORM_URL` (optional) - if you are using a Google Form to collect votes or feedback, include it here
+
+## Development
+
+To run locally, install Node.js and Yarn, then to start a development server:
 
 ```
 yarn serve

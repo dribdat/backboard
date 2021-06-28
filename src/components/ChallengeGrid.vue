@@ -22,26 +22,19 @@
               project.name
             }}</a>
             <p class="summary">{{ project.summary }}</p>
-            <button
-              class="team"
-              v-show="project.team.length === 0"
-              @click="showTeam(project)"
-            >
-              &#128075; Team
-            </button>
             <div class="team" v-show="project.team.length > 0">
               <a
                 v-for="user in project.team"
-                :key="user.id"
-                :href="baseUrl + user.name"
+                :key="user"
+                :href="baseUrl + user"
                 target="_blank"
                 class="avatar"
                 >👤
-                <span>{{ user.name }}</span>
+                <span>{{ user }}</span>
               </a>
-              <div class="join">
-                <button @click="joinTeam(project)">👍 Join</button>
-              </div>
+            </div>
+            <div class="join">
+              <button @click="joinTeam(project)">👍 Join</button>
             </div>
           </div>
         </div>
@@ -91,8 +84,6 @@ export default {
           p.is_challenge = p.progress < 0;
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
-          // Empty container for team, loaded in showTeam()
-          p.team = [];
           this.projects.push(p);
         });
 
@@ -100,14 +91,19 @@ export default {
         this.projects.sort((a, b) => a.name.localeCompare(b.name));
 
         // Sort challenges to bottom
-        this.projects.sort((a, b) => a.is_challenge);
+        this.projects.sort((a, b) => a.is_challenge || b == null);
       })
       .catch((error) => {
         this.errorMessage = error;
       });
   },
   methods: {
-    showTeam: function (project) {
+    // Helper link to join a project team
+    joinTeam: function (project) {
+      window.open(project.url + "/star");
+    },
+    // Loads full details of a project
+    showDetails: function (project) {
       let self = this;
       let url =
         project.url.replace("/project/", "/api/project/") + "/info.json";
@@ -122,7 +118,7 @@ export default {
             return Promise.reject(error);
           }
 
-          //console.log(data);
+          console.log(data);
           self.projects.forEach((p) => {
             if (p.id !== data.project.id) return;
             p.team = data.team;
@@ -131,10 +127,7 @@ export default {
         .catch((error) => {
           this.errorMessage = error;
         });
-    },
-    joinTeam: function (project) {
-      window.open(project.url + "/star");
-    },
+    }
   },
 };
 </script>
@@ -155,9 +148,10 @@ export default {
   font-size: 14pt;
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12),
     0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  border: 1px solid #eee;
 }
 .col:hover {
-  box-shadow: 0px 5px 5px rgba(255, 255, 255, 0.5);
+  border-color: #aaa;
 }
 .col[challenge] {
   opacity: 0.8;
@@ -188,24 +182,39 @@ export default {
   color: black;
   text-decoration: none;
 }
-.project .name:hover {
+.project a:hover {
   color: blue;
+}
+.summary {
+  text-align: left;
+  font-size: 80%;
+  line-height: 140%;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
 }
 .team .avatar {
   max-height: 2em;
   display: inline-block;
   color: darkblue;
-  background: rgba(0, 0, 0, 0.1);
+  background: none; /* rgba(0, 0, 0, 0.1); */
   border: 2px solid #fff;
   padding: 0.5em;
   margin-right: 5px;
   margin-bottom: 5px;
   text-align: left;
   text-decoration: none;
+  font-size: 70%;
+  font-family: cursive;
 }
 .team .join {
   clear: both;
   display: block;
   text-align: center;
+}
+button {
+  cursor: pointer;
 }
 </style>
