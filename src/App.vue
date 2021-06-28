@@ -1,13 +1,10 @@
 <template>
   <div id="app">
-    <div class="header">
-      <h1 class="title">Challenge Backboard</h1>
-    </div>
     <VoteBox
-      class="votebox"
-      href="https://docs.google.com/forms/d/e/1FAIpQLSdD7yWFhgBXHpcLhvVzcYra8zJyxnIrC5Djzea7MLFVG83aug/viewform?embedded=true"
+      class="votebox hidden"
+      href="<URL OF VOTING FORM>"
     />
-    <ChallengeGrid src="https://hack.opendata.ch/api/event/35/projects.json" />
+    <ChallengeGrid src="https://hack.farming.opendata.ch/api/event/1/projects.json" />
   </div>
 </template>
 
@@ -33,26 +30,13 @@ export default {
 }
 body {
   color: #fff;
-  background-color: #3cf;
-}
-.header {
-  height: 500px;
-  width: 100%;
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/2011-365-127_Even_When_Unevenly_Distributed_The_Future_May_-_%285702592254%29.jpg/800px-2011-365-127_Even_When_Unevenly_Distributed_The_Future_May_-_%285702592254%29.jpg");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-h1.title {
-  font-style: italic;
-  position: relative;
-  top: 13em;
-  color: black;
-  margin: 0px;
-  line-height: 0px;
+  background-color: rgb(241, 238, 219);
 }
 .votebox {
   position: relative;
   margin-top: -35px;
+}
+.hidden {
+  display: none;
 }
 </style>
