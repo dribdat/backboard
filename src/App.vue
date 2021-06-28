@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <VoteBox
-      class="votebox hidden"
-      href="<URL OF VOTING FORM>"
-    />
-    <ChallengeGrid src="https://hack.farming.opendata.ch/api/event/1/projects.json" />
+    <VoteBox class="votebox" :href="voteUrl" v-show="voteUrl" />
+    <ChallengeGrid :src="dribdatApi" />
+    <tt><a :href="dribdatHome" target="_blank">home page</a>
+      ~ powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
   </div>
 </template>
 
@@ -18,6 +17,15 @@ export default {
     ChallengeGrid,
     VoteBox,
   },
+  data() {
+    return {
+      dribdatHome: process.env.VUE_APP_DRIBDAT_URL, 
+      dribdatApi: process.env.VUE_APP_DRIBDAT_URL + 
+        "/api/event/" + process.env.VUE_APP_DRIBDAT_EVENT + 
+        "/projects.json",
+      voteUrl: process.env.VUE_APP_GOOGLE_FORM_URL || '',
+    }
+  }
 };
 </script>
 
@@ -32,11 +40,8 @@ body {
   color: #fff;
   background-color: rgb(241, 238, 219);
 }
+tt { color: black; }
 .votebox {
-  position: relative;
-  margin-top: -35px;
-}
-.hidden {
-  display: none;
+  margin: 2em;
 }
 </style>
