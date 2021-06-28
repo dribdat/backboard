@@ -2,8 +2,8 @@
   <div id="app">
     <VoteBox class="votebox" :href="voteUrl" v-show="voteUrl" />
     <ChallengeGrid :src="dribdatApi" />
-    <tt><a :href="dribdatHome" target="_blank">home page</a>
-      ~ powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
+    <tt><a :href="dribdatHome" target="_blank" style="text-decoration:none">//challenges//</a>
+      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
   </div>
 </template>
 

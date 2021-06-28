@@ -21,7 +21,6 @@
             <a class="name" :href="project.url" target="_blank">{{
               project.name
             }}</a>
-            <p class="summary">{{ project.summary }}</p>
             <div class="team" v-show="project.team.length > 0">
               <a
                 v-for="user in project.team"
@@ -33,8 +32,13 @@
                 <span>{{ user }}</span>
               </a>
             </div>
-            <div class="join">
-              <button @click="joinTeam(project)">👍 Join</button>
+            <div class="rollup">
+              <p class="summary">{{ project.summary }}</p>
+              <p class="excerpt">{{ project.excerpt }}</p>
+              <div class="join">
+                <button @click="seeDetails(project)">🕮 Details</button>
+                <button @click="joinTeam(project)">👍 Join</button>
+              </div>
             </div>
           </div>
         </div>
@@ -101,6 +105,9 @@ export default {
     // Helper link to join a project team
     joinTeam: function (project) {
       window.open(project.url + "/star");
+    },
+    seeDetails: function (project) {
+      window.open(project.url);
     },
     // Loads full details of a project
     showDetails: function (project) {
@@ -185,15 +192,31 @@ export default {
 .project a:hover {
   color: blue;
 }
-.summary {
+.summary, .excerpt {
   text-align: left;
-  font-size: 80%;
+  color: black;
+  font-size: 85%;
   line-height: 140%;
   white-space: pre-wrap;
   white-space: -moz-pre-wrap;
   white-space: -pre-wrap;
   white-space: -o-pre-wrap;
   word-wrap: break-word;
+}
+.excerpt {
+  font-size: 70%;
+}
+.rollup {
+  display: block;
+  height: auto;
+  overflow: hidden;
+  max-height: 0px;
+  opacity: 0;
+  transition: all 0.8s ease-in;
+}
+.project:hover .rollup {
+  max-height: 500px;
+  opacity: 1;
 }
 .team .avatar {
   max-height: 2em;
@@ -216,5 +239,6 @@ export default {
 }
 button {
   cursor: pointer;
+  margin-right: 0.5em;
 }
 </style>
