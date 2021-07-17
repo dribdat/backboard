@@ -34,7 +34,7 @@
             </div>
             <div class="rollup">
               <p class="summary">{{ project.summary }}</p>
-              <p class="excerpt" v-html="project.excerpt"></p>
+              <markdown class="excerpt" :source="project.excerpt" />
               <div class="join">
                 <button @click="seeDetails(project)">🕮 Details</button>
                 <button @click="joinTeam(project)">👍 Join</button>
@@ -51,6 +51,8 @@
 <script>
 import { Row, Column } from "vue-grid-responsive";
 
+import VueMarkdown from '@adapttive/vue-markdown'
+
 export default {
   name: "ChallengeGrid",
   props: {
@@ -59,6 +61,7 @@ export default {
   components: {
     row: Row,
     column: Column,
+    markdown: VueMarkdown,
   },
   data() {
     return {
