@@ -38,6 +38,7 @@ export default {
   },
   mounted() {
     let formref = this.href;
+    if (formref.indexOf("/") < 0) return;
     formref = formref.split("/");
     formref = formref[formref.length - 2];
     formref = formref.split("?")[0];

@@ -25,7 +25,7 @@
               <a
                 v-for="user in project.team"
                 :key="user"
-                :href="baseUrl + user"
+                :href="profileUrl + user"
                 target="_blank"
                 class="avatar"
                 >👤
@@ -34,7 +34,7 @@
             </div>
             <div class="rollup">
               <p class="summary">{{ project.summary }}</p>
-              <p class="excerpt">{{ project.excerpt }}</p>
+              <p class="excerpt" v-html="project.excerpt"></p>
               <div class="join">
                 <button @click="seeDetails(project)">🕮 Details</button>
                 <button @click="joinTeam(project)">👍 Join</button>
@@ -62,14 +62,14 @@ export default {
   },
   data() {
     return {
-      baseUrl: null,
       projects: null,
+      profileUrl: null,
       errorMessage: null,
     };
   },
   mounted() {
     if (this.projects !== null) return;
-    this.baseUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
+    console.info("Loading", this.src);
     fetch(this.src)
       .then(async (response) => {
         const data = await response.json();
@@ -81,6 +81,17 @@ export default {
           return Promise.reject(error);
         }
 
+        // get server path
+        if (this.src.indexOf('/api/')>0) {
+          this.profileUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
+        } else if (data.homepage) {
+          this.profileUrl = (data.homepage + '/user/').replace('//','/');
+        }
+
+        if (data.resources !== 'null') {
+          data.projects = data.resources[1].data;
+        }
+
         //console.info("Projects data loaded");
         this.projects = [];
         data.projects.forEach((p) => {
@@ -89,6 +100,8 @@ export default {
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
           this.projects.push(p);
+          // Check format of team
+          p.team = (typeof p.team === 'string') ? p.team.split(" ") : p.team;
         });
 
         // Sort by name
@@ -112,7 +125,7 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
-    // Loads full details of a project
+    // Loads full details of a project (CURRENTLY UNUSED)
     showDetails: function (project) {
       let self = this;
       let url =
@@ -131,7 +144,7 @@ export default {
           console.log(data);
           self.projects.forEach((p) => {
             if (p.id !== data.project.id) return;
-            p.team = data.team;
+            p.team = (typeof data.team === 'string') ? data.team.split(" ") : data.team;
           });
         })
         .catch((error) => {
