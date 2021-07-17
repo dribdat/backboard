@@ -28,7 +28,7 @@ export default {
         baseUrl = baseUrl.substring(0, baseUrl.indexOf('/event/'));
       }
     } else if (!baseUrl) {
-      apiUrl = '/datapackage.json';
+      apiUrl = './datapackage.json';
     }
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "projects.json"].join("/");
