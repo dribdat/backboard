@@ -96,8 +96,9 @@ export default {
         if (this.src.indexOf('/api/')>0) {
           this.profileUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
         } else if (data.homepage) {
-          this.profileUrl = (data.homepage + '/user/').replace('//','/');
+          this.profileUrl = (data.homepage + '/user/');
         }
+        this.profileUrl = this.profileUrl.replaceAll('//','/');
 
         if (typeof data.projects === 'undefined' && data.resources.length > 0) {
           data.projects = null;
@@ -180,11 +181,14 @@ export default {
 .col[challenge].project-container {
   background: repeating-linear-gradient(
     45deg,
-    #a0adcc,
-    #a0adcc 10px,
+    #dde,
+    #dde 10px,
     #fefefe 10px,
     #ffffff 20px
   );
+}
+.col[challenge].project-container .hex {
+  display: none;
 }
 .project-container {
   display: inline-block;
@@ -215,7 +219,7 @@ export default {
   -webkit-transform: rotate(30deg);
   transform: rotate(30deg);
   display: inline-block;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 .project a:hover {
   color: blue;
