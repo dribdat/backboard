@@ -19,7 +19,7 @@ export default {
   },
   data() {
     let apiUrl = null;
-    let eventId = process.env.VUE_APP_DRIBDAT_EVENT;
+    let eventId = null;
     let baseUrl = process.env.VUE_APP_DRIBDAT_URL;
     if (baseUrl && !eventId && baseUrl.indexOf('/event/')>0) {
       eventId = baseUrl.match('/event/([0-9]+)');
