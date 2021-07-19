@@ -8,11 +8,13 @@ Deploy this application with any service that supports Vue.js.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fhello-world)
 
-Configure with the following environment variables:
+Put a `datapackage.json` file that you exported from dribdat into the **public** folder, or host it somewhere online.
 
-- `VUE_APP_DRIBDAT_EVENT` - id of your event (e.g. 1)
-- `VUE_APP_DRIBDAT_URL` - link to the home page of your dribdat server, including `https://` and no trailing slash
-- `VUE_APP_GOOGLE_FORM_URL` (optional) - if you are using a Google Form to collect votes or feedback, include it here
+Then configure your site with the following environment variables:
+
+- `VUE_APP_DRIBDAT_URL` - fully qualified link to your dribdat event, or online hosted Data Package; e.g. https://meta.dribdat.cc/event/5
+- `VUE_APP_GOOGLE_FORM_URL` (optional) - if you are using a Google Form to collect votes or feedback.
+- `BACKBOARD_ROOT` (optional) - if your deployment is not at the root, change it here (e.g. `/backboard`)
 
 ## Development
 

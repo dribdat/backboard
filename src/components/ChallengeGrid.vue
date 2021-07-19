@@ -1,5 +1,9 @@
 <template>
-  <div class="challenges card">
+  <div class="challenges">
+    <div class="options">
+      <input type="checkbox" v-model="isExpanded" id="isExpanded"><label for="isExpanded">Expanded</label>
+      <input type="checkbox" v-model="isPreviews" id="isPreviews"><label for="isPreviews">Previews</label>
+    </div>
     <row container :gutter="12">
       <column
         :xs="12"
@@ -18,25 +22,26 @@
           "
         >
           <div :class="project.image_url ? 'project has-thumb' : 'project'">
-            <a class="name" :href="project.url" target="_blank">{{
-              project.name
-            }}</a>
-            <div class="team" v-show="project.team.length > 0">
-              <a
-                v-for="user in project.team"
-                :key="user"
-                :href="baseUrl + user"
-                target="_blank"
-                class="avatar"
-                >👤
-                <span>{{ user }}</span>
-              </a>
-            </div>
-            <div class="rollup">
-              <p class="summary">{{ project.summary }}</p>
-              <p class="excerpt">{{ project.excerpt }}</p>
+            <a class="name" :href="project.url" target="_blank">
+              <span class="hex">&#11042;</span>
+              {{ project.name }}
+            </a>
+            <div :class="isExpanded ? '' : 'rollup'">
+              <p v-show="project.summary" class="summary">{{ project.summary }}</p>
+              <markdown v-show="isPreviews" class="excerpt" :source="project.excerpt" />
+              <div class="team" v-show="project.team.length > 0">
+                <a
+                  v-for="user in project.team"
+                  :key="user"
+                  :href="profileUrl + user"
+                  target="_blank"
+                  class="avatar"
+                  >👤
+                  <span>{{ user }}</span>
+                </a>
+              </div>
               <div class="join">
-                <button @click="seeDetails(project)">🕮 Details</button>
+                <button @click="seeDetails(project)">🕮 {{ project.phase }}</button>
                 <button @click="joinTeam(project)">👍 Join</button>
               </div>
             </div>
@@ -51,6 +56,8 @@
 <script>
 import { Row, Column } from "vue-grid-responsive";
 
+import VueMarkdown from '@adapttive/vue-markdown'
+
 export default {
   name: "ChallengeGrid",
   props: {
@@ -59,26 +66,50 @@ export default {
   components: {
     row: Row,
     column: Column,
+    markdown: VueMarkdown,
   },
   data() {
     return {
-      baseUrl: null,
       projects: null,
+      profileUrl: null,
       errorMessage: null,
+      isExpanded: false,
+      isPreviews: false,
     };
   },
   mounted() {
     if (this.projects !== null) return;
-    this.baseUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
+    console.info("Loading", this.src);
     fetch(this.src)
       .then(async (response) => {
         const data = await response.json();
+        // console.debug(data);
 
         // check for error response
         if (!response.ok) {
           // get error message from body or default to response statusText
           const error = (data && data.message) || response.statusText;
           return Promise.reject(error);
+        }
+
+        // get server path
+        if (this.src.indexOf('/api/')>0) {
+          this.profileUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
+        } else if (data.homepage) {
+          this.profileUrl = (data.homepage + '/user/');
+        }
+        this.profileUrl = this.profileUrl.replaceAll('//','/');
+
+        if (typeof data.projects === 'undefined' && data.resources.length > 0) {
+          data.projects = null;
+          data.resources.forEach(function(r) {
+            if (r.name == 'projects') {
+              data.projects = r.data;
+            }
+          });
+          if (data.projects === null) {
+            return Promise.reject('Project data not found');
+          }
         }
 
         //console.info("Projects data loaded");
@@ -89,6 +120,9 @@ export default {
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
           this.projects.push(p);
+          // Check format of team
+          p.team = (typeof p.team === 'string') ?
+            p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ") : p.team;
         });
 
         // Sort by name
@@ -112,32 +146,6 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
-    // Loads full details of a project
-    showDetails: function (project) {
-      let self = this;
-      let url =
-        project.url.replace("/project/", "/api/project/") + "/info.json";
-      fetch(url)
-        .then(async (response) => {
-          const data = await response.json();
-
-          // check for error response
-          if (!response.ok) {
-            // get error message from body or default to response statusText
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-          }
-
-          console.log(data);
-          self.projects.forEach((p) => {
-            if (p.id !== data.project.id) return;
-            p.team = data.team;
-          });
-        })
-        .catch((error) => {
-          this.errorMessage = error;
-        });
-    }
   },
 };
 </script>
@@ -147,6 +155,13 @@ export default {
   padding: 20px 38px;
   box-sizing: border-box;
   color: #263238;
+}
+.options {
+  margin: 1em;
+  font-size: 125%;
+}
+.options label {
+  margin-right: 1em;
 }
 .col {
   width: 100%;
@@ -163,13 +178,17 @@ export default {
 .col:hover {
   border-color: #aaa;
 }
-.col[challenge] {
-  opacity: 0.8;
+.col[challenge].project-container {
+  background: repeating-linear-gradient(
+    45deg,
+    #dde,
+    #dde 10px,
+    #fefefe 10px,
+    #ffffff 20px
+  );
 }
-.card {
-  border-radius: 2px;
-  box-sizing: border-box;
-  margin-bottom: 50px;
+.col[challenge].project-container .hex {
+  display: none;
 }
 .project-container {
   display: inline-block;
@@ -183,15 +202,24 @@ export default {
   margin: 0px;
   padding: 0.5em 1em;
   background: rgba(255, 255, 255, 1);
+  margin-top: 25%;
 }
 .project.has-thumb {
-  border-left: 1px solid #ddd;
-  margin-top: 25%;
+  /* border-left: 1px solid #ddd; */
 }
 .project .name {
   font-weight: bold;
+  font-size: 125%;
+  display: block;
+  margin-top: 0.5em;
   color: black;
   text-decoration: none;
+}
+.project .name .hex {
+  -webkit-transform: rotate(30deg);
+  transform: rotate(30deg);
+  display: inline-block;
+  opacity: 0.4;
 }
 .project a:hover {
   color: blue;
@@ -207,8 +235,21 @@ export default {
   white-space: -o-pre-wrap;
   word-wrap: break-word;
 }
+.summary {
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
+  margin: 1em 0em;
+  padding: 1em 2em;
+  background: #ffc;
+}
 .excerpt {
-  font-size: 70%;
+  overflow: hidden;
+  width: 100%;
+  padding: 0px;
+  margin-bottom: 1em;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 .rollup {
   display: block;
@@ -219,7 +260,7 @@ export default {
   transition: all 0.8s ease-in;
 }
 .project:hover .rollup {
-  max-height: 500px;
+  max-height: 1000px;
   opacity: 1;
 }
 .team .avatar {
@@ -231,18 +272,31 @@ export default {
   padding: 0.5em;
   margin-right: 5px;
   margin-bottom: 5px;
+  line-height: 0.8em;
   text-align: left;
   text-decoration: none;
-  font-size: 70%;
   font-family: cursive;
 }
-.team .join {
+.join {
   clear: both;
   display: block;
   text-align: center;
+  margin-bottom: 1em;
 }
-button {
+.join button:hover {
+  background: #fff;
+  border: 1px solid blue;
+}
+.join button {
   cursor: pointer;
-  margin-right: 0.5em;
+  display: inline-block;
+  margin: 0px 0.25em;
+  font-size: 105%;
+  background: #eee;
+  padding: 0.4em;
+  line-height: 1.5em;
+  border: 1px dashed #444;
+  border-radius: 10px;
+  opacity: 0.8;
 }
 </style>
