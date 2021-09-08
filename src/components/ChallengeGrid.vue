@@ -1,10 +1,6 @@
 <template>
   <div class="challenges">
-    <div class="options">
-      <input type="checkbox" v-model="isExpanded" id="isExpanded"><label for="isExpanded">Expanded</label>
-      <input type="checkbox" v-model="isPreviews" id="isPreviews"><label for="isPreviews">Previews</label>
-    </div>
-    <row container :gutter="12">
+    <row container :gutter="12" v-if="!isHexagons">
       <column
         :xs="12"
         :md="6"
@@ -49,7 +45,42 @@
         </div>
       </column>
     </row>
+
+    <div class="honeycomb" v-if="isHexagons">
+      <a
+        v-for="project in projects"
+        :key="project.id"
+        :href="project.url" target="_blank"
+        :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
+        :challenge="project.is_challenge"
+        :style="(project.image_url ? 'background-image:url(' + project.image_url + ')' : '') + ';border-bottom-color:' + project.logo_color"
+      >
+        <div class="hexagontent">
+          <span>{{ project.name }}</span>
+          <div class="hexaicon"
+              v-if="project.image_url"
+              :style="'background-image:url(' + project.image_url + ')'"></div>
+              <div class="progress"
+                v-if="project.score && project.score > 0">
+                <div class="progress-bar" role="progressbar"
+                  :style="'width:' + project.score + '%'">
+                </div>
+              </div>
+          </div>
+      </a>
+    </div>
+
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
+
+    <div class="options">
+      <input type="checkbox" v-model="isExpanded" id="isExpanded">
+        <label for="isExpanded">Expanded</label>
+      <input type="checkbox" v-model="isPreviews" id="isPreviews">
+        <label for="isPreviews">Previews</label>
+      <input type="checkbox" v-model="isHexagons" id="isHexagons">
+        <label for="isHexagons">Hexagons</label>
+      🌐<a :href="shareUrl()">Share</a>
+    </div>
   </div>
 </template>
 
@@ -73,12 +104,20 @@ export default {
       projects: null,
       profileUrl: null,
       errorMessage: null,
+      isHexagons: false,
       isExpanded: false,
       isPreviews: false,
     };
   },
   mounted() {
+    // Check if projects can be loaded
     if (this.projects !== null) return;
+    // Get request configuration
+    const urlParams = new URLSearchParams(window.location.search);
+    this.isHexagons = Boolean(urlParams.get("hexagons"));
+    this.isExpanded = Boolean(urlParams.get("expanded"));
+    this.isPreviews = Boolean(urlParams.get("previews"));
+    // Continue with loading event
     console.info("Loading", this.src);
     fetch(this.src)
       .then(async (response) => {
@@ -146,6 +185,13 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
+    shareUrl: function () {
+      return '?' +
+        (this.isHexagons ? '&hexagons=1' : '') +
+        (this.isPreviews ? '&previews=1' : '') +
+        (this.isExpanded ? '&expanded=1' : '') +
+      '';
+    }
   },
 };
 </script>
@@ -158,7 +204,7 @@ export default {
 }
 .options {
   margin: 1em;
-  font-size: 125%;
+  font-size: 90%;
 }
 .options label {
   margin-right: 1em;
@@ -299,4 +345,144 @@ export default {
   border-radius: 10px;
   opacity: 0.8;
 }
+
+
+/* ---- Hexagonal hawtness ---- */
+
+.honeycomb {
+  width: 760px;
+  min-height: 700px;
+}
+@media (max-width: 980px) {
+  .honeycomb {
+    width: auto;
+    /* left: inherit; */
+  }
+}
+@media (max-width: 420px) {
+  .honeycomb .hexagon {
+    margin-bottom: auto;
+    top: auto;
+  }
+  .honeycomb {
+    text-align: center;
+    clear: both;
+  }
+}
+
+.challenge.hexagon .hexagontent {
+  color: #35a;
+  font-weight: normal;
+  padding: 4px 0px;
+}
+.challenge.hexagon {
+  background-color: white;
+  border-top: 1px dashed rgba(0,0,200,0.4);
+  border-bottom: 1px dashed rgba(0,0,200,0.4);
+}
+.challenge.hexagon::before {
+  border-top: 1px dashed rgba(0,0,200,0.4);
+  border-bottom: 1px dashed rgba(0,0,200,0.4);
+}
+.challenge.hexagon::after {
+  border-top: 1px dashed rgba(0,0,200,0.4);
+  border-bottom: 1px dashed rgba(0,0,200,0.4);
+}
+.challenge.hexagon:hover {
+  box-shadow: none;
+}
+
+.project .hexagontent {
+  overflow: hidden;
+  color: black;
+  line-height: 1.5;
+}
+.project .hexagontent.with-icon div {
+  font-size: 90%;
+}
+.project .hexagontent div {
+  max-height: 5.4em;
+}
+.project .hexagontent .fa {
+  font-size: 240%;
+}
+.project .hexagontent .progress {
+  margin-top: 1em;
+  margin-bottom: 0px;
+  height: 3px;
+  position: relative;
+  width: 72px;
+  margin-left: -36px;
+  left: 50%;
+  opacity: 1;
+  border: 1px solid white;
+}
+.project .hexagontent .progress-bar {
+  background-color: #aaa;
+}
+.honeycomb .project { opacity: 0.4; }
+
+.hexagon {
+  position: relative;
+  display: inline-block;
+  /* left/right margin approx. 25% of .hexagon width + spacing */
+  margin: 1px 21px;
+  background-color: white;
+  text-align: center;
+}
+.hexagon, .hexagon::before, .hexagon::after {
+  /* easy way: height is width * 1.732
+  actual formula is 2*(width/(2*Math.tan(Math.PI/6)))
+  remove border-radius for straight edges on hexagons */
+  width: 82px;
+  height: 142px;
+  border-radius: 20%/5%;
+}
+.hexagon::before {
+  background-color: inherit;
+  content: "";
+  position: absolute;
+  left: 0;
+  transform: rotate(-60deg);
+}
+.hexagon::after {
+  background-color: inherit;
+  content: "";
+  position: absolute;
+  left: 0;
+  transform: rotate(60deg);
+}
+.hexagon:nth-child(even) {
+  /* top approx. 50% of .hexagon height + spacing */
+  top: 73px;
+}
+.hexagon:hover {
+  background-color: hsla(60, 75%, 75%, 1.0);
+  cursor: pointer;
+  z-index: 105;
+}
+.hexagon:active {
+  background-color: hsla(60, 75%, 50%, 1.0);
+  z-index: 110;
+}
+.hexagontent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140%;
+  font-size: 1.0rem;
+  line-height: 1.2;
+  z-index: 100;
+}
+.ibws-fix {
+  /* inline-block whitespace fix */
+  font-size: 0;
+}
+.honeycomb {
+  margin: 0 auto;
+  text-align: center;
+}
+.hexagon .project { display: none; }
+
 </style>
