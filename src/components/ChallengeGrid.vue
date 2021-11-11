@@ -53,8 +53,8 @@
         :href="project.url" target="_blank"
         :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
         :challenge="project.is_challenge"
-        :style="(project.image_url ? 'background-image:url(' + project.image_url + ')' : '') + ';border-bottom-color:' + project.logo_color"
       >
+      <!-- :style="(project.image_url ? 'background-image:url(' + project.image_url + ')' : '') + ';border-bottom-color:' + project.logo_color" -->
         <div class="hexagontent">
           <span>{{ project.name }}</span>
           <div class="hexaicon"
@@ -73,12 +73,14 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options">
+      <!-- <input type="checkbox" v-model="isChallenges" id="isChallenges">
+        <label for="isChallenges">Challenges</label> -->
       <input type="checkbox" v-model="isExpanded" id="isExpanded">
         <label for="isExpanded">Expanded</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
         <label for="isPreviews">Previews</label>
-      <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons">Hexagons</label>
+      <!-- <input type="checkbox" v-model="isHexagons" id="isHexagons">
+        <label for="isHexagons">Hexagons</label> -->
       🌐<a :href="shareUrl()">Share</a>
     </div>
   </div>
@@ -104,6 +106,7 @@ export default {
       projects: null,
       profileUrl: null,
       errorMessage: null,
+      isChallenges: false,
       isHexagons: false,
       isExpanded: false,
       isPreviews: false,
@@ -117,6 +120,7 @@ export default {
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isExpanded = Boolean(urlParams.get("expanded"));
     this.isPreviews = Boolean(urlParams.get("previews"));
+    this.isChallenges = Boolean(urlParams.get("challenges"));
     // Continue with loading event
     console.info("Loading", this.src);
     fetch(this.src)
@@ -190,6 +194,7 @@ export default {
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isExpanded ? '&expanded=1' : '') +
+        (this.isChallenges ? '&challenges=1' : '') +
       '';
     }
   },
