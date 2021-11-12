@@ -2,9 +2,9 @@
   <div class="challenges">
     <row container :gutter="12" v-if="!isHexagons">
       <column
-        :xs="12"
-        :md="6"
-        :lg="4"
+        :xs="8"
+        :md="4"
+        :lg="2"
         v-for="project in projects"
         :key="project.id"
       >
@@ -25,7 +25,7 @@
             <div :class="isExpanded ? '' : 'rollup'">
               <p v-show="project.summary" class="summary">{{ project.summary }}</p>
               <markdown v-show="isPreviews" class="excerpt" :source="project.excerpt" />
-              <div class="team" v-show="project.team.length > 0">
+              <div class="team" v-show="project.team.length > 0" v-if="isButtons">
                 <a
                   v-for="user in project.team"
                   :key="user"
@@ -36,7 +36,7 @@
                   <span>{{ user }}</span>
                 </a>
               </div>
-              <div class="join">
+              <div class="join" v-if="isButtons">
                 <button @click="seeDetails(project)">🕮 {{ project.phase }}</button>
                 <button @click="joinTeam(project)">👍 Join</button>
               </div>
@@ -79,6 +79,8 @@
         <label for="isExpanded">Expanded</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
         <label for="isPreviews">Previews</label>
+      <input type="checkbox" v-model="isButtons" id="isButtons">
+        <label for="isButtons">Buttons</label>
       <!-- <input type="checkbox" v-model="isHexagons" id="isHexagons">
         <label for="isHexagons">Hexagons</label> -->
       🌐<a :href="shareUrl()">Share</a>
@@ -106,6 +108,7 @@ export default {
       projects: null,
       profileUrl: null,
       errorMessage: null,
+      isButtons: true,
       isChallenges: false,
       isHexagons: false,
       isExpanded: false,
@@ -118,6 +121,7 @@ export default {
     // Get request configuration
     const urlParams = new URLSearchParams(window.location.search);
     this.isHexagons = Boolean(urlParams.get("hexagons"));
+    this.isButtons = Boolean(urlParams.get("buttons"));
     this.isExpanded = Boolean(urlParams.get("expanded"));
     this.isPreviews = Boolean(urlParams.get("previews"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
@@ -159,7 +163,7 @@ export default {
         this.projects = [];
         data.projects.forEach((p) => {
           // Assign a boolean for challenge status
-          p.is_challenge = p.progress < 0;
+          p.is_challenge = p.progress < 1;
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
           this.projects.push(p);
@@ -194,6 +198,7 @@ export default {
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isExpanded ? '&expanded=1' : '') +
+        (this.isButtons ? '&buttons=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
       '';
     }
@@ -254,6 +259,7 @@ export default {
   padding: 0.5em 1em;
   background: rgba(255, 255, 255, 1);
   margin-top: 25%;
+  min-height: 4em;
 }
 .project.has-thumb {
   /* border-left: 1px solid #ddd; */
