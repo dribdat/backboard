@@ -50,8 +50,8 @@ export default {
   text-align: center;
 }
 body {
-  color: #fff;
-  background-color: rgb(241, 238, 219);
+  color: #000;
+  background-color: transparent;
 }
 tt { color: black; }
 .votebox {

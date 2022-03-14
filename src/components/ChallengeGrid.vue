@@ -1,6 +1,6 @@
 <template>
   <div class="challenges">
-    <row container :gutter="12" v-if="!isHexagons">
+    <row container :gutter="20" v-if="!isHexagons">
       <column
         :xs="8"
         :md="6"
@@ -16,31 +16,53 @@
               ? 'background-image:url(' + project.image_url + ')'
               : ''
           "
+          v-show="!isChallenges || !project.is_challenge"
         >
           <div :class="project.image_url ? 'project has-thumb' : 'project'">
+
+            <div class="status">
+              <b class="phase">{{ project.phase }}</b>
+              on
+              <span class="date">{{ project.date }}</span>
+            </div>
+
             <a class="name" :href="project.url" target="_blank">
-              <span class="hex">&#11042;</span>
               {{ project.name }}
             </a>
-            <div :class="isExpanded ? '' : 'rollup'">
-              <p v-show="project.summary" class="summary">{{ project.summary }}</p>
-              <markdown v-show="isPreviews" class="excerpt" :source="project.excerpt" />
-              <div class="team" v-show="project.team.length > 0" v-if="isButtons">
-                <a
-                  v-for="user in project.team"
-                  :key="user"
-                  :href="profileUrl + user"
-                  target="_blank"
-                  class="avatar"
-                  >👤
-                  <span>{{ user }}</span>
-                </a>
+
+            <div class="team-stats" v-show="!project.is_challenge">
+              <div class="team-counter" v-show="project.team.length > 0">
+                <span class="hex">👤</span>
+                <div class="count">{{ project.team.length }}</div>
               </div>
-              <div class="join" v-if="isButtons">
-                <button @click="seeDetails(project)">🕮 {{ project.phase }}</button>
-                <button @click="joinTeam(project)">👍 Join</button>
+              <div class="score-counter" v-show="project.score > 0">
+                <span class="hex">&#11042;</span>
+                <div class="count">{{ project.score }}</div>
               </div>
             </div>
+
+            <div class="team-roster" v-show="!project.is_challenge && project.team.length > 0">
+              <a
+                v-for="user in project.team"
+                :key="user"
+                :href="profileUrl + user"
+                target="_blank"
+                class="avatar"
+                >
+                <span>{{ user }}</span>
+              </a>
+            </div>
+
+            <div class="join" v-if="isButtons">
+              <button @click="joinTeam(project)">👍 Join</button>
+              <!-- <button @click="seeDetails(project)">🕮 {{ project.phase }}</button> -->
+            </div>
+
+            <div v-show="project.summary" class="rollup summary">
+              <p>{{ project.summary }}</p>
+            </div>
+
+            <markdown v-show="isPreviews" class="excerpt" :source="project.excerpt" />
           </div>
         </div>
       </column>
@@ -53,6 +75,7 @@
         :href="project.url" target="_blank"
         :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
         :challenge="project.is_challenge"
+        v-show="project.is_challenge"
       >
       <!-- :style="(project.image_url ? 'background-image:url(' + project.image_url + ')' : '') + ';border-bottom-color:' + project.logo_color" -->
         <div class="hexagontent">
@@ -73,17 +96,17 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options">
-      <!-- <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges">Challenges</label> -->
-      <input type="checkbox" v-model="isExpanded" id="isExpanded">
-        <label for="isExpanded">Expanded</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
         <label for="isPreviews">Previews</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
         <label for="isButtons">Buttons</label>
-      <!-- <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons">Hexagons</label> -->
-      🌐<a :href="shareUrl()">Share</a>
+      <input type="checkbox" v-model="isChallenges" id="isChallenges">
+        <label for="isChallenges">Hide Challenges</label>
+      <input type="checkbox" v-model="isHexagons" id="isHexagons">
+        <label for="isHexagons">Hex Challenges</label>
+      <span class="share-button">
+        🌐<a :href="shareUrl()">Share</a>
+      </span>
     </div>
   </div>
 </template>
@@ -92,6 +115,7 @@
 import { Row, Column } from "vue-grid-responsive";
 
 import VueMarkdown from '@adapttive/vue-markdown'
+import moment from 'moment'
 
 export default {
   name: "ChallengeGrid",
@@ -111,7 +135,6 @@ export default {
       isButtons: true,
       isChallenges: false,
       isHexagons: false,
-      isExpanded: false,
       isPreviews: false,
     };
   },
@@ -122,7 +145,6 @@ export default {
     const urlParams = new URLSearchParams(window.location.search);
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
-    this.isExpanded = Boolean(urlParams.get("expanded"));
     this.isPreviews = Boolean(urlParams.get("previews"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
     // Continue with loading event
@@ -164,6 +186,8 @@ export default {
         data.projects.forEach((p) => {
           // Assign a boolean for challenge status
           p.is_challenge = p.progress < 1;
+          // Format the date
+          p.date = moment(p.updated_at).format('MMM Do, YYYY');
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
           this.projects.push(p);
@@ -173,10 +197,10 @@ export default {
         });
 
         // Sort by name
-        this.projects.sort((a, b) => a.name.localeCompare(b.name));
+        // this.projects.sort((a, b) => a.name.localeCompare(b.name));
 
         // Sort by score
-        //this.projects.sort((a, b) => a.score > b.score);
+        this.projects.sort((a, b) => a.score < b.score);
 
         // Sort out challenges
         //this.projects.sort((a, b) => a.is_challenge || b.is_challenge);
@@ -188,7 +212,7 @@ export default {
   methods: {
     // Helper link to join a project team
     joinTeam: function (project) {
-      window.open(project.url + "/star");
+      window.open(project.url); // + "/star");
     },
     seeDetails: function (project) {
       window.open(project.url);
@@ -197,7 +221,6 @@ export default {
       return '?' +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
-        (this.isExpanded ? '&expanded=1' : '') +
         (this.isButtons ? '&buttons=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
       '';
@@ -215,6 +238,11 @@ export default {
 .options {
   margin: 1em;
   font-size: 90%;
+  opacity: 0.2;
+  cursor: pointer;
+}
+.options:hover {
+  opacity: 1;
 }
 .options label {
   margin-right: 1em;
@@ -227,12 +255,15 @@ export default {
   text-align: center;
   background-color: white;
   font-size: 14pt;
-  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12),
-    0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 4px 2px 0 rgba(0, 0, 0, 0.1),
+    0 1px 13px 0 rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1);
   border: 1px solid #eee;
+  border-radius: 6px;
 }
 .col:hover {
-  border-color: #aaa;
+  border-color: #ccc;
 }
 .col[challenge].project-container {
   background: repeating-linear-gradient(
@@ -243,7 +274,7 @@ export default {
     #ffffff 20px
   );
 }
-.col[challenge].project-container .hex {
+.col[challenge].project-container .team-stats {
   display: none;
 }
 .project-container {
@@ -254,22 +285,28 @@ export default {
 }
 .project {
   display: block;
+  text-align: left;
   width: auto;
   margin: 0px;
   padding: 0.5em 1em;
   background: rgba(255, 255, 255, 1);
   margin-top: 25%;
-  min-height: 4em;
+  min-height: 8em;
 }
 .project.has-thumb {
   /* border-left: 1px solid #ddd; */
 }
+.project .status {
+  font-size: 75%;
+  font-family: serif;
+}
 .project .name {
+  color: #0089c7;
   font-weight: bold;
-  font-size: 125%;
+  font-size: 110%;
   display: block;
   margin-top: 0.5em;
-  color: black;
+  margin-bottom: 1em;
   text-decoration: none;
 }
 .project .name .hex {
@@ -277,6 +314,17 @@ export default {
   transform: rotate(30deg);
   display: inline-block;
   opacity: 0.4;
+  float: right;
+  margin-top: -0.8em;
+  margin-right: -0.6em;
+}
+.project .team-stats {
+  float: left;
+  font-size: 80%;
+  color: #999;
+  width: 2em;
+  text-align: center;
+  margin: 0.5em 1em 2em -0.3em;
 }
 .project a:hover {
   color: blue;
@@ -293,12 +341,20 @@ export default {
   word-wrap: break-word;
 }
 .summary {
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
-  margin: 1em 0em;
-  padding: 1em 2em;
+  text-align: left;
+  margin: 0px;
+  padding: 0px;
+  position: absolute;
+  display: inline-block;
+  top: 6px;
+  left: 0px;
+  width: 100%;
+}
+.summary p {
+  margin: 0.5em 1em ;
+  padding: 1em;
   background: #ffc;
+  display: inline-block;
 }
 .excerpt {
   overflow: hidden;
@@ -320,19 +376,18 @@ export default {
   max-height: 1000px;
   opacity: 1;
 }
-.team .avatar {
+.team-roster .avatar {
   max-height: 2em;
   display: inline-block;
-  color: darkblue;
+  color: black;
   background: none; /* rgba(0, 0, 0, 0.1); */
   border: 2px solid #fff;
-  padding: 0.5em;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  line-height: 0.8em;
+  margin-right: .8em;
+  line-height: 1.5em;
   text-align: left;
   text-decoration: none;
-  font-family: cursive;
+  font-size: 80%;
+  font-family: serif;
 }
 .join {
   clear: both;
@@ -363,6 +418,8 @@ export default {
 .honeycomb {
   width: 760px;
   min-height: 700px;
+  text-align: left;
+  margin: 0 auto;
 }
 @media (max-width: 980px) {
   .honeycomb {
@@ -376,7 +433,6 @@ export default {
     top: auto;
   }
   .honeycomb {
-    text-align: center;
     clear: both;
   }
 }
@@ -490,10 +546,9 @@ export default {
   /* inline-block whitespace fix */
   font-size: 0;
 }
-.honeycomb {
-  margin: 0 auto;
-  text-align: center;
-}
 .hexagon .project { display: none; }
-
+.share-button a {
+  text-decoration: none;
+  margin-left: 0.3em;
+}
 </style>
