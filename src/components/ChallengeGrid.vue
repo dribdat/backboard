@@ -3,8 +3,8 @@
     <row container :gutter="12" v-if="!isHexagons">
       <column
         :xs="8"
-        :md="4"
-        :lg="2"
+        :md="6"
+        :lg="3"
         v-for="project in projects"
         :key="project.id"
       >
