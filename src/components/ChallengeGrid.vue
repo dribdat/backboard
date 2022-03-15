@@ -95,7 +95,7 @@
 
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
-    <div class="options">
+    <div class="options" v-show="toolbar">
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
         <label for="isPreviews">Previews</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
@@ -121,6 +121,7 @@ export default {
   name: "ChallengeGrid",
   props: {
     src: String,
+    toolbar: Boolean
   },
   components: {
     row: Row,
@@ -166,6 +167,9 @@ export default {
           this.profileUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
         } else if (data.homepage) {
           this.profileUrl = (data.homepage + '/user/');
+        } else {
+          this.profileUrl = window.location.href;
+          console.warn("Using default profile:", this.profileUrl);
         }
         this.profileUrl = this.profileUrl.replaceAll('//','/');
 
