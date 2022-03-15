@@ -2,8 +2,8 @@
   <div class="challenges">
     <row container :gutter="20" v-if="!isHexagons">
       <column
-        :xs="8"
-        :md="6"
+        :xs="12"
+        :md="4"
         :lg="3"
         v-for="project in projects"
         :key="project.id"
@@ -41,7 +41,11 @@
               </div>
             </div>
 
-            <div class="team-roster" v-show="!project.is_challenge && project.team.length > 0">
+            <div v-show="project.summary || !project.is_challenge" class="summary">
+              <p>{{ project.summary }}</p>
+            </div>
+
+            <div class="team-roster rollup" v-show="!project.is_challenge && project.team.length > 0" v-if="isButtons">
               <a
                 v-for="user in project.team"
                 :key="user"
@@ -53,16 +57,12 @@
               </a>
             </div>
 
-            <div class="join" v-if="isButtons">
+            <div class="team-join rollup" v-if="isButtons">
               <button @click="joinTeam(project)">👍 Join</button>
               <!-- <button @click="seeDetails(project)">🕮 {{ project.phase }}</button> -->
             </div>
 
-            <div v-show="project.summary" class="rollup summary">
-              <p>{{ project.summary }}</p>
-            </div>
-
-            <markdown v-show="isPreviews" class="excerpt" :source="project.excerpt" />
+            <markdown v-show="isPreviews" class="rollup excerpt" :source="project.excerpt" :html="false" />
           </div>
         </div>
       </column>
@@ -294,8 +294,8 @@ export default {
   margin: 0px;
   padding: 0.5em 1em;
   background: rgba(255, 255, 255, 1);
-  margin-top: 25%;
-  min-height: 8em;
+  margin-top: 20%;
+  border-top: 1px solid #ddd;
 }
 .project.has-thumb {
   /* border-left: 1px solid #ddd; */
@@ -310,7 +310,7 @@ export default {
   font-size: 110%;
   display: block;
   margin-top: 0.5em;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   text-decoration: none;
 }
 .project .name .hex {
@@ -321,14 +321,6 @@ export default {
   float: right;
   margin-top: -0.8em;
   margin-right: -0.6em;
-}
-.project .team-stats {
-  float: left;
-  font-size: 80%;
-  color: #999;
-  width: 2em;
-  text-align: center;
-  margin: 0.5em 1em 2em -0.3em;
 }
 .project a:hover {
   color: blue;
@@ -344,7 +336,7 @@ export default {
   white-space: -o-pre-wrap;
   word-wrap: break-word;
 }
-.summary {
+.summary.rollup {
   text-align: left;
   margin: 0px;
   padding: 0px;
@@ -354,7 +346,7 @@ export default {
   left: 0px;
   width: 100%;
 }
-.summary p {
+.summary.rollup p {
   margin: 0.5em 1em ;
   padding: 1em;
   background: #ffc;
@@ -380,9 +372,24 @@ export default {
   max-height: 1000px;
   opacity: 1;
 }
+.project .team-stats {
+  background: white;
+  float: right;
+  display: inline-block;
+  font-size: 80%;
+  color: #999;
+  width: 3em;
+  text-align: center;
+  margin: 0.5em -1em 0.5em 0;
+}
+.project .team-roster {
+  display: inline-block;
+}
+.project .summary {
+  min-height: 5em;
+}
 .team-roster .avatar {
   max-height: 2em;
-  display: inline-block;
   color: black;
   background: none; /* rgba(0, 0, 0, 0.1); */
   border: 2px solid #fff;
@@ -393,17 +400,17 @@ export default {
   font-size: 80%;
   font-family: serif;
 }
-.join {
+.team-join {
   clear: both;
   display: block;
   text-align: center;
   margin-bottom: 1em;
 }
-.join button:hover {
+.team-join button:hover {
   background: #fff;
   border: 1px solid blue;
 }
-.join button {
+.team-join button {
   cursor: pointer;
   display: inline-block;
   margin: 0px 0.25em;
@@ -411,7 +418,7 @@ export default {
   background: #eee;
   padding: 0.4em;
   line-height: 1.5em;
-  border: 1px dashed #444;
+  border: 1px solid #444;
   border-radius: 10px;
   opacity: 0.8;
 }
