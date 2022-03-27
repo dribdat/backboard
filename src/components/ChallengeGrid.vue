@@ -59,6 +59,7 @@
 
             <div class="team-join rollup" v-if="isButtons">
               <button @click="joinTeam(project)">👍 Join</button>
+              <button v-show="project.contact_url" @click="contactTeam(project)">👋 Contact</button>
               <!-- <button @click="seeDetails(project)">🕮 {{ project.phase }}</button> -->
             </div>
 
@@ -201,10 +202,12 @@ export default {
         });
 
         // Sort by name
-        // this.projects.sort((a, b) => a.name.localeCompare(b.name));
+        this.projects.sort((a, b) => a.name.localeCompare(b.name));
 
         // Sort by score
-        this.projects.sort((a, b) => a.score < b.score);
+        if (this.isButtons) {
+          this.projects.sort((a, b) => a.score < b.score);
+        }
 
         // Sort out challenges
         //this.projects.sort((a, b) => a.is_challenge || b.is_challenge);
@@ -216,7 +219,10 @@ export default {
   methods: {
     // Helper link to join a project team
     joinTeam: function (project) {
-      window.open(project.url); // + "/star");
+      window.open(project.url + "/star/me");
+    },
+    contactTeam: function (project) {
+      window.open(project.contact_url);
     },
     seeDetails: function (project) {
       window.open(project.url);
@@ -384,6 +390,8 @@ export default {
 }
 .project .team-roster {
   display: inline-block;
+  width: 100%;
+  overflow: hidden;
 }
 .project .summary {
   min-height: 5em;
