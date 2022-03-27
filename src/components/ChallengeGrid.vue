@@ -201,11 +201,12 @@ export default {
             p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ") : p.team;
         });
 
-        // Sort by name
-        this.projects.sort((a, b) => a.name.localeCompare(b.name));
-
-        // Sort by score
+        // TODO: own configuration
         if (this.isButtons) {
+          // Sort by name
+          this.projects.sort((a, b) => a.name.localeCompare(b.name));
+        else {
+          // Sort by score
           this.projects.sort((a, b) => a.score < b.score);
         }
 
