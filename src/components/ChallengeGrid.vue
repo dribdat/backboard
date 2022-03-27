@@ -205,7 +205,7 @@ export default {
         if (this.isButtons) {
           // Sort by name
           this.projects.sort((a, b) => a.name.localeCompare(b.name));
-        else {
+        } else {
           // Sort by score
           this.projects.sort((a, b) => a.score < b.score);
         }
