@@ -301,6 +301,8 @@ export default {
   background-repeat: no-repeat;
   padding: 0px;
 }
+
+
 .project {
   display: block;
   text-align: left;
@@ -308,15 +310,17 @@ export default {
   margin: 0px;
   padding: 0.5em 1em;
   background: rgba(255, 255, 255, 1);
-  margin-top: 20%;
-  border-top: 1px solid #ddd;
+  margin-top: 50%;
+  border-top: 1px solid #eee;
 }
 .project.has-thumb {
   /* border-left: 1px solid #ddd; */
 }
 .project .status {
-  font-size: 75%;
-  font-family: serif;
+  font-size: 60%; opacity: 0.5;
+  font-family: monospace;
+  position: absolute;
+  bottom: 2em;
 }
 .project .name {
   color: #0089c7;
@@ -339,6 +343,26 @@ export default {
 .project a:hover {
   color: blue;
 }
+.project .team-stats {
+  background: white;
+  float: right;
+  display: inline-block;
+  font-size: 80%;
+  color: #999;
+  width: 3em;
+  text-align: center;
+  margin: 0.5em -1em 0.5em 0;
+}
+.project .team-roster {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+}
+.project .summary {
+  min-height: 5em;
+}
+
+
 .summary, .excerpt {
   text-align: left;
   color: black;
@@ -386,24 +410,8 @@ export default {
   max-height: 1000px;
   opacity: 1;
 }
-.project .team-stats {
-  background: white;
-  float: right;
-  display: inline-block;
-  font-size: 80%;
-  color: #999;
-  width: 3em;
-  text-align: center;
-  margin: 0.5em -1em 0.5em 0;
-}
-.project .team-roster {
-  display: inline-block;
-  width: 100%;
-  overflow: hidden;
-}
-.project .summary {
-  min-height: 5em;
-}
+
+
 .team-roster .avatar {
   max-height: 2em;
   color: black;
