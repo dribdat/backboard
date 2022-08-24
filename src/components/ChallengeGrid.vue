@@ -212,6 +212,13 @@ export default {
 
         // Sort out challenges
         //this.projects.sort((a, b) => a.is_challenge || b.is_challenge);
+
+        // Try to set title from data package
+        if (data.title) {
+          document.title = data.title;
+        } else if (data.projects.length > 0) {
+          document.title = data.projects[0].event_name;
+        }
       })
       .catch((error) => {
         this.errorMessage = error;
