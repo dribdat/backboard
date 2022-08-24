@@ -31,7 +31,7 @@
             </a>
 
             <div class="team-stats" v-show="!project.is_challenge">
-              <div class="team-counter" v-show="project.team.length > 0">
+              <div class="team-counter" v-show="project.team.length > 1">
                 <span class="hex">👤</span>
                 <div class="count">{{ project.team.length }}</div>
               </div>
