@@ -393,9 +393,6 @@ export default {
   color: black;
   line-height: 140%;
 }
-.preview, .summary, .excerpt img {
-  max-width: 100%;
-}
 .summary, .excerpt {
   font-size: 85%;
   white-space: pre-wrap;

@@ -91,7 +91,7 @@
   margin: 20px 0;
   overflow-y: auto;
   overflow-x: hidden;
-  border-bottom:  1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .modal-close-button {
