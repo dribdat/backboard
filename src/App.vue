@@ -58,4 +58,53 @@ tt { color: black; }
 .votebox {
   margin: 2em;
 }
+a:active, a:hover {
+  outline-width: 0;
+}
+button {
+  color: blue; 
+  background: white;
+  border: 1px solid lightskyblue;
+  box-shadow: 2px 2px 2px lightgray;
+  margin: 0 2px 2px 0;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+button:hover {
+  background: lightyellow;
+  color:  black;
+}
+button:active {
+  background: lightskyblue;
+  box-shadow: none;
+  margin: 2px 0 0 2px;
+}
+button.big {
+  display: inline-flex;
+  -moz-box-align: center;
+  align-items: center;
+  height: 32px;
+  padding: 0px 12px;
+}
+button.tiny {
+  line-height: 1.6em;
+  height: 30px;
+  width: 30px; 
+  overflow: hidden;
+  display: block;
+  margin-bottom: 1em;
+}
+button.tiny:hover {
+  width: auto;
+}
+button.modal-close-button {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin: 0; padding: 0;
+}
 </style>

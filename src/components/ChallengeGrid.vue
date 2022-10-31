@@ -16,21 +16,24 @@
               ? 'background-image:url(' + project.image_url + ')'
               : ''
           "
-          v-show="!isChallenges || !project.is_challenge"
+          v-show="isChallenges || !project.is_challenge"
         >
-          <div :class="project.image_url ? 'project has-thumb' : 'project'">
+          <div :class="project.image_url ? 'project has-thumb' : 'project'"
+               @click="seePreview(project)"
+          >
 
             <div class="status">
               <b class="phase">{{ project.phase }}</b>
-              on
+              /
               <span class="date">{{ project.date }}</span>
             </div>
 
-            <a class="name" :href="project.url" target="_blank">
+            <div class="name">
               {{ project.name }}
-            </a>
+            </div>
 
-            <div class="team-stats" v-show="!project.is_challenge">
+            <div class="team-stats" v-show="!project.is_challenge"
+                  :title="project.team.join(', ')">
               <div class="team-counter" v-show="project.team.length > 1">
                 <span class="hex">👤</span>
                 <div class="count">{{ project.team.length }}</div>
@@ -45,29 +48,29 @@
               <p>{{ project.summary }}</p>
             </div>
 
-            <div class="team-roster rollup" v-show="!project.is_challenge && project.team.length > 0" v-if="isButtons">
-              <a
-                v-for="user in project.team"
-                :key="user"
-                :href="profileUrl + user"
-                target="_blank"
-                class="avatar"
-                >
-                <span>{{ user }}</span>
-              </a>
-            </div>
-
-            <div class="team-join rollup" v-if="isButtons">
+            <div class="team-join" v-if="isButtons">
               <button @click="joinTeam(project)">👍 Join</button>
               <button v-show="project.contact_url" @click="contactTeam(project)">👋 Contact</button>
-              <!-- <button @click="seeDetails(project)">🕮 {{ project.phase }}</button> -->
             </div>
 
-            <markdown v-show="isPreviews" class="rollup excerpt" :source="project.excerpt" :html="false" />
           </div>
         </div>
       </column>
     </row>
+
+    <div v-for="project in projects" :key="project.id">
+      <Modal v-if="isPreviewActive == project.id" @close="isPreviewActive = false">
+        <div slot="title">{{ project.name }}</div>
+        <div class="content" slot="body">
+          <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
+        </div>
+        <div class="footer" slot="footer">
+          <button class="nav nav-prev" @click="goPrev(project)">&lt;--</button>
+          <button @click="seeDetails(project)">🕮 Project Page</button>
+          <button class="nav nav-next" @click="goNext(project)">--&gt;</button>
+        </div>
+      </Modal>
+    </div>
 
     <div class="honeycomb" v-if="isHexagons">
       <a
@@ -102,7 +105,7 @@
       <input type="checkbox" v-model="isButtons" id="isButtons">
         <label for="isButtons">Buttons</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges">Hide Challenges</label>
+        <label for="isChallenges">Show Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
         <label for="isHexagons">Hex Challenges</label>
       <span class="share-button">
@@ -118,6 +121,8 @@ import { Row, Column } from "vue-grid-responsive";
 import VueMarkdown from '@adapttive/vue-markdown'
 import moment from 'moment'
 
+import Modal from "./Modal"
+
 export default {
   name: "ChallengeGrid",
   props: {
@@ -128,6 +133,7 @@ export default {
     row: Row,
     column: Column,
     markdown: VueMarkdown,
+    Modal,
   },
   data() {
     return {
@@ -138,6 +144,7 @@ export default {
       isChallenges: false,
       isHexagons: false,
       isPreviews: false,
+      isPreviewActive: false,
     };
   },
   mounted() {
@@ -201,15 +208,14 @@ export default {
             p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ") : p.team;
         });
 
-        // TODO: own configuration
-        if (this.isButtons) {
+        // TODO: own configuration, issue with challenge order
+        /*if (this.isButtons) {
           // Sort by name
           this.projects.sort((a, b) => a.name.localeCompare(b.name));
-        } else {
+        } else {*/
           // Sort by score
           this.projects.sort((a, b) => a.score < b.score);
-        }
-
+        //}
         // Sort out challenges
         //this.projects.sort((a, b) => a.is_challenge || b.is_challenge);
 
@@ -235,6 +241,13 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
+    seePreview: function (project) {
+      if (!this.isPreviews) {
+        return this.seeDetails(project);
+      }
+      this.isPreviewActive = (this.isPreviewActive == project.id) ?
+                              false : project.id;
+    },
     shareUrl: function () {
       return '?' +
         (this.isHexagons ? '&hexagons=1' : '') +
@@ -242,7 +255,24 @@ export default {
         (this.isButtons ? '&buttons=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
       '';
-    }
+    },
+    letsGo: function () {
+      let theProjects = this.projects;
+      let isChallenges = this.isChallenges;
+      let curProjectId = this.isPreviewActive;
+      if (curProjectId === false) return;
+      let prev_item = false, prev = null, next = null;
+      theProjects.forEach(function(p) {
+        if (!isChallenges && p.is_challenge) return;
+        if (next) return;
+        if (prev !== null) { next = p.id; }
+        if (curProjectId == p.id) { prev = prev_item; }
+        prev_item = p.id;
+      });
+      return { 'prev': prev, 'next': next }
+    },
+    goNext: function() { this.isPreviewActive = this.letsGo().next },
+    goPrev: function() { this.isPreviewActive = this.letsGo().prev }
   },
 };
 </script>
@@ -295,13 +325,16 @@ export default {
 .col[challenge].project-container .team-stats {
   display: none;
 }
+
 .project-container {
   display: inline-block;
   background-size: 100% auto;
   background-repeat: no-repeat;
   padding: 0px;
 }
-
+.project-container > div {
+  cursor: pointer;
+}
 
 .project {
   display: block;
@@ -319,8 +352,6 @@ export default {
 .project .status {
   font-size: 60%; opacity: 0.5;
   font-family: monospace;
-  position: absolute;
-  bottom: 2em;
 }
 .project .name {
   color: #0089c7;
@@ -353,21 +384,17 @@ export default {
   text-align: center;
   margin: 0.5em -1em 0.5em 0;
 }
-.project .team-roster {
-  display: inline-block;
-  width: 100%;
-  overflow: hidden;
-}
 .project .summary {
   min-height: 5em;
 }
 
-
-.summary, .excerpt {
+.preview, .summary, .excerpt {
   text-align: left;
   color: black;
-  font-size: 85%;
   line-height: 140%;
+}
+.summary, .excerpt {
+  font-size: 85%;
   white-space: pre-wrap;
   white-space: -moz-pre-wrap;
   white-space: -pre-wrap;
@@ -390,14 +417,6 @@ export default {
   background: #ffc;
   display: inline-block;
 }
-.excerpt {
-  overflow: hidden;
-  width: 100%;
-  padding: 0px;
-  margin-bottom: 1em;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-}
 .rollup {
   display: block;
   height: auto;
@@ -412,39 +431,11 @@ export default {
 }
 
 
-.team-roster .avatar {
-  max-height: 2em;
-  color: black;
-  background: none; /* rgba(0, 0, 0, 0.1); */
-  border: 2px solid #fff;
-  margin-right: .8em;
-  line-height: 1.5em;
-  text-align: left;
-  text-decoration: none;
-  font-size: 80%;
-  font-family: serif;
-}
 .team-join {
   clear: both;
   display: block;
   text-align: center;
   margin-bottom: 1em;
-}
-.team-join button:hover {
-  background: #fff;
-  border: 1px solid blue;
-}
-.team-join button {
-  cursor: pointer;
-  display: inline-block;
-  margin: 0px 0.25em;
-  font-size: 105%;
-  background: #eee;
-  padding: 0.4em;
-  line-height: 1.5em;
-  border: 1px solid #444;
-  border-radius: 10px;
-  opacity: 0.8;
 }
 
 
@@ -585,5 +576,11 @@ export default {
 .share-button a {
   text-decoration: none;
   margin-left: 0.3em;
+}
+button.nav-next {
+  float: right;
+}
+button.nav-prev {
+  float: left;
 }
 </style>
