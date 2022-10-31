@@ -1,6 +1,6 @@
 # Challenges microsite
 
-This is a one page application that shows challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat).
+This is a one page application that shows challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). It has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results.
 
 You probably want to enable *Challenges* and *Previews* (opens modal dialog on click with navigation) in the options at the footer of the page. Use the handy *Share* link.
 

@@ -31,7 +31,7 @@ export default {
       apiUrl = './datapackage.json';
     }
     if (baseUrl && eventId) {
-      apiUrl = [baseUrl, "api/event", eventId, "projects.json"].join("/");
+      apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
     }
     return {
       dribdatApi: apiUrl,
