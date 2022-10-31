@@ -12,9 +12,11 @@
           class="col project-container"
           :challenge="project.is_challenge"
           :style="
-            project.image_url
-              ? 'background-image:url(' + project.image_url + ')'
-              : ''
+            project.image_url ?
+              'background-image:url(' + project.image_url + ')'
+              : project.is_challenge && eventImageUrl ?
+                'background-image:url(' + eventImageUrl + ')'
+                : ''
           "
           v-show="isChallenges || !project.is_challenge"
         >
@@ -139,6 +141,7 @@ export default {
     return {
       projects: null,
       profileUrl: null,
+      eventImageUrl: null,
       errorMessage: null,
       isButtons: true,
       isChallenges: false,
@@ -186,6 +189,8 @@ export default {
           data.resources.forEach(function(r) {
             if (r.name == 'projects') {
               data.projects = r.data;
+            } else if (r.name == 'events') {
+              data.event = r.data[0];
             }
           });
           if (data.projects === null) {
@@ -224,6 +229,11 @@ export default {
           document.title = data.title;
         } else if (data.projects.length > 0) {
           document.title = data.projects[0].event_name;
+        }
+
+        // Set a default image if available
+        if (typeof data.event !== 'undefined') {
+          this.eventImageUrl = data.event.logo_url;
         }
       })
       .catch((error) => {
@@ -321,6 +331,9 @@ export default {
     #fefefe 10px,
     #ffffff 20px
   );
+  background-color: #555;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .col[challenge].project-container .team-stats {
   display: none;
