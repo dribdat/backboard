@@ -1,6 +1,10 @@
 # Challenges microsite
 
-This is a one page application that shows the challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat).
+This is a one page application that shows challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat).
+
+You probably want to enable *Challenges* and *Previews* (opens modal dialog on click with navigation) in the options at the footer of the page. Use the handy *Share* link.
+
+Demo: https://backboard.vercel.app/?&previews=1&challenges=1
 
 ## Usage
 
