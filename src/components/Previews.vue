@@ -17,6 +17,7 @@
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">&lt;--</button>
           <button @click="seeDetails(project)"><b>Details</b> ...</button>
+          <button @click="openComment(project)">💬</button>
           <button class="nav nav-next" @click="goNext(project)" title="Next">--&gt;</button>
         </div>
       </Modal>
