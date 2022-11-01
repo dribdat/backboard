@@ -1,20 +1,20 @@
 <template>
   <div id="app">
     <VoteBox class="votebox" :href="voteUrl" v-show="voteUrl" />
-    <ChallengeGrid :src="dribdatApi" :toolbar="showToolbar" />
+    <Challenges :src="dribdatApi" :toolbar="showToolbar" />
     <tt><a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
       powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
   </div>
 </template>
 
 <script>
-import ChallengeGrid from "./components/ChallengeGrid";
+import Challenges from "./components/Challenges";
 import VoteBox from "./components/VoteBox";
 
 export default {
   name: "App",
   components: {
-    ChallengeGrid,
+    Challenges,
     VoteBox,
   },
   data() {
@@ -62,7 +62,7 @@ a:active, a:hover {
   outline-width: 0;
 }
 button {
-  color: blue; 
+  color: blue;
   background: white;
   border: 1px solid lightskyblue;
   box-shadow: 2px 2px 2px lightgray;
@@ -93,7 +93,7 @@ button.big {
 button.tiny {
   line-height: 1.6em;
   height: 30px;
-  width: 30px; 
+  width: 30px;
   overflow: hidden;
   display: block;
   margin-bottom: 1em;

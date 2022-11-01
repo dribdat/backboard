@@ -60,24 +60,10 @@
       </column>
     </row>
 
-    <div v-for="project in projects" :key="project.id">
-      <Modal v-if="isPreviewActive == project.id"
-             @close="isPreviewActive = false">
-        <div slot="title"
-             @touchstart="touchStart"
-             title="Swipe here or tap below to advance"
-             >{{ project.name }}</div>
-        <div class="content" slot="body">
-          <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
-        </div>
-        <div class="footer" slot="footer"
-             @touchstart="touchStart">
-          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">&lt;--</button>
-          <button @click="seeDetails(project)"><b>Details</b> ...</button>
-          <button class="nav nav-next" @click="goNext(project)" title="Next">--&gt;</button>
-        </div>
-      </Modal>
-    </div>
+    <Previews v-if="isPreviews" v-model="activePreview"
+            :withChallenges="isChallenges"
+            :projects="projects"
+            ></Previews>
 
     <div class="honeycomb" v-if="isHexagons">
       <a
@@ -125,13 +111,12 @@
 <script>
 import { Row, Column } from "vue-grid-responsive";
 
-import VueMarkdown from '@adapttive/vue-markdown'
 import moment from 'moment'
 
-import Modal from "./Modal"
+import Previews from './Previews'
 
 export default {
-  name: "ChallengeGrid",
+  name: "Challenges",
   props: {
     src: String,
     toolbar: Boolean
@@ -139,8 +124,7 @@ export default {
   components: {
     row: Row,
     column: Column,
-    markdown: VueMarkdown,
-    Modal,
+    Previews
   },
   data() {
     return {
@@ -152,7 +136,7 @@ export default {
       isChallenges: false,
       isHexagons: false,
       isPreviews: false,
-      isPreviewActive: false,
+      activePreview: -1,
     };
   },
   mounted() {
@@ -260,8 +244,8 @@ export default {
       if (!this.isPreviews) {
         return this.seeDetails(project);
       }
-      this.isPreviewActive = (this.isPreviewActive == project.id) ?
-                              false : project.id;
+      this.activePreview = (this.activePreview == project.id) ?
+                              -1 : project.id;
     },
     shareUrl: function () {
       return '?' +
@@ -270,44 +254,6 @@ export default {
         (this.isButtons ? '&buttons=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
       '';
-    },
-    letsGo: function () {
-      // Project navigation
-      // This would be a less tacky option: https://swiperjs.com/vue
-      let theProjects = this.projects;
-      let isChallenges = this.isChallenges;
-      let curProjectId = this.isPreviewActive;
-      if (curProjectId === false) return;
-      let prev_item = false, prev = null, next = null;
-      theProjects.forEach(function(p) {
-        if (!isChallenges && p.is_challenge) return;
-        if (next) return;
-        if (prev !== null) { next = p.id; }
-        if (curProjectId == p.id) { prev = prev_item; }
-        prev_item = p.id;
-      });
-      return { 'prev': prev, 'next': next }
-    },
-    goNext: function() { this.isPreviewActive = this.letsGo().next },
-    goPrev: function() { this.isPreviewActive = this.letsGo().prev },
-    touchStart (touchEvent) {
-      if (touchEvent.changedTouches.length !== 1) { // one finger
-        return;
-      }
-      const posXStart = touchEvent.changedTouches[0].clientX;
-      addEventListener('touchend', (touchEvent) => this.touchEnd(touchEvent, posXStart), {once: true});
-    },
-    touchEnd (touchEvent, posXStart) {
-      if (touchEvent.changedTouches.length !== 1) {
-        return;
-      }
-      const SWIPE_LENGTH = 40;
-      const posXEnd = touchEvent.changedTouches[0].clientX;
-      if (SWIPE_LENGTH < posXEnd - posXStart) {
-        this.goPrev(); // swipe right
-      } else if (posXStart - posXEnd > SWIPE_LENGTH) {
-        this.goNext(); // swipe left
-      }
     }
   }
 };
@@ -427,7 +373,7 @@ export default {
   min-height: 5em;
 }
 
-.preview, .summary, .excerpt {
+.summary, .excerpt {
   text-align: left;
   color: black;
   line-height: 140%;
@@ -615,11 +561,5 @@ export default {
 .share-button a {
   text-decoration: none;
   margin-left: 0.3em;
-}
-button.nav-next {
-  float: right;
-}
-button.nav-prev {
-  float: left;
 }
 </style>

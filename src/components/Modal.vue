@@ -1,8 +1,14 @@
 <template>
-  <transition name="modal" @keydown.esc="$emit('close')">
-    <div class="modal-mask" @click.self="$emit('close')">
+  <transition name="modal">
+    <div class="modal-mask"
+        @click.self="$emit('close')">
       <div class="modal-wrapper" @click.self="$emit('close')">
-        <div class="modal-container" :style="{ 'max-width': boxWidth + 'px' }">
+        <div class="modal-container"
+            :style="{ 'max-width': boxWidth + 'px' }"
+            tabindex="1" ref="Container"
+            @keydown.esc="$emit('close')"
+            @keydown.left="$emit('prev')"
+            @keydown.right="$emit('next')">
           <div class="modal-header">
             <slot name="header">
               <button class="modal-close-button" @click="$emit('close')">
@@ -49,6 +55,9 @@
     mounted() {
       this.boxHeight = this.getScreenHeight() * 0.8;
       this.boxWidth = this.getScreenWidth() * 0.8;
+
+      const tm = this.$refs.Container;
+      this.$nextTick(() => { tm.focus(); });
     }
   }
 </script>
