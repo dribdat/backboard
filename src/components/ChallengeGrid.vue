@@ -61,15 +61,20 @@
     </row>
 
     <div v-for="project in projects" :key="project.id">
-      <Modal v-if="isPreviewActive == project.id" @close="isPreviewActive = false">
-        <div slot="title">{{ project.name }}</div>
+      <Modal v-if="isPreviewActive == project.id"
+             @close="isPreviewActive = false">
+        <div slot="title"
+             @touchstart="touchStart"
+             title="Swipe here or tap below to advance"
+             >{{ project.name }}</div>
         <div class="content" slot="body">
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
         </div>
-        <div class="footer" slot="footer">
-          <button class="nav nav-prev" @click="goPrev(project)">&lt;--</button>
-          <button @click="seeDetails(project)">🕮 Project Page</button>
-          <button class="nav nav-next" @click="goNext(project)">--&gt;</button>
+        <div class="footer" slot="footer"
+             @touchstart="touchStart">
+          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">&lt;--</button>
+          <button @click="seeDetails(project)"><b>Details</b> ...</button>
+          <button class="nav nav-next" @click="goNext(project)" title="Next">--&gt;</button>
         </div>
       </Modal>
     </div>
@@ -107,9 +112,9 @@
       <input type="checkbox" v-model="isButtons" id="isButtons">
         <label for="isButtons">Buttons</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges">Show Challenges</label>
+        <label for="isChallenges">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons">Hex Challenges</label>
+        <label for="isHexagons">Hexagons</label>
       <span class="share-button">
         🌐<a :href="shareUrl()">Share</a>
       </span>
@@ -267,6 +272,8 @@ export default {
       '';
     },
     letsGo: function () {
+      // Project navigation
+      // This would be a less tacky option: https://swiperjs.com/vue
       let theProjects = this.projects;
       let isChallenges = this.isChallenges;
       let curProjectId = this.isPreviewActive;
@@ -282,8 +289,27 @@ export default {
       return { 'prev': prev, 'next': next }
     },
     goNext: function() { this.isPreviewActive = this.letsGo().next },
-    goPrev: function() { this.isPreviewActive = this.letsGo().prev }
-  },
+    goPrev: function() { this.isPreviewActive = this.letsGo().prev },
+    touchStart (touchEvent) {
+      if (touchEvent.changedTouches.length !== 1) { // one finger
+        return;
+      }
+      const posXStart = touchEvent.changedTouches[0].clientX;
+      addEventListener('touchend', (touchEvent) => this.touchEnd(touchEvent, posXStart), {once: true});
+    },
+    touchEnd (touchEvent, posXStart) {
+      if (touchEvent.changedTouches.length !== 1) {
+        return;
+      }
+      const SWIPE_LENGTH = 40;
+      const posXEnd = touchEvent.changedTouches[0].clientX;
+      if (SWIPE_LENGTH < posXEnd - posXStart) {
+        this.goPrev(); // swipe right
+      } else if (posXStart - posXEnd > SWIPE_LENGTH) {
+        this.goNext(); // swipe left
+      }
+    }
+  }
 };
 </script>
 
