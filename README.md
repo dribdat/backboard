@@ -17,7 +17,8 @@ Put a `datapackage.json` file that you exported from dribdat into the **public**
 Then configure your site with the following environment variables:
 
 - `VUE_APP_DRIBDAT_URL` - fully qualified link to your dribdat event, or online hosted Data Package; e.g. https://meta.dribdat.cc/event/5
-- `VUE_APP_GOOGLE_FORM_URL` (optional) - if you are using a Google Form to collect votes or feedback.
+- `VUE_APP_VOTE_FORM_URL` (optional) - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
+- `VUE_APP_DEFAULT_OPTS` (optional) - change the default settings (copy the part after ? from the Share link)
 - `VUE_APP_HIDE_TOOLBAR` (optional) - to hide the row of buttons in the footer
 - `BACKBOARD_ROOT` (optional) - if your deployment is not at the root, change it here (e.g. `/backboard`)
 

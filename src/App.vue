@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <VoteBox class="votebox" :href="voteUrl" v-show="voteUrl" />
-    <Challenges :src="dribdatApi" :toolbar="showToolbar" />
+    <VoteBox class="votebox" 
+      :href="voteUrl" v-show="voteUrl" />
+    <Challenges 
+      :src="dribdatApi" :toolbar="showToolbar" :options="defaultOptions" />
     <tt><a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
       powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
   </div>
@@ -36,8 +38,9 @@ export default {
     return {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
-      voteUrl: process.env.VUE_APP_GOOGLE_FORM_URL || '',
-      showToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false)
+      voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
+      showToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
+      defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
     }
   }
 };

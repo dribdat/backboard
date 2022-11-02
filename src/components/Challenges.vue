@@ -119,6 +119,7 @@ export default {
   name: "Challenges",
   props: {
     src: String,
+    options: String,
     toolbar: Boolean
   },
   components: {
@@ -143,7 +144,8 @@ export default {
     // Check if projects can be loaded
     if (this.projects !== null) return;
     // Get request configuration
-    const urlParams = new URLSearchParams(window.location.search);
+    const shareOptions = window.location.search || this.options;
+    const urlParams = new URLSearchParams(shareOptions);
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
