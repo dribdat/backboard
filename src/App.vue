@@ -53,6 +53,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
+i.fa {
+  font-style: normal;
+}
 body {
   color: #000;
   background-color: transparent;

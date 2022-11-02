@@ -1,5 +1,31 @@
 <template>
   <div class="challenges">
+
+    <div class="section-header" v-if="isHeadline">
+      <div class="header-logo" v-if="event.logo_url">
+        <a :href="event.webpage_url">
+          <img id="event-logo" :src="event.logo_url">
+        </a>
+      </div>
+      <div class="header-content">
+        <a :href="event.webpage_url">
+          <h3 class="event-name">{{ event.name }}</h3>
+        </a>
+        <div class="event-hostname" v-if="event.hostname">
+          <i class="fa fa-bank">🏢</i>
+          {{ event.hostname }}</div>
+        <div class="event-date" v-if="event.date">
+          <i class="fa fa-calendar">📆</i>
+          {{ event.date }}</div>
+        <div class="event-location" v-if="event.location">
+          <i class="fa fa-map">🗺️</i>
+          {{ event.location }}</div>
+      </div>
+      <p class="header-summary" v-if="event.summary">
+        {{ event.summary }}
+      </p>
+    </div>
+
     <row container :gutter="20" v-if="!isHexagons">
       <column
         :xs="12"
@@ -14,8 +40,8 @@
           :style="
             project.image_url ?
               'background-image:url(' + project.image_url + ')'
-              : project.is_challenge && eventImageUrl ?
-                'background-image:url(' + eventImageUrl + ')'
+              : project.is_challenge && event.logo_url ?
+                'background-image:url(' + event.logo_url + ')'
                 : ''
           "
           v-show="isChallenges || !project.is_challenge"
@@ -93,6 +119,8 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
+      <input type="checkbox" v-model="isHeadline" id="isHeadline">
+        <label for="isHeadline">Headline</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
         <label for="isPreviews">Previews</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
@@ -129,12 +157,13 @@ export default {
   },
   data() {
     return {
+      event: {},
       projects: null,
       profileUrl: null,
-      eventImageUrl: null,
       errorMessage: null,
       isButtons: true,
       isChallenges: false,
+      isHeadline: false,
       isHexagons: false,
       isPreviews: false,
       activePreview: -1,
@@ -146,6 +175,7 @@ export default {
     // Get request configuration
     const shareOptions = window.location.search || this.options;
     const urlParams = new URLSearchParams(shareOptions);
+    this.isHeadline = Boolean(urlParams.get("headline"));
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
@@ -224,7 +254,8 @@ export default {
 
         // Set a default image if available
         if (typeof data.event !== 'undefined') {
-          this.eventImageUrl = data.event.logo_url;
+          this.event = data.event;
+          console.log(this.event);
         }
       })
       .catch((error) => {
@@ -251,6 +282,7 @@ export default {
     },
     shareUrl: function () {
       return '?' +
+        (this.isHeadline ? '&headline=1' : '') +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isButtons ? '&buttons=1' : '') +
