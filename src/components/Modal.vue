@@ -92,8 +92,11 @@
 }
 
 .modal-header h3 {
-  margin-top: 0;
   color: #42b983;
+  font-size: 200%;
+  text-align: left;
+  max-width: 90%;
+  margin: 0px;
 }
 
 .modal-body {

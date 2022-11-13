@@ -3,12 +3,12 @@
 
     <div class="section-header" v-if="isHeadline">
       <div class="header-logo" v-if="event.logo_url">
-        <a :href="event.webpage_url">
+        <a :href="event.webpage" :title="event.name">
           <img id="event-logo" :src="event.logo_url">
         </a>
       </div>
-      <div class="header-content">
-        <a :href="event.webpage_url">
+      <div class="header-content" v-if="false">
+        <a :href="event.webpage">
           <h3 class="event-name">{{ event.name }}</h3>
         </a>
         <div class="event-hostname" v-if="event.hostname">
@@ -252,10 +252,11 @@ export default {
           document.title = data.projects[0].event_name;
         }
 
-        // Set a default image if available
+        // Set event data if available
         if (typeof data.event !== 'undefined') {
           this.event = data.event;
-          console.log(this.event);
+          this.event.webpage = this.event.webpage_url || this.event.community_url || data.homepage;
+          // console.log(this.event);
         }
       })
       .catch((error) => {
@@ -347,8 +348,10 @@ export default {
 
 .project-container {
   display: inline-block;
-  background-size: 100% auto;
+  background-size: auto 50%;
   background-repeat: no-repeat;
+  background-position: center 0px;
+  background-color: #999;
   padding: 0px;
 }
 .project-container > div {

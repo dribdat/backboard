@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     openComment: function (project) {
-      window.open(project.url + "/post");
+      window.open(project.url + "/comment");
     },
     contactTeam: function (project) {
       window.open(project.contact_url);

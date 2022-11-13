@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <VoteBox class="votebox" 
+    <VoteBox class="votebox"
       :href="voteUrl" v-show="voteUrl" />
-    <Challenges 
+    <Challenges
       :src="dribdatApi" :toolbar="showToolbar" :options="defaultOptions" />
     <tt><a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
       powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
