@@ -9,8 +9,9 @@
         <div slot="title"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
-             >{{ project.name }}</div>
+             ></div>
         <div class="content" slot="body">
+          <div class="name">{{ project.name }}</div>
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
         </div>
         <div class="footer" slot="footer"
@@ -107,6 +108,14 @@ export default {
 </script>
 
 <style scoped>
+
+.content > .name {
+  color: #42b983;
+  font-size: 2.5rem;
+  text-align: left;
+  max-width: 90%;
+  margin: 0px;
+}
 
 .preview {
   text-align: left;

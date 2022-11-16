@@ -73,7 +73,7 @@ button {
   border: 1px solid lightskyblue;
   box-shadow: 2px 2px 2px lightgray;
   margin: 0 2px 2px 0;
-  font-size: 13px;
+  font-size: 26px;
   font-weight: 500;
   border-radius: 4px;
   text-decoration: none;
