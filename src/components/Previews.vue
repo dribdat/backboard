@@ -15,10 +15,10 @@
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
-          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">&lt;--</button>
+          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
           <button @click="seeDetails(project)"><b>Details</b> ...</button>
           <button @click="openComment(project)">💬</button>
-          <button class="nav nav-next" @click="goNext(project)" title="Next">--&gt;</button>
+          <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
       </Modal>
     </div>

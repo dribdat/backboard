@@ -306,6 +306,15 @@ export default {
 </script>
 
 <style scoped>
+/* -- Headline -- */
+
+.header-logo img {
+  max-width: 100%;
+  max-height: 200px;
+}
+
+/* -- Main display -- */
+
 .challenges {
   padding: 20px 38px;
   box-sizing: border-box;

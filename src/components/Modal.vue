@@ -91,16 +91,9 @@
   font-family: Helvetica, Arial, sans-serif;
 }
 
-.modal-header h3 {
-  color: #42b983;
-  font-size: 200%;
-  text-align: left;
-  max-width: 90%;
-  margin: 0px;
-}
-
 .modal-body {
-  margin: 20px 0;
+  width: 100%;
+  margin: 10px 0;
   overflow-y: auto;
   overflow-x: hidden;
   border-bottom: 1px solid lightgray;
@@ -109,11 +102,9 @@
 .modal-close-button {
   float: right;
   text-align: center;
-  padding-left: 0px;
-  /*
-  padding-right: 12px;
-  width: 2em;*/
-  margin-bottom: 0.5em;
+  padding: 0px;
+  margin-top: -1em;
+  margin-right: -0.5em;
 }
 
 /*
