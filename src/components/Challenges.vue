@@ -56,6 +56,9 @@
               <span class="date">{{ project.date }}</span>
             </div>
 
+            <div class="num">
+              {{ project.num }}
+            </div>
             <div class="name">
               {{ project.name }}
             </div>
@@ -221,6 +224,10 @@ export default {
 
         //console.info("Projects data loaded");
         this.projects = [];
+        let pmax = 99999;
+        data.projects.forEach((p) => {
+          if (p.id < pmax) pmax = p.id;
+        });
         data.projects.forEach((p) => {
           // Assign a boolean for challenge status
           p.is_challenge = p.progress < 1;
@@ -232,6 +239,8 @@ export default {
           // Check format of team
           p.team = (typeof p.team === 'string') ?
             p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ") : p.team;
+          // Generate challenge number
+          p.num = p.id - pmax + 1;
         });
 
         // TODO: own configuration, issue with challenge order
@@ -241,9 +250,11 @@ export default {
         } else {*/
           // Sort by score
           this.projects.sort((a, b) => a.score < b.score);
+          // Sort by id
+          this.projects.sort((a, b) => a.id < b.id);
         //}
         // Sort out challenges
-        //this.projects.sort((a, b) => a.is_challenge || b.is_challenge);
+        this.projects.sort((a, b) => a.is_challenge || !b.is_challenge);
 
         // Try to set title from data package
         if (data.title) {

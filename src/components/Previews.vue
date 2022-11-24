@@ -9,7 +9,7 @@
         <div slot="title"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
-             >{{ project.name }}</div>
+             >{{ project.num }}. {{ project.name }}</div>
         <div class="content" slot="body">
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
         </div>
