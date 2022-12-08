@@ -31,7 +31,7 @@
         :xs="12"
         :md="4"
         :lg="3"
-        v-for="project in projects"
+        v-for="project in filterProjects"
         :key="project.id"
       >
         <div
@@ -44,7 +44,6 @@
                 'background-image:url(' + event.logo_url + ')'
                 : ''
           "
-          v-show="isChallenges || !project.is_challenge"
         >
           <div :class="project.image_url ? 'project has-thumb' : 'project'"
                @click="seePreview(project)"
@@ -96,14 +95,13 @@
 
     <div class="honeycomb" v-if="isHexagons">
       <a
-        v-for="project in projects"
+        v-for="project in filterProjects"
         :key="project.id"
         :href="project.url" target="_blank"
         :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
         :challenge="project.is_challenge"
-        v-show="project.is_challenge"
+        :style="'background-color:' + (project.logo_color || '#fff')"
       >
-      <!-- :style="(project.image_url ? 'background-image:url(' + project.image_url + ')' : '') + ';border-bottom-color:' + project.logo_color" -->
         <div class="hexagontent">
           <span>{{ project.name }}</span>
           <div class="hexaicon"
@@ -172,6 +170,15 @@ export default {
       activePreview: -1,
     };
   },
+  computed: {
+    filterProjects: function() {
+      if (this.projects === null) return [];
+      let showChallenges = this.isChallenges;
+      return this.projects.filter(function (p) {
+        return showChallenges || !p.is_challenge
+      })
+    }
+  },
   mounted() {
     // Check if projects can be loaded
     if (this.projects !== null) return;
@@ -238,19 +245,15 @@ export default {
           this.projects.push(p);
         });
 
-        // TODO: own configuration, issue with challenge order
-
-          // Sort by name
-          this.projects.sort((a, b) => a.name.localeCompare(b.name));
-
-          /*
-          // Sort by score
-          this.projects.sort((a, b) => a.score < b.score);
-          // Sort by id
-          this.projects.sort((a, b) => a.id < b.id);
-        // Sort out challenges
-        this.projects.sort((a, b) => a.is_challenge || !b.is_challenge);
-*/
+        // Sort by name
+        this.projects.sort((a, b) => a.name.localeCompare(b.name));
+        // TODO: configurable sort
+        /*
+        // Sort by score
+        this.projects.sort((a, b) => a.score < b.score);
+        // Sort by id
+        this.projects.sort((a, b) => a.id < b.id);
+        */
 
         this.projects.forEach((p, ix) => {
           // Generate challenge number
@@ -556,6 +559,18 @@ export default {
 .project .hexagontent .progress-bar {
   background-color: #aaa;
 }
+.project.hexagon {
+  border-top: 1px solid rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.project.hexagon::before {
+  border-top: 1px solid rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.project.hexagon::after {
+  border-top: 1px solid rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
 .honeycomb .project { opacity: 0.4; }
 
 .hexagon {
@@ -565,6 +580,7 @@ export default {
   margin: 1px 21px;
   background-color: white;
   text-align: center;
+  padding: 0px;
 }
 .hexagon, .hexagon::before, .hexagon::after {
   /* easy way: height is width * 1.732
