@@ -54,21 +54,18 @@
               /
               <span class="date">{{ project.date }}</span>
             </div>
-
-            <div class="num">
-              {{ project.num }}
-            </div>
             <div class="name">
               {{ project.name }}
             </div>
 
-            <div class="team-stats" v-show="!project.is_challenge"
-                  :title="project.team.join(', ')">
-              <div class="team-counter" v-show="project.team.length > 1">
+            <div class="team-stats" v-show="!project.is_challenge">
+              <div class="team-counter" v-show="project.team.length > 1"
+                   :title="project.team.join(', ')">
                 <span class="hex">👤</span>
                 <div class="count">{{ project.team.length }}</div>
               </div>
-              <div class="score-counter" v-show="project.score > 0">
+              <div class="score-counter" v-show="project.score > 0"
+                   :title="project.statistics">
                 <span class="hex">&#11042;</span>
                 <div class="count">{{ project.score }}</div>
               </div>
@@ -255,9 +252,16 @@ export default {
         this.projects.sort((a, b) => a.id < b.id);
         */
 
-        this.projects.forEach((p, ix) => {
-          // Generate challenge number
-          p.num = ix + 1;
+        this.projects.forEach((p) => {
+          // Prepare statistics summary
+          p.statistics = "";
+          if (p.stats) {
+            p.stats['words all'] = p.stats['allwords'];
+            delete p.stats['allwords'];
+            Object.keys(p.stats).forEach(function(k) {
+              p.statistics += k + ': ' + p.stats[k] + '\n';
+            })
+          }
         });
 
         // Try to set title from data package
