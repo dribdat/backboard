@@ -256,8 +256,10 @@ export default {
           // Prepare statistics summary
           p.statistics = "";
           if (p.stats) {
-            p.stats['words all'] = p.stats['allwords'];
-            delete p.stats['allwords'];
+            p.stats['words pitch'] = p.stats['wordslong'];
+            delete p.stats['wordslong'];
+            p.stats['words all'] = p.stats['wordcount'];
+            delete p.stats['wordcount'];
             Object.keys(p.stats).forEach(function(k) {
               p.statistics += k + ': ' + p.stats[k] + '\n';
             })
