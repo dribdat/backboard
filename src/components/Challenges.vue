@@ -61,7 +61,7 @@
               </div>
             </div>
 
-            <div class="team-stats" v-show="!project.is_challenge">
+            <div class="team-stats">
               <div class="team-counter"
                    :title="project.team.join(', ')">
                 <span class="hex">👤</span>
