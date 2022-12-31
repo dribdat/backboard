@@ -111,7 +111,7 @@ button.modal-close-button {
   background: transparent;
   border: none;
   box-shadow: none;
-  margin: 0; padding: 0;
+  padding: 0;
 }
 .modal-body img {
   max-width: 100%;

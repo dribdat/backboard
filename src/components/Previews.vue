@@ -9,7 +9,14 @@
         <div slot="title"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
-             >{{ project.name }}</div>
+             >
+            <div class="name">{{ project.name }}</div>
+            <div class="status">
+              <span class="phase">{{ project.phase }}</span>
+              /
+              <span class="date">{{ project.date }}</span>
+            </div>
+        </div>
         <div class="content" slot="body">
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
         </div>
@@ -119,6 +126,15 @@ button.nav-next {
 }
 button.nav-prev {
   float: left;
+}
+
+.status {
+  font-family: monospace;
+  font-weight: normal;
+}
+.name {
+  font-size: 125%;
+  margin-top: 0em;
 }
 
 </style>

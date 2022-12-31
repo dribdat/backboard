@@ -14,7 +14,7 @@
               <button class="modal-close-button" @click="$emit('close')">
                 &#10060;
               </button>
-              <h3><slot name="title"></slot></h3>
+              <slot name="title"></slot>
             </slot>
           </div>
 
@@ -103,7 +103,7 @@
   float: right;
   text-align: center;
   padding: 0px;
-  margin-top: -1em;
+  margin-top: -0.3em;
   margin-right: -0.5em;
 }
 

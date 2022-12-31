@@ -48,14 +48,17 @@
           <div :class="project.image_url ? 'project has-thumb' : 'project'"
                @click="seePreview(project)"
           >
-
-            <div class="status">
-              <b class="phase">{{ project.phase }}</b>
-              /
-              <span class="date">{{ project.date }}</span>
-            </div>
+            
             <div class="name">
               {{ project.name }}
+            </div>
+
+            <div class="progress"
+              :title="project.phase + ': ' + project.score + '%'"
+              v-if="project.score && project.score > 0">
+              <div class="progress-bar" role="progressbar"
+                :style="'width:' + project.score + '%'">
+              </div>
             </div>
 
             <div class="team-stats" v-show="!project.is_challenge">
@@ -64,10 +67,11 @@
                 <span class="hex">👤</span>
                 <div class="count">{{ project.team.length }}</div>
               </div>
-              <div class="score-counter" v-show="project.score > 0"
+              <div class="score-counter"
+                   v-show="project.statistics"
                    :title="project.statistics">
                 <span class="hex">&#11042;</span>
-                <div class="count">{{ project.score }}</div>
+                <div class="count">{{ project.stats.total }}</div>
               </div>
             </div>
 
@@ -263,7 +267,10 @@ export default {
             Object.keys(p.stats).forEach(function(k) {
               p.statistics += k + ': ' + p.stats[k] + '\n';
             })
+            p.stats['score'] = p.score;
           }
+          // Limit score to 100%
+          p.score = Math.min(p.score, 100);
         });
 
         // Try to set title from data package
@@ -371,6 +378,7 @@ export default {
   background-color: #555;
   background-size: contain;
   background-repeat: no-repeat;
+  border: 3px solid #eee;
 }
 .col[challenge].project-container .team-stats {
   display: none;
@@ -397,6 +405,8 @@ export default {
   background: rgba(255, 255, 255, 1);
   margin-top: 50%;
   border-top: 1px solid #eee;
+  border-radius: 4px;
+  margin-bottom: -1px;
 }
 .project.has-thumb {
   /* border-left: 1px solid #ddd; */
@@ -641,5 +651,14 @@ export default {
 .share-button a {
   text-decoration: none;
   margin-left: 0.3em;
+}
+
+.progress .progress-bar {
+  width: 100%;
+  display: block;
+  height: 5px;
+  background-color: #3399f3;
+  color: #fff;
+  min-width: 2em;
 }
 </style>
