@@ -1,12 +1,14 @@
-# backboard - dribdat microsite
+# backboard: dribdat SPA
 
-This is a one page application that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). 
+This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). Currently it only displays the project data for a specific event. More functionality is planned in the future, with the goal of having a modern frontend for dribdat.
 
 It has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results.
 
 You probably want to enable *Challenges* and *Previews* (opens modal dialog on click with navigation) in the options at the footer of the page. Use the handy *Share* link to get a URL with your config.
 
 Demo: https://backboard.vercel.app/
+
+Earlier version: https://github.com/dribdat/dribdat2_frontend
 
 ## Usage
 
