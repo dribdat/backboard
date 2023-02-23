@@ -1,12 +1,14 @@
-# backboard - dribdat microsite
+# backboard: dribdat SPA
 
-This is a one page application that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). 
+This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). Currently it only displays the project data for a specific event. More functionality is planned in the future, with the goal of having a modern frontend for dribdat.
 
 It has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results.
 
 You probably want to enable *Challenges* and *Previews* (opens modal dialog on click with navigation) in the options at the footer of the page. Use the handy *Share* link to get a URL with your config.
 
 Demo: https://backboard.vercel.app/
+
+Earlier version: https://github.com/dribdat/dribdat2_frontend
 
 ## Usage
 
@@ -16,7 +18,7 @@ You can use the following environment variables:
 
 - `VUE_APP_DRIBDAT_URL` - fully qualified link to your dribdat event, or online hosted Data Package; e.g. https://meta.dribdat.cc/event/5
 - `VUE_APP_DEFAULT_OPTS` (optional) - the default display settings - copy the part after ? from the Share link.
-- `VUE_APP_HIDE_TOOLBAR` (optional) - to hide the row of buttons in the footer.
+- `VUE_APP_HIDE_TOOLBAR` (optional) - makes the options toolbar in the footer unavailable.
 - `VUE_APP_VOTE_FORM_URL` (optional) - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
 - `BACKBOARD_ROOT` (optional) - if your deployment is not at the root, change it here (e.g. `/backboard`)
 
