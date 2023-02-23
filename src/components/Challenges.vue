@@ -80,8 +80,8 @@
             </div>
 
             <div class="team-join" v-if="isButtons">
-              <button @click="joinTeam(project)">👍 Join</button>
-              <button v-show="project.contact_url" @click="contactTeam(project)">👋 Contact</button>
+              <button @click="joinTeam(project)" title="Join">👍</button>
+              <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
 
           </div>

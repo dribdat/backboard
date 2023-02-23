@@ -11,14 +11,19 @@
              title="Swipe here or tap below to advance"
              >
             <div class="name">{{ project.name }}</div>
-            <div class="status">
-              <span class="phase">{{ project.phase }}</span>
-              /
-              <span class="date">{{ project.date }}</span>
+
+            <div v-show="project.summary" class="summary">
+              <p>{{ project.summary }}</p>
             </div>
         </div>
         <div class="content" slot="body">
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
+
+          <div class="status">
+            <span class="phase">{{ project.phase }}</span>
+            /
+            <span class="date">{{ project.date }}</span>
+          </div>
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
@@ -115,6 +120,10 @@ export default {
 
 <style scoped>
 
+.summary {
+  font-weight: bolder;
+}
+
 .preview {
   text-align: left;
   color: black;
@@ -124,6 +133,14 @@ export default {
   .preview {
     margin: 0px 20%;
   }
+}
+
+.modal-footer button {
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+.modal-footer:hover button {
+  opacity: 1;
 }
 
 button.nav-next {
