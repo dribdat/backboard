@@ -125,6 +125,10 @@
   padding: 0px;
   margin-top: -0.3em;
   margin-right: -0.5em;
+  opacity: 0.5;
+}
+.modal-close-button:hover {
+  opacity: 1;
 }
 
 /*
