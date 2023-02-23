@@ -4,8 +4,11 @@
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
       :src="dribdatApi" :toolbar="showToolbar" :options="defaultOptions" />
-    <tt><a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
-      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a></tt>
+    <tt>
+      <button v-if="allowToolbar" class="small" @click="toggleOptions">options</button>
+      <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
+      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a>
+    </tt>
   </div>
 </template>
 
@@ -39,8 +42,14 @@ export default {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
       voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
-      showToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
+      showToolbar: false,
+      allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
+    }
+  },
+  methods: {
+    toggleOptions() {
+      this.showToolbar = !this.showToolbar;
     }
   }
 };
@@ -70,7 +79,7 @@ a:active, a:hover {
 button {
   color: blue;
   background: white;
-  border: 1px solid lightskyblue;
+  border: 1px solid rgba(200,200,255,0.7);
   box-shadow: 2px 2px 2px lightgray;
   margin: 0 2px 2px 0;
   font-size: 26px;
@@ -96,6 +105,11 @@ button.big {
   height: 32px;
   padding: 0px 12px;
 }
+button.small { 
+  font-size: 90%;
+  padding: 6px;
+  margin: 0px 16px;
+}
 button.tiny {
   line-height: 1.6em;
   height: 30px;
@@ -112,8 +126,5 @@ button.modal-close-button {
   border: none;
   box-shadow: none;
   padding: 0;
-}
-.modal-body img {
-  max-width: 100%;
 }
 </style>

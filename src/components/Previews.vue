@@ -23,8 +23,8 @@
         <div class="footer" slot="footer"
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
-          <button @click="seeDetails(project)"><b>Details</b> ...</button>
-          <button @click="openComment(project)">💬</button>
+          <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
+          <button @click="openComment(project)" title="Comment">💬</button>
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
       </Modal>
@@ -120,6 +120,11 @@ export default {
   color: black;
   line-height: 140%;
 }
+@media (min-width: 768px) {
+  .preview {
+    margin: 0px 20%;
+  }
+}
 
 button.nav-next {
   float: right;
@@ -133,8 +138,13 @@ button.nav-prev {
   font-weight: normal;
 }
 .name {
-  font-size: 125%;
   margin-top: 0em;
+  color: #0089c7;
+  font-weight: bold;
+  font-size: 150%;
+  display: block;
+  margin-bottom: 0.5em;
+  text-decoration: none;
 }
 
 </style>

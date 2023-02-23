@@ -70,7 +70,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.9);
   display: table;
   transition: opacity 0.3s ease;
 }
@@ -89,6 +89,13 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .modal-container {
+    height: 90%;
+  }
 }
 
 .modal-body {
@@ -96,7 +103,19 @@
   margin: 10px 0;
   overflow-y: auto;
   overflow-x: hidden;
-  border-bottom: 1px solid lightgray;
+}
+
+.modal-body img {
+  max-width: 100%;
+}
+
+.modal-footer {
+  bottom: 5%;
+  position: absolute;
+  max-width: 100%;
+  width: 360px;
+  left: 50%;
+  margin-left: -180px;
 }
 
 .modal-close-button {

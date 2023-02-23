@@ -71,7 +71,7 @@
                    v-show="project.statistics"
                    :title="project.statistics">
                 <span class="hex">&#11042;</span>
-                <div class="count">{{ project.stats.total }}</div>
+                <div class="count" v-if="project.stats">{{ project.stats.total }}</div>
               </div>
             </div>
 
@@ -338,10 +338,17 @@ export default {
   color: #263238;
 }
 .options {
-  margin: 1em;
   font-size: 90%;
-  opacity: 0.2;
   cursor: pointer;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  padding: 1em;
+  top: 0px;
+  left: 0px;
+  margin: 0px;
+  background: white;
+  box-shadow: 0em 0em 1em black;
 }
 .options:hover {
   opacity: 1;
