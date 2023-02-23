@@ -118,6 +118,8 @@
       </a>
     </div>
 
+    <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
+
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
@@ -667,5 +669,19 @@ export default {
   background-color: #3399f3;
   color: #fff;
   min-width: 2em;
+}
+
+.loading {
+  display: inline-block;
+  width: 1em; height: 1em;
+  font-size: 300%;
+  margin: 1em;
+  animation: rotate 3s  infinite;
+  animation-timing-function: cubic-bezier(0,0,0,0);
+}
+
+@-webkit-keyframes rotate {
+    from { -webkit-transform: rotate(-180deg) } 
+    to { -webkit-transform: rotate(180deg) } 
 }
 </style>
