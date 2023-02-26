@@ -248,15 +248,16 @@ export default {
           this.projects.push(p);
         });
 
+        /*
+        // TODO: configurable sort
+        
         // Sort by name
         this.projects.sort((a, b) => a.name.localeCompare(b.name));
-        // TODO: configurable sort
-        /*
-        // Sort by score
-        this.projects.sort((a, b) => a.score < b.score);
         // Sort by id
         this.projects.sort((a, b) => a.id < b.id);
         */
+        // Sort by score
+        this.projects.sort((a, b) => a.score < b.score);
 
         this.projects.forEach((p) => {
           // Prepare statistics summary
