@@ -139,6 +139,10 @@ export default {
   }
 }
 
+.preview img, .preview iframe {
+  max-width: 100%;
+}
+
 .modal-footer button {
   opacity: 0.3;
   transition: all 0.3s ease;
