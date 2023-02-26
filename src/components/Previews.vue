@@ -29,7 +29,8 @@
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
           <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
-          <button @click="openComment(project)" title="Comment">💬</button>
+          <button v-if="project.is_webembed" @click="seeEmbed(project)" title="Embedded">👁️👃🏻👁️</button>
+          <button @click="openComment(project)" title="Comment">💬</button>  
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
       </Modal>
@@ -72,6 +73,9 @@ export default {
     },
     seeDetails: function (project) {
       window.open(project.url);
+    },
+    seeEmbed: function (project) {
+      window.open(project.webpage_url);
     },
     selectNone: function () {
       this.active = -1;
