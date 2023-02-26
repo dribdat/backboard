@@ -15,6 +15,10 @@
             <div v-show="project.summary" class="summary">
               <p>{{ project.summary }}</p>
             </div>
+
+            <div class="imagepreview"
+              v-if="project.image_url"
+              :style="'background-image:url(' + project.image_url + ')'"></div>
         </div>
         <div class="content" slot="body">
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
@@ -128,6 +132,15 @@ export default {
   font-weight: bolder;
 }
 
+.imagepreview {
+  width: 100%;
+  height: 100px;
+  background-repeat: no-repeat;
+  background-color: #666;
+  background-size: contain;
+  background-position: 50% 50%;
+}
+
 .preview {
   text-align: left;
   color: black;
@@ -139,8 +152,9 @@ export default {
   }
 }
 
-.preview img, .preview iframe {
-  max-width: 100%;
+.content img,
+.preview img {
+  max-width: 100% !important;
 }
 
 .modal-footer button {

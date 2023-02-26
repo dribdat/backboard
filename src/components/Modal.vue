@@ -106,6 +106,7 @@
   overflow-x: hidden;
 }
 
+.preview img,
 .modal-body img {
   max-width: 100%;
 }

@@ -76,6 +76,16 @@ tt { color: black; }
 a:active, a:hover {
   outline-width: 0;
 }
+
+
+.content img,
+.preview img {
+  max-width: 100% !important;
+}
+.preview > p:first-child {
+  margin: 0;
+}
+
 button {
   color: blue;
   background: white;
