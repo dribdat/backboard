@@ -112,13 +112,16 @@
 }
 
 .modal-footer {
-  bottom: 5%;
-  position: absolute;
+  bottom: 0%;
+  position: fixed;
+  right: 0px;
+}
+  /*
   max-width: 100%;
   width: 360px;
   left: 50%;
   margin-left: -180px;
-}
+  */
 
 .modal-close-button {
   float: right;
@@ -126,10 +129,6 @@
   padding: 0px;
   margin-top: -0.3em;
   margin-right: -0.5em;
-  opacity: 0.5;
-}
-.modal-close-button:hover {
-  opacity: 1;
 }
 
 /*

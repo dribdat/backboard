@@ -55,7 +55,7 @@
 
             <div class="progress"
               :title="project.phase + ': ' + project.score + '%'"
-              v-if="project.score && project.score > 0">
+              v-if="!project.is_challenge && project.score && project.score > 0">
               <div class="progress-bar" role="progressbar"
                 :style="'width:' + project.score + '%'">
               </div>
@@ -91,17 +91,18 @@
 
     <Previews v-if="isPreviews" v-model="activePreview"
             :withChallenges="isChallenges"
+            :withComments="isComments"
             :projects="projects"
             ></Previews>
 
     <div class="honeycomb" v-if="isHexagons">
-      <a
+      <div
         v-for="project in filterProjects"
         :key="project.id"
-        :href="project.url" target="_blank"
         :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
         :challenge="project.is_challenge"
         :style="'background-color:' + (project.logo_color || '#fff')"
+        @click="seePreview(project)"
       >
         <div class="hexagontent">
           <span>{{ project.name }}</span>
@@ -109,13 +110,13 @@
               v-if="project.image_url"
               :style="'background-image:url(' + project.image_url + ')'"></div>
               <div class="progress"
-                v-if="project.score && project.score > 0">
+                v-if="!project.is_challenge && project.score && project.score > 0">
                 <div class="progress-bar" role="progressbar"
                   :style="'width:' + project.score + '%'">
                 </div>
               </div>
           </div>
-      </a>
+      </div>
     </div>
 
     <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
@@ -123,12 +124,17 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
+      <button class="modal-close-button" @click="$emit('close')">
+        &#10060;
+      </button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
         <label for="isHeadline">Headline</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
         <label for="isPreviews">Previews</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
         <label for="isButtons">Buttons</label>
+      <input type="checkbox" v-model="isComments" id="isComments">
+        <label for="isComments">Comments</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
         <label for="isChallenges">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
@@ -166,6 +172,7 @@ export default {
       profileUrl: null,
       errorMessage: null,
       isButtons: true,
+      isComments: false,
       isChallenges: false,
       isHeadline: false,
       isHexagons: false,
@@ -192,6 +199,7 @@ export default {
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
+    this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
     // Continue with loading event
     console.info("Loading", this.src);
@@ -318,6 +326,7 @@ export default {
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isButtons ? '&buttons=1' : '') +
+        (this.isComments ? '&comments=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
       '';
     }
@@ -352,6 +361,7 @@ export default {
   margin: 0px;
   background: white;
   box-shadow: 0em 0em 1em black;
+  z-index: 999;
 }
 .options:hover {
   opacity: 1;
@@ -359,6 +369,13 @@ export default {
 .options label {
   margin-right: 1em;
 }
+
+.modal-close-button {
+  top: 0.3em;
+  right: 1.3em;
+  position: absolute;
+}
+
 .col {
   width: 100%;
   padding: 15px 8px;
@@ -539,6 +556,7 @@ export default {
   color: #35a;
   font-weight: normal;
   padding: 4px 0px;
+  font-size: 90%;
 }
 .challenge.hexagon {
   background-color: white;

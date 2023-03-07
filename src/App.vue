@@ -3,6 +3,7 @@
     <VoteBox class="votebox"
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
+      @close="toggleOptions()"
       :src="dribdatApi" :toolbar="showToolbar" :options="defaultOptions" />
     <tt>
       <button v-if="allowToolbar" class="small" @click="toggleOptions">options</button>
@@ -131,10 +132,15 @@ button.tiny {
 button.tiny:hover {
   width: auto;
 }
+
 button.modal-close-button {
   background: transparent;
   border: none;
   box-shadow: none;
-  padding: 0;
+  padding: 0px;
+  opacity: 0.5;
+}
+button.modal-close-button:hover {
+  opacity: 1;
 }
 </style>
