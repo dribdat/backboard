@@ -102,6 +102,7 @@
         :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
         :challenge="project.is_challenge"
         :style="'background-color:' + (project.logo_color || '#fff')"
+        :title="project.summary"
         @click="seePreview(project)"
       >
         <div class="hexagontent">
@@ -263,9 +264,12 @@ export default {
         this.projects.sort((a, b) => a.name.localeCompare(b.name));
         // Sort by id
         this.projects.sort((a, b) => a.id < b.id);
-        */
         // Sort by score
         this.projects.sort((a, b) => a.score < b.score);
+        */
+
+        // Sort by score then name
+        this.projects.sort((a, b) => a.score <= b.score && a.name.localeCompare(b.name));
 
         this.projects.forEach((p) => {
           // Prepare statistics summary
@@ -552,6 +556,17 @@ export default {
   }
 }
 
+@media (min-width: 452px) and (max-width: 595px) {
+  .honeycomb {
+    width:360px;
+  }
+}
+@media (min-width: 707px) and (max-width: 847px) {
+  .honeycomb {
+    width:600px;
+  }
+}
+
 .challenge.hexagon .hexagontent {
   color: #35a;
   font-weight: normal;
@@ -570,9 +585,6 @@ export default {
 .challenge.hexagon::after {
   border-top: 1px dashed rgba(0,0,200,0.4);
   border-bottom: 1px dashed rgba(0,0,200,0.4);
-}
-.challenge.hexagon:hover {
-  box-shadow: none;
 }
 
 .project .hexagontent {
@@ -615,13 +627,12 @@ export default {
   border-top: 1px solid rgba(0,0,0,0.2);
   border-bottom: 1px solid rgba(0,0,0,0.2);
 }
-.honeycomb .project { opacity: 0.4; }
 
 .hexagon {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: 1px 21px;
+  margin: -2px 22px;
   background-color: white;
   text-align: center;
   padding: 0px;
@@ -653,7 +664,8 @@ export default {
   top: 73px;
 }
 .hexagon:hover {
-  background-color: hsla(60, 75%, 75%, 1.0);
+  background-color: hsla(60, 75%, 75%, 1.0) !important;
+  box-shadow: 5px 5px 25px rgba(0,0,0,0.2);
   cursor: pointer;
   z-index: 105;
 }
