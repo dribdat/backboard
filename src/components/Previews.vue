@@ -33,7 +33,7 @@
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
           <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
-          <button v-if="project.is_webembed" @click="seeEmbed(project)" title="Embedded">👁️👃🏻👁️</button>
+          <button v-if="project.is_webembed" @click="seeEmbed(project)" title="Embedded">👁️</button>
           <button @click="openComment(project)" title="Comment">💬</button>  
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
