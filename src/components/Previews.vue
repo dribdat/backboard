@@ -23,11 +23,12 @@
         <div class="content" slot="body">
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
 
-          <div class="status">
+          <a class="status" @click="seeDetails(project)" href="#">
+            📖 
             <span class="phase">{{ project.phase }}</span>
             /
             <span class="date">{{ project.date }}</span>
-          </div>
+          </a>
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
@@ -129,6 +130,15 @@ export default {
 
 <style scoped>
 
+.name {
+  margin-top: 0em;
+  color: black;
+  font-weight: bold;
+  font-size: 200%;
+  display: block;
+  margin-bottom: 0.5em;
+  text-decoration: none;
+}
 .summary {
   font-weight: bolder;
 }
@@ -176,15 +186,12 @@ button.nav-prev {
 .status {
   font-family: monospace;
   font-weight: normal;
-}
-.name {
-  margin-top: 0em;
-  color: #0089c7;
-  font-weight: bold;
   font-size: 150%;
-  display: block;
-  margin-bottom: 0.5em;
   text-decoration: none;
+  color: blue;
+}
+.status:hover {
+  text-decoration: underline;
 }
 
 </style>
