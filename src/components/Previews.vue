@@ -9,6 +9,7 @@
         <div slot="title"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
+            :style="project.logo_color ? ('border-bottom: 3px solid ' + project.logo_color) : ''"
              >
 
             <div class="imagepreview"

@@ -5,7 +5,7 @@
         :key="project.id"
         :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
         :challenge="project.is_challenge"
-        :style="'background-color:' + (project.logo_color || '#fff')"
+        :style="project.logo_color ? ('border-width: 3px; border-color:' + project.logo_color) : ''"
         :title="project.summary"
         @click="$emit('preview', project)"
       >
