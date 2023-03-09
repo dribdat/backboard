@@ -10,17 +10,28 @@
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
              >
+
+            <div class="imagepreview"
+                v-if="project.image_url"
+                :style="'background-image:url(' + project.image_url + ')'"></div>
+
             <div class="name">{{ project.name }}</div>
 
             <div v-show="project.summary" class="summary">
               <p>{{ project.summary }}</p>
             </div>
 
-            <div class="imagepreview"
-              v-if="project.image_url"
-              :style="'background-image:url(' + project.image_url + ')'"></div>
         </div>
         <div class="content" slot="body">
+  
+          <!-- WIP
+            <div class="project-webembed">
+              <div class="frame-container">
+                <iframe :src="project.webpage"></iframe>
+              </div>
+            </div>
+          -->
+
           <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
 
           <a class="status" @click="seeDetails(project)" href="#">
@@ -29,12 +40,14 @@
             /
             <span class="date">{{ project.date }}</span>
           </a>
+
+          <a v-if="project.webpage_url" @click="seeEmbed(project)" title="Project details">🔍 View</a>
+
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
           <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
-          <button v-if="project.is_webembed" @click="seeEmbed(project)" title="Embedded">👁️</button>
           <button v-if="withComments" @click="openComment(project)" title="Comment">💬</button>  
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
@@ -145,9 +158,11 @@ export default {
 
 .imagepreview {
   width: 100%;
-  height: 100px;
+  height: 120px;
+  margin-top: -18px;
+  margin-bottom: 27px;
   background-repeat: no-repeat;
-  background-color: #666;
+  background-color: transparent;
   background-size: contain;
   background-position: 50% 50%;
 }
@@ -193,5 +208,40 @@ button.nav-prev {
 .status:hover {
   text-decoration: underline;
 }
+
+.frame-container iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+}
+
+.frame-container {
+  width: 100%;
+  height: 600px;
+  box-shadow: 5px 5px 10px #535353;
+  margin-bottom: 1em;
+  border: 1px silver;
+  border-radius: 4px;
+  overflow: hidden;
+  position: sticky;
+}
+
+/*
+.modal-container:before {
+  position: absolute;
+  content: '';
+}
+.modal-container:before {
+  top: 4px; 
+  left: 4px;
+  height: calc(100% - 8px); 
+  width: calc(100% - 8px); 
+  background: #6c6;
+}
+.modal-container, .modal-container:before, .modal-container:after {
+  -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+*/
 
 </style>

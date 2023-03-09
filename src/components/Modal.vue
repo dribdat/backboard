@@ -127,7 +127,6 @@
   float: right;
   text-align: center;
   padding: 0px;
-  margin-top: -0.3em;
   margin-right: -0.5em;
 }
 
