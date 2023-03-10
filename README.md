@@ -14,7 +14,7 @@ Earlier version: https://github.com/dribdat/dribdat2_frontend
 
 Deploy this application with any service that supports Node.js 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%dribdat%2Fbackboard
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%dribdat%2Fbackboard)
 
 ## Usage
 
