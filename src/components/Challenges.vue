@@ -148,7 +148,7 @@ export default {
       let showChallenges = this.isChallenges;
       return this.projects.filter(function (p) {
         return showChallenges || !p.is_challenge
-      })
+      });
     }
   },
   mounted() {
@@ -229,8 +229,12 @@ export default {
         this.projects.sort((a, b) => a.score < b.score);
         */
 
-        // Sort by score then name
-        this.projects.sort((a, b) => a.score <= b.score && a.name.localeCompare(b.name));
+        // Sort by score then id (challenge) or name (project)
+        this.projects.sort((a, b) =>
+          a.is_challenge ? 
+              a.id < b.id :
+              a.score <= b.score && a.name.localeCompare(b.name)
+        );
 
         this.projects.forEach((p) => {
           // Prepare statistics summary

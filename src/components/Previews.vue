@@ -11,6 +11,7 @@
              title="Swipe here or tap below to advance"
             :style="project.logo_color ? ('border-bottom: 3px solid ' + project.logo_color) : ''"
              >
+            <div class="hashtag">{{ project.hashtag }}</div>
 
             <div class="imagepreview"
                 v-if="project.image_url"
@@ -169,6 +170,17 @@ export default {
 }
 .summary {
   font-weight: bolder;
+}
+.hashtag {
+  float: left;
+  font-weight: bold;
+  font-size: 120%;
+  color: red;
+  text-shadow: 1px 1px 1px white;
+  font-family: monospace;
+  line-height: 0em;
+  margin: 0.8em 0 0; 
+  padding: 0px;
 }
 
 .imagepreview {
