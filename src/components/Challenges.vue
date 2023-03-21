@@ -73,7 +73,7 @@
             :projects="projects"
             ></Previews>
 
-    <Honeycomb v-if="isHexagons"
+    <Honeycomb v-if="isHexagons && projects != null"
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 

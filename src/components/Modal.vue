@@ -97,6 +97,9 @@
   .modal-container {
     height: 90%;
   }
+  .modal-close-button {
+    margin-top: 0.5em !important;
+  }
 }
 
 .modal-body {
@@ -128,6 +131,7 @@
   text-align: center;
   padding: 0px;
   margin-right: -0.5em;
+  margin-top: 1em;
 }
 
 /*

@@ -42,14 +42,17 @@
             <span class="phase">{{ project.phase }}</span>
             /
             <span class="date">{{ project.date }}</span>
-
-            <button title="Open project page" 
-                   @click="seeDetails(project)"
-                   :href="project.url">📖 Open</button>
-
-            <button v-if="project.webpage_url"
-                    title="Open project slides or demo link" 
-                   @click="seeEmbed(project)">🔍 Demo</button>
+            <span class="nowrap">
+              <button title="Open project page" 
+                     @click="seeDetails(project)"
+                     :href="project.url">
+                     📖 Open
+              </button><button v-if="project.webpage_url"
+                      title="Open project slides or demo link" 
+                     @click="seeEmbed(project)">
+                     🔍 Demo
+              </button>
+            </span>
           </div>
 
         </div>
@@ -196,7 +199,7 @@ export default {
 }
 
 .modal-footer button {
-  opacity: 0.7;
+  opacity: 0.9;
   transition: all 0.3s ease;
 }
 .modal-footer:hover button {
@@ -210,6 +213,10 @@ button.nav-prev {
   float: left;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
 .status button {
   margin: 0 0 0 0.5em;
   font-size: 80%;
@@ -218,7 +225,22 @@ button.nav-prev {
 .status {
   font-family: monospace;
   font-weight: normal;
-  font-size: 150%;
+  font-size: 125%;
+  margin-top: 1em;
+  padding: 5px 7px;
+  background: white;
+}
+@media (min-width: 768px) {
+  .status {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    margin-left: -13em;
+    border: 1px solid #ddd;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: none;
+  }
 }
 
 .frame-container iframe {
