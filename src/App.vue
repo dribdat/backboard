@@ -133,6 +133,9 @@ button.tiny:hover {
   width: auto;
 }
 
+.options .modal-close-button {
+  margin-top: -18px;
+}
 button.modal-close-button {
   background: transparent;
   border: none;

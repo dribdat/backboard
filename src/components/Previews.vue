@@ -33,16 +33,24 @@
             </div>
           -->
 
-          <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
+          <markdown class="preview" 
+                   :source="project.longtext || project.excerpt" 
+                   :postrender="tweakPreview"
+                   :html="true" />
 
-          <a class="status" @click="seeDetails(project)" href="#">
-            📖 
+          <div class="status">
             <span class="phase">{{ project.phase }}</span>
             /
             <span class="date">{{ project.date }}</span>
-          </a>
 
-          <a v-if="project.webpage_url" @click="seeEmbed(project)" title="Project details">🔍 View</a>
+            <button title="Open project page" 
+                   @click="seeDetails(project)"
+                   :href="project.url">📖 Open</button>
+
+            <button v-if="project.webpage_url"
+                    title="Open project slides or demo link" 
+                   @click="seeEmbed(project)">🔍 Demo</button>
+          </div>
 
         </div>
         <div class="footer" slot="footer"
@@ -137,6 +145,9 @@ export default {
       } else if (posXStart - posXEnd > SWIPE_LENGTH) {
         this.goNext(); // swipe left
       }
+    },
+    tweakPreview (content) {
+      return content.replace(/href="/g,'target="_blank" href="');
     }
   }
 };
@@ -199,15 +210,15 @@ button.nav-prev {
   float: left;
 }
 
+.status button {
+  margin: 0 0 0 0.5em;
+  font-size: 80%;
+}
+
 .status {
   font-family: monospace;
   font-weight: normal;
   font-size: 150%;
-  text-decoration: none;
-  color: blue;
-}
-.status:hover {
-  text-decoration: underline;
 }
 
 .frame-container iframe {
