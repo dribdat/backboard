@@ -37,7 +37,7 @@
               <button title="Open project page" 
                      @click="seeDetails(project)"
                      :href="project.url">
-                     📖
+                     📖 
               </button>
               <button v-if="project.webpage_url"
                       title="Open project slides or demo link" 
@@ -54,7 +54,7 @@
         <div class="footer" slot="footer"
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
-          <!--<button @click="seeDetails(project)" title="Details ...">ℹ️</button>-->
+          <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
           <button v-if="withComments" @click="openComment(project)" title="Comment">💬</button>  
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
