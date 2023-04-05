@@ -158,8 +158,12 @@ export default {
   text-shadow: 1px 1px 1px white;
   font-family: monospace;
   line-height: 0em;
-  margin: 0.8em 0 0; 
+  margin: 1.6em 0 0; 
   padding: 0px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
 }
 .hexagon .hexaicon {
   width: 2em;

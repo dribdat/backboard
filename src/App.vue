@@ -76,15 +76,27 @@ tt { color: black; }
 }
 a:active, a:hover {
   outline-width: 0;
+  color: #91170a;
+  text-decoration: underline;
 }
-
-
+a {
+  color: #d9230f;
+  text-decoration: none;
+  background-color: transparent;
+}
 .content img,
 .preview img {
   max-width: 100% !important;
 }
 .preview > p:first-child {
   margin: 0;
+}
+.preview > p {
+  margin-bottom: 1em;
+}
+
+.modal-container:active, .modal-container:hover {
+  outline-width: 0;
 }
 
 button {
