@@ -10,6 +10,12 @@ Demo: https://backboard.vercel.app/
 
 Earlier version: https://github.com/dribdat/dribdat2_frontend
 
+## Installation
+
+Deploy this application with any service that supports Node.js 
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fdribdat%2Fbackboard)
+
 ## Usage
 
 Put a `datapackage.json` file that you exported from dribdat into the **public** folder - or just configure with a link to your dribdat event.
@@ -29,12 +35,7 @@ To run locally, install Node.js and Yarn, then to start a development server:
 ```
 yarn serve
 ```
-
-## Production
-
-Deploy this application with any service that supports Vue.js.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fhello-world)
+)
 
 ## Credits
 

@@ -22,27 +22,33 @@
               <p>{{ project.summary }}</p>
             </div>
 
+            <div class="hashtag">{{ project.hashtag }}</div>
+
         </div>
         <div class="content" slot="body">
-  
-          <!-- WIP
-            <div class="project-webembed">
-              <div class="frame-container">
-                <iframe :src="project.webpage"></iframe>
-              </div>
-            </div>
-          -->
 
-          <markdown class="preview" :source="project.longtext || project.excerpt" :html="true" />
+          <markdown class="preview" 
+                   :source="project.longtext || project.excerpt" 
+                   :postrender="tweakPreview"
+                   :html="true" />
 
-          <a class="status" @click="seeDetails(project)" href="#">
-            📖 
+          <div class="status">
+            <span class="nowrap">
+              <button title="Open project page" 
+                     @click="seeDetails(project)"
+                     :href="project.url">
+                     📖 
+              </button>
+              <button v-if="project.webpage_url"
+                      title="Open project slides or demo link" 
+                     @click="seeEmbed(project)">
+                     🔍 Demo
+              </button>
+            </span>
             <span class="phase">{{ project.phase }}</span>
             /
             <span class="date">{{ project.date }}</span>
-          </a>
-
-          <a v-if="project.webpage_url" @click="seeEmbed(project)" title="Project details">🔍 View</a>
+          </div>
 
         </div>
         <div class="footer" slot="footer"
@@ -95,7 +101,11 @@ export default {
       window.open(project.url);
     },
     seeEmbed: function (project) {
-      window.open(project.webpage_url);
+      if (project.webpage_url.lastIndexOf('.pdf') == project.webpage_url.length - 4) {
+        window.open(project.url + '/render');
+      } else {
+        window.open(project.webpage_url);
+      }
     },
     selectNone: function () {
       this.active = -1;
@@ -137,6 +147,9 @@ export default {
       } else if (posXStart - posXEnd > SWIPE_LENGTH) {
         this.goNext(); // swipe left
       }
+    },
+    tweakPreview (content) {
+      return content.replace(/href="/g,'target="_blank" href="');
     }
   }
 };
@@ -144,17 +157,35 @@ export default {
 
 <style scoped>
 
+div, p {
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
 .name {
   margin-top: 0em;
   color: black;
   font-weight: bold;
-  font-size: 200%;
+  font-size: 2.5rem;
+  line-height: 1.2;
   display: block;
   margin-bottom: 0.5em;
   text-decoration: none;
+  text-align: left;
 }
 .summary {
   font-weight: bolder;
+  text-align: left;
+}
+.hashtag {
+  font-weight: bold;
+  font-size: 120%;
+  color: red;
+  text-align: left;
+  text-shadow: 1px 1px 1px white;
+  font-family: monospace;
+  line-height: 0em;
+  margin: 0.8em 0 2em 0; 
+  padding: 0px;
 }
 
 .imagepreview {
@@ -172,26 +203,16 @@ export default {
   text-align: left;
   color: black;
   line-height: 140%;
-}
-@media (min-width: 768px) {
-  .preview {
-    margin: 0px 20%;
-  }
-}
-
-.content img,
-.preview img {
-  max-width: 100% !important;
+  margin-bottom: 2em;
 }
 
 .modal-footer button {
-  opacity: 0.7;
+  opacity: 0.9;
   transition: all 0.3s ease;
 }
 .modal-footer:hover button {
   opacity: 1;
 }
-
 button.nav-next {
   float: right;
 }
@@ -199,15 +220,22 @@ button.nav-prev {
   float: left;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
+.status button {
+  margin: 0 0.8em 0 0;
+  font-size: 80%;
+}
 .status {
   font-family: monospace;
   font-weight: normal;
-  font-size: 150%;
-  text-decoration: none;
-  color: blue;
-}
-.status:hover {
-  text-decoration: underline;
+  font-size: 125%;
+  margin-top: 1em;
+  margin-bottom: 3em;
+  padding: 5px 7px;
+  background: white;
 }
 
 .frame-container iframe {
@@ -215,7 +243,6 @@ button.nav-prev {
   height: 100% !important;
   border: none !important;
 }
-
 .frame-container {
   width: 100%;
   height: 600px;
@@ -227,22 +254,24 @@ button.nav-prev {
   position: sticky;
 }
 
-/*
-.modal-container:before {
-  position: absolute;
-  content: '';
+
+@media (min-width: 768px) {
+  .preview {
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+  .status {
+    position: fixed;
+    bottom: 0px;
+    left: 50%;
+    margin-left: -13em;
+    margin-bottom: 0em;
+    border: 1px solid #ddd;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: none;
+  }
 }
-.modal-container:before {
-  top: 4px; 
-  left: 4px;
-  height: calc(100% - 8px); 
-  width: calc(100% - 8px); 
-  background: #6c6;
-}
-.modal-container, .modal-container:before, .modal-container:after {
-  -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-}
-*/
 
 </style>

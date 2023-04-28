@@ -11,6 +11,7 @@
       >
         <div class="hexagontent">
           <span>{{ project.name }}</span>
+          <div v-if="project.hashtag" class="hashtag">{{ project.hashtag }}</div>
           <div class="hexaicon"
               v-if="project.image_url"
               :style="'background-image:url(' + project.image_url + ')'"></div>
@@ -28,7 +29,7 @@
 export default {
   name: "Honeycomb",
   props: {
-    projects: Object
+    projects: Array
   }
 }
 </script>
@@ -70,12 +71,6 @@ export default {
   }
 }
 
-.challenge.hexagon .hexagontent {
-  color: #35a;
-  font-weight: normal;
-  padding: 4px 0px;
-  font-size: 90%;
-}
 .challenge.hexagon {
   background-color: white;
   border-top: 1px dashed rgba(0,0,200,0.4);
@@ -90,10 +85,9 @@ export default {
   border-bottom: 1px dashed rgba(0,0,200,0.4);
 }
 
-.project .hexagontent {
+.project.hexagon  .hexagontent {
   overflow: hidden;
   color: black;
-  line-height: 1.5;
 }
 .project .hexagontent.with-icon div {
   font-size: 90%;
@@ -131,11 +125,63 @@ export default {
   border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 
+/* --- Hexagon default palette --- */
+.project.hexagon  { background-color: #f5d1e4; } /* primary color */
+.hexagon.stage-5  { background-color: #f5d1e4; }
+.hexagon.stage-10 { background-color: #e3d0e3; }
+.hexagon.stage-20 { background-color: #e0c9ca; }
+.hexagon.stage-30 { background-color: #e8b6a6; }
+.hexagon.stage-40 { background-color: #f1cfad; }
+.hexagon.stage-50 { background-color: #f6e8c0; }
+/* https://colorkit.co/palette/f5d1e4-e3d0e3-e0c9ca-e8b6a6-f1cfad-f6e8c0/ */
+
+@font-face{
+  font-family: M3Regular;
+  src: url(../assets/m3regular-webfont.woff2) format("woff2"),
+       url(../assets/m3regular-webfont.woff) format("woff");
+  font-weight: 400; font-style: normal;
+}
+
+.hexagon .hexagontent {
+  color: #139;
+  font-weight: normal;
+  padding: 4px 0px;
+  max-height: 120px;
+  font-size: 12pt;
+  line-height: 13pt;
+  font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;
+}
+.hexagontent .hashtag {
+  font-weight: bold;
+  font-size: 120%;
+  color: red;
+  text-shadow: 1px 1px 1px white;
+  font-family: monospace;
+  line-height: 0em;
+  margin: 1.6em 0 0; 
+  padding: 0px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
+}
+.hexagon .hexaicon {
+  width: 2em;
+  height: 2em;
+  background-color: white;
+  background-size: cover;
+  position: relative;
+  left: 50%;
+  margin: 1em 0 0 -1em;
+  box-shadow: -2px -2px 1px rgb(0 0 0 / 20%);
+  border-radius: 1em;
+}
+
 .hexagon {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: -2px 22px;
+  margin: -1px 22px;
   background-color: white;
   text-align: center;
   padding: 0px;

@@ -73,7 +73,7 @@
             :projects="projects"
             ></Previews>
 
-    <Honeycomb v-if="isHexagons"
+    <Honeycomb v-if="isHexagons && projects != null"
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
@@ -148,7 +148,7 @@ export default {
       let showChallenges = this.isChallenges;
       return this.projects.filter(function (p) {
         return showChallenges || !p.is_challenge
-      })
+      });
     }
   },
   mounted() {
@@ -212,6 +212,9 @@ export default {
           p.date = moment(p.updated_at).format('MMM Do, YYYY');
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
+          if (!p.image_url && data.event.logo_url) {
+            p.image_url = data.event.logo_url;
+          }
           // Check format of team
           p.team = (typeof p.team === 'string') ?
             p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ") : p.team;
@@ -229,17 +232,21 @@ export default {
         this.projects.sort((a, b) => a.score < b.score);
         */
 
-        // Sort by score then name
-        this.projects.sort((a, b) => a.score <= b.score && a.name.localeCompare(b.name));
+        // Sort by score then id (challenge) or name (project)
+        this.projects.sort((a, b) =>
+          a.is_challenge ? 
+              a.id < b.id :
+              a.score <= b.score && a.name.localeCompare(b.name)
+        );
 
         this.projects.forEach((p) => {
           // Prepare statistics summary
           p.statistics = "";
           if (p.stats) {
-            p.stats['words pitch'] = p.stats['wordslong'];
-            delete p.stats['wordslong'];
-            p.stats['words all'] = p.stats['wordcount'];
-            delete p.stats['wordcount'];
+            p.stats['bytes pitch'] = p.stats['sizepitch'];
+            delete p.stats['sizepitch'];
+            p.stats['bytes total'] = p.stats['sizetotal'];
+            delete p.stats['sizetotal'];
             Object.keys(p.stats).forEach(function(k) {
               p.statistics += k + ': ' + p.stats[k] + '\n';
             })
