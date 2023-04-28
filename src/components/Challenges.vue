@@ -207,7 +207,7 @@ export default {
 
         data.projects.forEach((p) => {
           // Assign a boolean for challenge status
-          p.is_challenge = p.progress < 1;
+          p.is_challenge = p.progress == 1;
           // Format the date
           p.date = moment(p.updated_at).format('MMM Do, YYYY');
           // Ensure image_url attribute always present
