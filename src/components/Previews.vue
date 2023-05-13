@@ -12,8 +12,13 @@
             :style="project.logo_color ? ('border-bottom: 3px solid ' + project.logo_color) : ''"
              >
 
+            <div class="eventheader"
+                v-if="eventData">
+                <Header :event="eventData"></Header>
+              </div>
+
             <div class="imagepreview"
-                v-if="project.image_url"
+                v-if="project.image_url && project.image_url !== eventData.logo_url"
                 :style="'background-image:url(' + project.image_url + ')'"></div>
 
             <div class="name">{{ project.name }}</div>
@@ -28,9 +33,14 @@
         <div class="content" slot="body">
 
           <markdown class="preview" 
+                   v-if="showPreview"
                    :source="project.longtext || project.excerpt" 
                    :postrender="tweakPreview"
                    :html="true" />
+
+          <iframe class="webembed"
+            v-if="showEmbed && project.is_webembed"
+            :src="project.webpage_url"></iframe>
 
           <div class="status">
             <span class="nowrap">
@@ -38,16 +48,14 @@
                      @click="seeDetails(project)"
                      :href="project.url">
                      📖 
+                     <span class="phase">{{ project.phase }}</span>
               </button>
               <button v-if="project.webpage_url"
                       title="Open project slides or demo link" 
                      @click="seeEmbed(project)">
-                     🔍 Demo
+                     🖼️ Presentation 
               </button>
             </span>
-            <span class="phase">{{ project.phase }}</span>
-            /
-            <span class="date">{{ project.date }}</span>
           </div>
 
         </div>
@@ -67,18 +75,22 @@
 import VueMarkdown from '@adapttive/vue-markdown'
 
 import Modal from "./Modal"
+import Header from "./Header"
 
 export default {
   name: "Previews",
   components: {
     markdown: VueMarkdown,
-    Modal,
+    Modal, Header
   },
   props: {
     projects: Array,
     selected: Number,
     withComments: Boolean,
-    withChallenges: Boolean
+    withChallenges: Boolean,
+    showPreview: Boolean,
+    showEmbed: Boolean,
+    eventData: Object
   },
   model: {
     prop: 'selected',
@@ -188,6 +200,11 @@ div, p {
   padding: 0px;
 }
 
+.eventheader {
+  display: block;
+  margin-top: 0px;
+  margin-bottom: 60px;
+}
 .imagepreview {
   width: 100%;
   height: 120px;
@@ -254,6 +271,14 @@ button.nav-prev {
   position: sticky;
 }
 
+.webembed {
+  width: 100%;
+  height: 500px;
+  border: 1px solid silver;
+  box-shadow: 5px 5px 10px #535353;
+  padding: 0px;
+  margin: 0px;
+}
 
 @media (min-width: 768px) {
   .preview {

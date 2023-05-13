@@ -26,19 +26,7 @@
           <div :class="project.image_url ? 'project has-thumb' : 'project'"
                @click="seePreview(project)"
           >
-            
-            <div class="name">
-              {{ project.name }}
-            </div>
-
-            <div class="progress"
-              :title="project.phase + ': ' + project.score + '%'"
-              v-if="!project.is_challenge && project.score && project.score > 0">
-              <div class="progress-bar" role="progressbar"
-                :style="'width:' + project.score + '%'">
-              </div>
-            </div>
-
+          
             <div class="team-stats">
               <div class="team-counter"
                    :title="project.team.join(', ')">
@@ -50,6 +38,18 @@
                    :title="project.statistics">
                 <span class="hex">&#11042;</span>
                 <div class="count" v-if="project.stats">{{ project.stats.total }}</div>
+              </div>
+            </div>
+            
+            <div class="name">
+              {{ project.name }}
+            </div>
+
+            <div class="progress"
+              :title="project.phase + ': ' + project.score + '%'"
+              v-if="!project.is_challenge && project.score && project.score > 0">
+              <div class="progress-bar" role="progressbar"
+                :style="'width:' + project.score + '%'">
               </div>
             </div>
 
@@ -71,6 +71,7 @@
             :withChallenges="isChallenges"
             :withComments="isComments"
             :projects="projects"
+            :eventData="isHeadline ? event : null"
             ></Previews>
 
     <Honeycomb v-if="isHexagons && projects != null"
@@ -97,6 +98,12 @@
         <label for="isChallenges">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
         <label for="isHexagons">Hexagons</label>
+      <select v-model="sortOrder" id="sortBy"
+             @change="changeOrder">
+        <option value="default" selected>Sort by ..</option>
+        <option v-for="option in sortOptions" 
+                v-bind:value="option.id" >{{ option.name }}</option>
+      </select>
       <span class="share-button">
         🌐<a :href="shareUrl()">Share</a>
       </span>
@@ -140,6 +147,14 @@ export default {
       isHexagons: false,
       isPreviews: false,
       activePreview: -1,
+      sortOrder: 'title',
+      sortOptions: [
+        { id: 'id', name: 'ID' },
+        { id: 'name', name: 'Name' },
+        { id: 'summary', name: 'Summary' },
+        { id: 'hashtag', name: 'Hashtag' },
+        { id: 'score', name: 'Score' }
+      ]
     };
   },
   computed: {
@@ -163,6 +178,7 @@ export default {
     this.isPreviews = Boolean(urlParams.get("previews"));
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
+    this.sortOrder = urlParams.get("sort");
     // Continue with loading event
     console.info("Loading", this.src);
     fetch(this.src)
@@ -221,24 +237,6 @@ export default {
           this.projects.push(p);
         });
 
-        /*
-        // TODO: configurable sort
-        
-        // Sort by name
-        this.projects.sort((a, b) => a.name.localeCompare(b.name));
-        // Sort by id
-        this.projects.sort((a, b) => a.id < b.id);
-        // Sort by score
-        this.projects.sort((a, b) => a.score < b.score);
-        */
-
-        // Sort by score then id (challenge) or name (project)
-        this.projects.sort((a, b) =>
-          a.is_challenge ? 
-              a.id < b.id :
-              a.score <= b.score && a.name.localeCompare(b.name)
-        );
-
         this.projects.forEach((p) => {
           // Prepare statistics summary
           p.statistics = "";
@@ -269,6 +267,8 @@ export default {
           this.event.webpage = this.event.webpage_url || this.event.community_url || data.homepage;
           // console.log(this.event);
         }
+
+        this.changeOrder();
       })
       .catch((error) => {
         this.errorMessage = error;
@@ -285,6 +285,32 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
+    changeOrder: function () {
+      console.log('Sorting by', this.sortOrder);
+      if (this.sortOrder == 'id') {
+        // Sort by id
+        this.projects.sort((a, b) => a.id < b.id);
+      } else if (this.sortOrder == 'name') {
+        // Sort by name
+        this.projects.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (this.sortOrder == 'summary') {
+        // Sort by summary
+        this.projects.sort((a, b) => a.summary.localeCompare(b.summary));
+      } else if (this.sortOrder == 'hashtag') {
+        // Sort by hashtag
+        this.projects.sort((a, b) => a.hashtag.localeCompare(b.hashtag));
+      } else if (this.sortOrder == 'score') {
+        // Sort by score
+        this.projects.sort((a, b) => a.score < b.score);
+      } else {
+        // Sort by score then id (challenge) or name (project)
+        this.projects.sort((a, b) =>
+          a.is_challenge ? 
+              a.id < b.id :
+              a.score <= b.score && a.name.localeCompare(b.name)
+        );
+      }
+    },
     seePreview: function (project) {
       if (!this.isPreviews) {
         return this.seeDetails(project);
@@ -300,6 +326,7 @@ export default {
         (this.isButtons ? '&buttons=1' : '') +
         (this.isComments ? '&comments=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
+        (this.sortOrder ? '&sort=' + this.sortOrder : '') +
       '';
     }
   }
@@ -421,7 +448,7 @@ export default {
 .project .name .hex {
   -webkit-transform: rotate(30deg);
   transform: rotate(30deg);
-  display: inline-block;
+  display: block;
   opacity: 0.4;
   float: right;
   margin-top: -0.8em;
@@ -432,8 +459,8 @@ export default {
 }
 .project .team-stats {
   background: white;
+  display: block;
   float: right;
-  display: inline-block;
   font-size: 80%;
   color: #999;
   width: 3em;

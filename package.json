@@ -14,9 +14,9 @@
     "vue-grid-responsive": "*"
   },
   "devDependencies": {
-    "@vue/cli-service": "4.1.1",
-    "execa": "^5.1.1",
-    "vue-template-compiler": "^2.6.11"
+    "@vue/cli-service": "*",
+    "execa": "*",
+    "vue-template-compiler": "*"
   },
   "eslintConfig": {
     "root": true,
