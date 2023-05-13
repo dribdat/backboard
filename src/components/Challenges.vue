@@ -15,6 +15,7 @@
         <div
           class="col project-container"
           :challenge="project.is_challenge"
+          v-if="isChallenges || !project.is_challenge"
           :style="
             project.image_url ?
               'background-image:url(' + project.image_url + ')'
@@ -223,7 +224,7 @@ export default {
 
         data.projects.forEach((p) => {
           // Assign a boolean for challenge status
-          p.is_challenge = p.progress == 1;
+          p.is_challenge = p.progress < 2;
           // Format the date
           p.date = moment(p.updated_at).format('MMM Do, YYYY');
           // Ensure image_url attribute always present
