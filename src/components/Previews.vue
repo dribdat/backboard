@@ -18,7 +18,7 @@
               </div>
 
             <div class="imagepreview"
-                v-if="project.image_url && project.image_url !== eventData.logo_url"
+                v-if="project.image_url && eventData && project.image_url !== eventData.logo_url"
                 :style="'background-image:url(' + project.image_url + ')'"></div>
 
             <div class="name">{{ project.name }}</div>
