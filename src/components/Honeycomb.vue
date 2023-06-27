@@ -3,7 +3,7 @@
       <div
         v-for="project in projects"
         :key="project.id"
-        :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
+        :class="'hexagon ' + getHexagonClass(project)"
         :challenge="project.is_challenge"
         :style="project.logo_color ? ('border-width: 3px; border-color:' + project.logo_color) : ''"
         :title="project.summary"
@@ -11,7 +11,7 @@
       >
         <div class="hexagontent">
           <span>{{ project.name }}</span>
-          <div v-if="project.hashtag" class="hashtag">{{ project.hashtag }}</div>
+          <div v-if="project.hashtag" class="hashtag">{{ fitme(project.hashtag) }}</div>
           <div class="hexaicon"
               v-if="project.image_url"
               :style="'background-image:url(' + project.image_url + ')'"></div>
@@ -30,6 +30,15 @@ export default {
   name: "Honeycomb",
   props: {
     projects: Array
+  },
+  methods: {
+    fitme: (text) => {
+      return text.substr(0, 7)
+    },
+    getHexagonClass: (project) => {
+      return (project.is_challenge ? 'challenge' : 'project') +
+             (project.progress ? ' stage-' + project.progress : '')
+    }
   }
 }
 </script>
@@ -88,6 +97,7 @@ export default {
 .project.hexagon  .hexagontent {
   overflow: hidden;
   color: black;
+  margin-top: 0.2em;
 }
 .project .hexagontent.with-icon div {
   font-size: 90%;
@@ -107,10 +117,11 @@ export default {
   margin-left: -36px;
   left: 50%;
   opacity: 1;
-  border: 1px solid white;
+  border: 1px solid rgba(0,0,0,0.1);
 }
 .project .hexagontent .progress-bar {
-  background-color: #aaa;
+  background-color: rgba(0,0,0,0.2);
+  height: 3px;
 }
 .project.hexagon {
   border-top: 1px solid rgba(0,0,0,0.2);
