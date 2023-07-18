@@ -4,7 +4,7 @@
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
       @close="toggleOptions()"
-      :src="dribdatApi" :toolbar="showToolbar" :options="defaultOptions" />
+      :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
     <tt>
       <button v-if="allowToolbar" class="small" @click="toggleOptions">options</button>
       <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
@@ -39,7 +39,7 @@ export default {
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
     }
-    return {
+    let my_config = {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
       voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
@@ -47,6 +47,8 @@ export default {
       allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
     }
+    //console.debug(my_config);
+    return my_config;
   },
   methods: {
     toggleOptions() {
