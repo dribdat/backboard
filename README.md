@@ -20,7 +20,11 @@ Put a `datapackage.json` file that you exported from dribdat into the **public**
 
 You can use the following environment variables:
 
-- `VUE_APP_DRIBDAT_URL` - fully qualified link to your dribdat event, or online hosted Data Package; e.g. https://meta.dribdat.cc/event/5
+- `VUE_APP_DRIBDAT_URL` - fully qualified link to your [Dribdat](https://dribd.at) event, or online hosted Data Package; examples:
+  - https://meta.dribdat.cc/event/5
+  - https://meta.dribdat.cc/hackathon.json
+  - https://meta.dribdat.cc/api/event/current/datapackage.json
+  - https://meta.dribdat.cc/api/project/top.json
 - `VUE_APP_DEFAULT_OPTS` (optional) - the default display settings - copy the part after ? from the Share link.
 - `VUE_APP_HIDE_TOOLBAR` (optional) - makes the options toolbar in the footer unavailable.
 - `VUE_APP_VOTE_FORM_URL` (optional) - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
