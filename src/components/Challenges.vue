@@ -229,7 +229,7 @@ export default {
           p.date = moment(p.updated_at).format('MMM Do, YYYY');
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
-          if (!p.image_url && data.event.logo_url) {
+          if (!p.image_url && data.event && data.event.logo_url) {
             p.image_url = data.event.logo_url;
           }
           // Check format of team
