@@ -33,22 +33,22 @@
         <div class="content" slot="body">
 
           <markdown class="preview" 
-                   v-if="showPreview"
-                   :source="project.longtext || project.excerpt" 
+                   v-if="showExcerpt && !project.is_webembed"
+                   :source="project.autotext || project.longtext || project.excerpt" 
                    :postrender="tweakPreview"
                    :html="true" />
 
           <iframe class="webembed"
-            v-if="showEmbed && project.is_webembed"
-            :src="project.webpage_url"></iframe>
+                  v-if="showExcerpt && project.is_webembed"
+                  :src="project.webpage_url"></iframe>
 
           <div class="status">
             <span class="nowrap">
+              <span class="phase">{{ project.phase }}</span>
               <button title="Open project page" 
                      @click="seeDetails(project)"
                      :href="project.url">
-                     📖 
-                     <span class="phase">{{ project.phase }}</span>
+                     📖 Open
               </button>
               <button v-if="project.webpage_url"
                       title="Open project slides or demo link" 
@@ -88,8 +88,7 @@ export default {
     selected: Number,
     withComments: Boolean,
     withChallenges: Boolean,
-    showPreview: Boolean,
-    showEmbed: Boolean,
+    showExcerpt: Boolean,
     eventData: Object
   },
   model: {
@@ -221,6 +220,10 @@ div, p {
   color: black;
   line-height: 140%;
   margin-bottom: 2em;
+}
+
+.phase {
+  margin: 0em 1em;
 }
 
 .modal-footer button {
