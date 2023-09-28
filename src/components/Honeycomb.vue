@@ -10,10 +10,12 @@
         @click="$emit('preview', project)"
       >
         <div class="hexagontent">
-          <span>{{ project.name }}</span>
+          <div class="name">
+            <span v-if="project.name.length > 30" class="padme"></span>
+            {{ project.name }}
+          </div>
           <div v-if="project.hashtag" class="hashtag">{{ fitme(project.hashtag) }}</div>
-          <div class="hexaicon"
-              v-if="project.image_url"
+          <div v-if="project.image_url" class="hexaicon"
               :style="'background-image:url(' + project.image_url + ')'"></div>
               <div class="progress"
                 v-if="!project.is_challenge && project.score && project.score > 0">
@@ -80,6 +82,12 @@ export default {
   }
 }
 
+.padme {
+  display: inline-block;
+  width: 0.1em; height: 1em;
+  visibility: hidden;
+}
+
 .challenge.hexagon {
   background-color: white;
   border-top: 1px dashed rgba(0,0,200,0.4);
@@ -94,6 +102,12 @@ export default {
   border-bottom: 1px dashed rgba(0,0,200,0.4);
 }
 
+.hexagon .hexagontent .name {
+  max-height: 4.5em;
+  overflow: hidden;
+  display: block;
+}
+
 .project.hexagon  .hexagontent {
   overflow: hidden;
   color: black;
@@ -101,9 +115,6 @@ export default {
 }
 .project .hexagontent.with-icon div {
   font-size: 90%;
-}
-.project .hexagontent div {
-  max-height: 5.4em;
 }
 .project .hexagontent .fa {
   font-size: 240%;
@@ -150,7 +161,7 @@ export default {
   font-family: M3Regular;
   src: url(../assets/m3regular-webfont.woff2) format("woff2"),
        url(../assets/m3regular-webfont.woff) format("woff");
-  font-weight: 400; font-style: normal;
+  font-style: normal;
 }
 
 .hexagon .hexagontent {
@@ -165,8 +176,8 @@ export default {
 .hexagontent .hashtag {
   font-weight: bold;
   font-size: 120%;
-  color: red;
-  text-shadow: 1px 1px 1px white;
+  color: white;
+  text-shadow: 1px 1px 2px black;
   font-family: monospace;
   line-height: 0em;
   margin: 1.6em 0 0; 
