@@ -60,6 +60,7 @@
 
             <div class="team-join" v-if="isButtons">
               <button @click="joinTeam(project)" title="Join">👍</button>
+              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
 
@@ -284,6 +285,9 @@ export default {
     // Helper link to join a project team
     joinTeam: function (project) {
       window.open(project.url + "/star/me");
+    },
+    openComment: function (project) {
+      window.open(project.url + "/comment");
     },
     contactTeam: function (project) {
       window.open(project.contact_url);

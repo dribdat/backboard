@@ -55,6 +55,12 @@
                      @click="seeEmbed(project)">
                      🖼️ Presentation 
               </button>
+              <button v-if="withComments" 
+                      @click="openComment(project)" 
+                      title="Write a comment to the team">
+                     💬 Comment
+              </button>  
+
             </span>
           </div>
 
@@ -63,7 +69,6 @@
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
           <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
-          <button v-if="withComments" @click="openComment(project)" title="Comment">💬</button>  
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
       </Modal>
