@@ -35,6 +35,7 @@ You can use the following environment variables:
 To run locally, install Node.js and Yarn, then to start a development server:
 
 ```
+yarn install
 yarn serve
 ```
 
