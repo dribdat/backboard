@@ -17,9 +17,11 @@
                 <Header :event="eventData"></Header>
               </div>
 
-            <div class="imagepreview"
+            <a class="imagepreview"
+                title="Open image"
                 v-if="project.image_url && eventData && project.image_url !== eventData.logo_url"
-                :style="'background-image:url(' + project.image_url + ')'"></div>
+                :href="project.image_url" target="_blank"
+                :style="'background-image:url(' + project.image_url + ')'"></a>
 
             <div class="name">{{ project.name }}</div>
 
@@ -32,15 +34,33 @@
         </div>
         <div class="content" slot="body">
 
-          <markdown class="preview" 
-                   v-if="showExcerpt && !project.is_webembed"
-                   :source="project.autotext || project.longtext || project.excerpt" 
-                   :postrender="tweakPreview"
-                   :html="true" />
+          <div class="preview" v-if="showExcerpt">
 
-          <iframe class="webembed"
-                  v-if="showExcerpt && project.is_webembed"
-                  :src="project.webpage_url"></iframe>
+            <markdown class="preview" 
+                     v-if="!project.is_webembed && project.excerpt"
+                     :source="project.excerpt" 
+                     :postrender="tweakPreview"
+                     :html="true" />
+
+            <iframe class="webembed"
+                    v-if="project.is_webembed"
+                    :src="project.webpage_url"></iframe>
+
+            <markdown class="preview-longtext" 
+                     v-if="showExcerpt && project.longtext"
+                     :source="project.longtext" 
+                     :postrender="tweakPreview"
+                     :html="true" />
+
+            <div v-if="showExcerpt && project.autotext">
+              <a :href="project.autotext_url" class="autotext-link">README</a>
+              <markdown class="preview-autotext" 
+                       :source="project.autotext" 
+                       :postrender="tweakPreview"
+                       :html="true" />
+            </div>
+
+          </div>
 
           <div class="status">
             <span class="nowrap">
@@ -210,13 +230,14 @@ div, p {
   margin-bottom: 60px;
 }
 .imagepreview {
+  display: block;
   width: 100%;
   height: 120px;
   margin-top: -18px;
   margin-bottom: 27px;
   background-repeat: no-repeat;
   background-color: transparent;
-  background-size: contain;
+  background-size: cover;
   background-position: 50% 50%;
 }
 
@@ -225,6 +246,18 @@ div, p {
   color: black;
   line-height: 140%;
   margin-bottom: 2em;
+}
+
+.autotext-link {
+  display: block;
+  width: 100%;
+  background: gainsboro;
+  color: blue;
+  font-weight: bold;
+  font-family: monospace;
+  font-size: 200%;
+  padding: 1em;
+  text-align: center;
 }
 
 .phase {
