@@ -20,7 +20,7 @@ Put a `datapackage.json` file that you exported from dribdat into the **public**
 
 You can use the following environment variables:
 
-- `VUE_APP_DRIBDAT_URL` - fully qualified link to your [Dribdat](https://dribd.at) event, or online hosted Data Package; examples:
+- `VUE_APP_DRIBDAT_URL` - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package; examples:
   - https://meta.dribdat.cc/event/5
   - https://meta.dribdat.cc/hackathon.json
   - https://meta.dribdat.cc/api/event/current/datapackage.json
