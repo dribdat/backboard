@@ -60,6 +60,7 @@
 
             <div class="team-join" v-if="isButtons">
               <button @click="joinTeam(project)" title="Join">👍</button>
+              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
 
@@ -71,6 +72,7 @@
     <Previews v-if="isPreviews" v-model="activePreview"
             :withChallenges="isChallenges"
             :withComments="isComments"
+            :showExcerpt="isExcerpts"
             :projects="projects"
             :eventData="isHeadline ? event : null"
             ></Previews>
@@ -88,20 +90,22 @@
         &#10060;
       </button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
-        <label for="isHeadline">Headline</label>
+        <label for="isHeadline" title="⛳">Header</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
-        <label for="isPreviews">Previews</label>
+        <label for="isPreviews" title="👀">Popup</label>
+      <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
+        <label for="isExcerpts" title="🖼️ ">Excerpt</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons">Buttons</label>
+        <label for="isButtons" title="🪟">Button</label>
       <input type="checkbox" v-model="isComments" id="isComments">
-        <label for="isComments">Comments</label>
+        <label for="isComments" title="💬">Comment</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges">Challenges</label>
+        <label for="isChallenges" title="🏆">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons">Hexagons</label>
+        <label for="isHexagons" title="⬣">Hexgrid</label>
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
-        <option value="default" selected>Sort by ..</option>
+        <option value="default" selected>🡻 Sort</option>
         <option v-for="option in sortOptions" 
                 v-bind:value="option.id" >{{ option.name }}</option>
       </select>
@@ -147,6 +151,7 @@ export default {
       isHeadline: false,
       isHexagons: false,
       isPreviews: false,
+      isExcerpts: false,
       activePreview: -1,
       sortOrder: 'title',
       sortOptions: [
@@ -177,6 +182,7 @@ export default {
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
+    this.isExcerpts = Boolean(urlParams.get("excerpts"));
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
     this.sortOrder = urlParams.get("sort");
@@ -280,6 +286,9 @@ export default {
     joinTeam: function (project) {
       window.open(project.url + "/star/me");
     },
+    openComment: function (project) {
+      window.open(project.url + "/comment");
+    },
     contactTeam: function (project) {
       window.open(project.contact_url);
     },
@@ -324,6 +333,7 @@ export default {
         (this.isHeadline ? '&headline=1' : '') +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
+        (this.isExcerpts ? '&excerpts=1' : '') +
         (this.isButtons ? '&buttons=1' : '') +
         (this.isComments ? '&comments=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +

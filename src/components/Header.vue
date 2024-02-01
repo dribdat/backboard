@@ -1,12 +1,12 @@
 <template>
   <div class="section-header">
     <div class="header-logo" v-if="event.logo_url">
-      <a :href="event.webpage" :title="event.name">
+      <a :href="event.webpage" :title="event.name" target="_blank">
         <img id="event-logo" :src="event.logo_url">
       </a>
     </div>
     <div class="header-content">
-      <a :href="event.webpage">
+      <a :href="event.webpage" target="_blank">
         <h3 class="event-name">{{ event.name }}</h3>
       </a>
       <span class="event-hostname" v-if="false && event.hostname">
