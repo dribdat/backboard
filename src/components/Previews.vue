@@ -25,19 +25,20 @@
 
             <div class="name">{{ project.name }}</div>
 
+            <div class="hashtag">{{ project.hashtag }}</div>
+
             <div v-show="project.summary" class="summary">
               <p>{{ project.summary }}</p>
             </div>
 
-            <div class="hashtag">{{ project.hashtag }}</div>
 
         </div>
         <div class="content" slot="body">
 
           <div class="preview" v-if="showExcerpt">
 
-            <markdown class="preview" 
-                     v-if="!project.is_webembed && project.excerpt"
+            <markdown class="excerpt" 
+                     v-if="!project.is_webembed && !project.longtext && project.excerpt"
                      :source="project.excerpt" 
                      :postrender="tweakPreview"
                      :html="true" />
@@ -47,12 +48,12 @@
                     :src="project.webpage_url"></iframe>
 
             <markdown class="preview-longtext" 
-                     v-if="showExcerpt && project.longtext"
+                     v-if="project.longtext"
                      :source="project.longtext" 
                      :postrender="tweakPreview"
                      :html="true" />
 
-            <div v-if="showExcerpt && project.autotext">
+            <div v-if="project.autotext">
               <a :href="project.autotext_url" class="autotext-link">README</a>
               <markdown class="preview-autotext" 
                        :source="project.autotext" 
@@ -214,13 +215,14 @@ div, p {
 }
 .hashtag {
   font-weight: bold;
-  font-size: 120%;
+  font-size: 200%;
   color: red;
+  float: right;
   text-align: left;
   text-shadow: 1px 1px 1px white;
   font-family: monospace;
   line-height: 0em;
-  margin: 0.8em 0 2em 0; 
+  margin: 0.3em 0 0em 1em; 
   padding: 0px;
 }
 
@@ -246,6 +248,7 @@ div, p {
   color: black;
   line-height: 140%;
   margin-bottom: 2em;
+  padding-bottom: 4em;
 }
 
 .autotext-link {
