@@ -186,7 +186,7 @@ export default {
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
     this.sortOrder = urlParams.get("sort") || "default";
-    datapackage_json = urlParams.get("src") || this.src;
+    const datapackage_json = this.src; // TODO urlParams.get("src") ?
     // Continue with loading event
     console.info("Loading", datapackage_json);
     fetch(datapackage_json)
