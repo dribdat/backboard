@@ -6,9 +6,9 @@
       @close="toggleOptions()"
       :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
     <tt>
-      <button v-if="allowToolbar" class="small" @click="toggleOptions">options</button>
       <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
-      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a>
+      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a> &#x1F3C0;
+      <a v-if="allowToolbar" @click="toggleOptions">options</a>
     </tt>
   </div>
 </template>
@@ -80,6 +80,7 @@ a:active, a:hover {
   outline-width: 0;
   color: #91170a;
   text-decoration: underline;
+  cursor: pointer;
 }
 a {
   color: #d9230f;
