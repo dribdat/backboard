@@ -185,10 +185,11 @@ export default {
     this.isExcerpts = Boolean(urlParams.get("excerpts"));
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
-    this.sortOrder = urlParams.get("sort");
+    this.sortOrder = urlParams.get("sort") || "default";
+    datapackage_json = urlParams.get("src") || this.src;
     // Continue with loading event
-    console.info("Loading", this.src);
-    fetch(this.src)
+    console.info("Loading", datapackage_json);
+    fetch(datapackage_json)
       .then(async (response) => {
         const data = await response.json();
         // console.debug(data);
