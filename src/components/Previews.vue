@@ -25,6 +25,7 @@
 
             <div class="name">{{ project.name }}</div>
 
+            <div class="ident">{{ project.ident }}</div>
             <div class="hashtag">{{ project.hashtag }}</div>
 
             <div v-show="project.summary" class="summary">
@@ -214,6 +215,11 @@ div, p {
   text-align: left;
 }
 .hashtag {
+  font-family: monospace;
+  font-weight: bold;
+  color: darkgray;
+}
+.ident {
   font-weight: bold;
   font-size: 200%;
   color: red;

@@ -14,7 +14,7 @@
             <span v-if="project.name.length > 30" class="padme"></span>
             {{ project.name }}
           </div>
-          <div v-if="project.hashtag" class="hashtag">{{ fitme(project.hashtag) }}</div>
+          <div v-if="project.ident" class="ident">{{ fitme(project.ident) }}</div>
           <div v-if="project.image_url" class="hexaicon"
               :style="'background-image:url(' + project.image_url + ')'"></div>
               <div class="progress"
@@ -173,7 +173,7 @@ export default {
   line-height: 13pt;
   font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;
 }
-.hexagontent .hashtag {
+.hexagontent .ident {
   font-weight: bold;
   font-size: 120%;
   color: white;

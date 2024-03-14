@@ -155,7 +155,8 @@ export default {
       activePreview: -1,
       sortOrder: 'title',
       sortOptions: [
-        { id: 'id', name: 'ID' },
+        { id: 'id', name: 'id' },
+        { id: 'ident', name: 'Ident' },
         { id: 'name', name: 'Name' },
         { id: 'summary', name: 'Summary' },
         { id: 'hashtag', name: 'Hashtag' },
@@ -307,6 +308,9 @@ export default {
       } else if (this.sortOrder == 'summary') {
         // Sort by summary
         this.projects.sort((a, b) => a.summary.localeCompare(b.summary));
+      } else if (this.sortOrder == 'ident') {
+        // Sort by ident
+        this.projects.sort((a, b) => a.ident.localeCompare(b.ident));
       } else if (this.sortOrder == 'hashtag') {
         // Sort by hashtag
         this.projects.sort((a, b) => a.hashtag.localeCompare(b.hashtag));
