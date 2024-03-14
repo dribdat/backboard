@@ -1,8 +1,10 @@
 # Backboard for Dribdat
 
-This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). Currently it only displays the project data for a specific event. More functionality is planned in the future, with the goal of having a modern frontend for dribdat.
+This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). 
 
-It has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results.
+Currently it displays the project data for a specific event, with flexible configuration options for displaying and sorting the results in different ways. You can seamless navigate using keyboard navigation between projects and challenges. More functionality is planned in the future, with the goal of having a modern frontend for Dribdat.
+
+It also has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results.
 
 You probably want to enable *Challenges* and *Previews* (opens modal dialog on click with navigation) in the options at the footer of the page. Use the handy *Share* link to get a URL with your config.
 
