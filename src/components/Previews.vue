@@ -79,29 +79,26 @@
           </div>
 
           <div class="status">
-            <span class="nowrap">
-              <span class="phase">{{ project.phase }}</span>
-              <button title="Open project page" 
-                     @click="seeDetails(project)"
-                     :href="project.url">
-                     📖 Open
-              </button>
-              <button v-if="project.is_webembed"
-                      title="Open in full screen mode"
-                    @click="toggleFullscreen()">
-                     👁️ Fullscreen</button>
-              <button v-if="false && project.webpage_url"
-                      title="Open project slides or demo link" 
-                     @click="seeEmbed(project)">
-                     🖼️ Presentation 
-              </button>
-              <button v-if="withComments" 
-                      @click="openComment(project)" 
-                      title="Write a comment to the team">
-                     💬 Comment
-              </button>  
-
-            </span>
+            <span class="phase">{{ project.phase }}</span>
+            <button title="Open project page" 
+                   @click="seeDetails(project)"
+                   :href="project.url">
+                   📖 Open
+            </button>
+            <button v-if="project.is_webembed"
+                    title="Open in full screen mode"
+                  @click="toggleFullscreen()">
+                   👁️ Fullscreen</button>
+            <button v-if="false && project.webpage_url"
+                    title="Open project slides or demo link" 
+                   @click="seeEmbed(project)">
+                   🖼️ Presentation 
+            </button>
+            <button v-if="withComments" 
+                    @click="openComment(project)" 
+                    title="Write a comment to the team">
+                   💬 Comment
+            </button>  
           </div>
 
         </div>
@@ -348,10 +345,6 @@ button.nav-next {
 }
 button.nav-prev {
   float: left;
-}
-
-.nowrap {
-  white-space: nowrap;
 }
 
 .status button {

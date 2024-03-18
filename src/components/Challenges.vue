@@ -353,6 +353,22 @@ export default {
 
 /* -- Main display -- */
 
+.challenges > .section-header {
+  margin-left: 15%;
+  margin-bottom: 2em;
+}
+
+@media (max-width: 768px) {
+  .challenges > .section-header {
+    margin-left: 5%;
+  }
+  .challenges .header-logo {
+    display: block;
+    float: none;
+    margin: none;
+  }
+}
+
 .challenges {
   color: #263238;
   box-sizing: border-box;

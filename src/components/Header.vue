@@ -36,10 +36,6 @@ export default {
 
 <style scoped>
 /* -- Headline -- */
-.section-header {
-  margin-left: 15%;
-  margin-bottom: 2em;
-}
 
 .header-logo img {
   height: 6em;
@@ -53,9 +49,6 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .section-header {
-    margin-left: 5%;
-  }
   .header-logo {
     display: block;
     float: none;
@@ -68,6 +61,8 @@ export default {
   font-size: 250%;
   margin: 0px;
   text-align: left;
+  line-height: 1.4em;
+  margin-bottom: 1pt;
 }
 
 .header-content {

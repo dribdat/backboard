@@ -18,7 +18,7 @@
           <div v-if="project.image_url" class="hexaicon"
               :style="'background-image:url(' + project.image_url + ')'"></div>
               <div class="progress"
-                v-if="!project.is_challenge && project.score && project.score > 0">
+                v-if="!project.is_challenge && project.score && project.score > 0 && project.score < 80">
                 <div class="progress-bar" role="progressbar"
                   :style="'width:' + project.score + '%'">
                 </div>
@@ -177,12 +177,12 @@ export default {
 }
 .hexagontent .ident {
   font-weight: bold;
-  font-size: 120%;
+  font-size: 100%;
   color: white;
-  text-shadow: 1px 1px 2px black;
+  text-shadow: 1px 1px 1px black;
   font-family: monospace;
   line-height: 0em;
-  margin: 1.6em 0 0; 
+  margin: 2em 0 0 -2.2em;
   padding: 0px;
   position: absolute;
   text-align: center;
