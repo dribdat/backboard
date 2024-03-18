@@ -1,8 +1,8 @@
 # Backboard for Dribdat
 
-This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [dribdat](https://github.com/dribdat/dribat). 
+This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [Dribdat](https://dribdat.cc). 
 
-Currently it displays the project data for a specific event, with flexible configuration options for displaying and sorting the results in different ways. You can seamless navigate using keyboard navigation between projects and challenges. More functionality is planned in the future, with the goal of having a modern frontend for Dribdat.
+Project data is shown for a specific event, with flexible configuration options for displaying and sorting the results in different ways. You can seamlessly navigate using your mouse or keyboard between projects and challenges. More functionality is planned in the future, with the long-term goal of creating a more modern, decoupled frontend for Dribdat.
 
 It also has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results.
 
@@ -25,8 +25,8 @@ You can use the following environment variables:
 - `VUE_APP_DRIBDAT_URL` - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package; examples:
   - https://meta.dribdat.cc/event/5
   - https://meta.dribdat.cc/hackathon.json
-  - https://meta.dribdat.cc/api/event/current/datapackage.json
   - https://meta.dribdat.cc/api/project/top.json
+  - https://meta.dribdat.cc/api/event/current/datapackage.json
 - `VUE_APP_DEFAULT_OPTS` (optional) - the default display settings - copy the part after ? from the Share link.
 - `VUE_APP_HIDE_TOOLBAR` (optional) - makes the options toolbar in the footer unavailable.
 - `VUE_APP_VOTE_FORM_URL` (optional) - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
