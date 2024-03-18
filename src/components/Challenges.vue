@@ -354,10 +354,25 @@ export default {
 /* -- Main display -- */
 
 .challenges {
-  padding: 20px 38px;
-  box-sizing: border-box;
   color: #263238;
+  box-sizing: border-box;
+  padding: 20px 38px;
 }
+
+@media (max-width: 478px) {
+  .challenges {
+    padding: 0px;
+    min-width: 320px;
+  }
+  .honeycomb {
+    width: 80%;
+    margin-top: 10em;
+    margin-bottom: 20em;
+    text-align: center;
+    transform: scale(1.2);
+  }
+}
+
 .options {
   font-size: 90%;
   cursor: pointer;

@@ -9,19 +9,22 @@
         <div slot="title"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
-            :style="project.logo_color ? ('border-bottom: 3px solid ' + project.logo_color) : ''"
+            :style="'border-bottom: 4px solid ' + (project.logo_color ? project.logo_color : '#ccc')"
              >
 
-            <div class="eventheader"
-                v-if="eventData">
-                <Header :event="eventData"></Header>
+            <div class="imagepreview"
+                 v-if="project.image_url">
+              <div class="imagepreview-overlay" v-if="false"
+                   :style="'background-image:url(' + project.image_url + ')'">
               </div>
-
-            <a class="imagepreview"
-                title="Open image"
-                v-if="project.image_url && eventData && project.image_url !== eventData.logo_url"
-                :href="project.image_url" target="_blank"
-                :style="'background-image:url(' + project.image_url + ')'"></a>
+              <div class="imagepreview-underlay" v-if="false"
+                   :style="'background-image:url(' + project.image_url + ')'">
+              </div>
+              <a class="imagepreview-floating"
+                  title="Open image"
+                  :href="project.image_url" target="_blank"
+                  :style="'background-image:url(' + project.image_url + ')'"></a>
+            </div>
 
             <div class="name">{{ project.name }}</div>
 
@@ -31,8 +34,6 @@
             <div v-show="project.summary" class="summary">
               <p>{{ project.summary }}</p>
             </div>
-
-
         </div>
         <div class="content" slot="body">
 
@@ -46,7 +47,16 @@
 
             <iframe class="webembed"
                     v-if="project.is_webembed"
-                    :src="project.webpage_url"></iframe>
+                    :src="getEmbed(project)"></iframe>
+
+            <div class="webembed-fullscreen"
+                 v-if="project.is_webembed && fullscreen">
+              <button class="close" @click="toggleFullscreen()" title="Close fullscreen">❌</button>
+              <iframe class="webembed"
+                    :src="getEmbed(project)"></iframe>
+            </div>
+            <button v-if="project.is_webembed"
+                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">🖵 <span>Fullscreen</span></button>
 
             <markdown class="preview-longtext" 
                      v-if="project.longtext"
@@ -62,6 +72,10 @@
                        :html="true" />
             </div>
 
+            <div class="eventheader"
+                v-if="eventData">
+                <Header :event="eventData"></Header>
+              </div>
           </div>
 
           <div class="status">
@@ -72,7 +86,11 @@
                      :href="project.url">
                      📖 Open
               </button>
-              <button v-if="project.webpage_url"
+              <button v-if="project.is_webembed"
+                      title="Open in full screen mode"
+                    @click="toggleFullscreen()">
+                     👁️ Fullscreen</button>
+              <button v-if="false && project.webpage_url"
                       title="Open project slides or demo link" 
                      @click="seeEmbed(project)">
                      🖼️ Presentation 
@@ -90,7 +108,7 @@
         <div class="footer" slot="footer"
              @touchstart="touchStart">
           <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
-          <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
+          <button @click="selectNone()" title="Go back">⬆️</button>
           <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
         </div>
       </Modal>
@@ -113,10 +131,10 @@ export default {
   props: {
     projects: Array,
     selected: Number,
+    eventData: Object,
     withComments: Boolean,
     withChallenges: Boolean,
     showExcerpt: Boolean,
-    eventData: Object
   },
   model: {
     prop: 'selected',
@@ -126,6 +144,11 @@ export default {
     active: {
       get () { return this.selected },
       set (val) { this.$emit('setselected', val); }
+    }
+  },
+  data: function() {
+    return {
+      fullscreen: false
     }
   },
   methods: {
@@ -138,15 +161,17 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
+    getEmbed: function (project) {
+      if (!project.webpage_url) return '';
+      return project.webpage_url.endsWith('.pdf') ?
+        project.url + '/render' : project.webpage_url;
+    },
     seeEmbed: function (project) {
-      if (project.webpage_url.lastIndexOf('.pdf') == project.webpage_url.length - 4) {
-        window.open(project.url + '/render');
-      } else {
-        window.open(project.webpage_url);
-      }
+      window.open(project.webpage_url);
     },
     selectNone: function () {
       this.active = -1;
+      this.fullscreen = false;
     },
     letsGo: function () {
       // Project navigation
@@ -187,7 +212,12 @@ export default {
       }
     },
     tweakPreview (content) {
-      return content.replace(/href="/g,'target="_blank" href="');
+      return content
+      // Force all links in a new window
+      //return content.replace(/href="/g,'target="_blank" href="');
+    },
+    toggleFullscreen () {
+      this.fullscreen = !this.fullscreen;
     }
   }
 };
@@ -217,7 +247,7 @@ div, p {
 .hashtag {
   font-family: monospace;
   font-weight: bold;
-  color: darkgray;
+  color: #999;
 }
 .ident {
   font-weight: bold;
@@ -234,19 +264,52 @@ div, p {
 
 .eventheader {
   display: block;
-  margin-top: 0px;
-  margin-bottom: 60px;
+  border-top: 4px solid #ccc;
+  margin-top: 60px;
+  padding-top: 60px;
+  margin-bottom: 120px;
 }
-.imagepreview {
+
+.imagepreview-floating {
+  display: inline-block;
+  position: fixed;
+  z-index: 100;
+  bottom: 3px; left: 3px;
+  height: 120px;
+  width: 120px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: cover;
+  background-position: 0% 50%;
+}
+
+.imagepreview-overlay,
+.imagepreview-underlay {
   display: block;
   width: 100%;
   height: 120px;
   margin-top: -18px;
   margin-bottom: 27px;
+}
+.imagepreview-underlay {
+  filter: saturate(0%) contrast(0.2) brightness(0.4);
+  z-index: -1;
   background-repeat: no-repeat;
-  background-color: transparent;
   background-size: cover;
   background-position: 50% 50%;
+  margin-left: -10%;
+  position: fixed;
+  z-index: 99;
+}
+.imagepreview-overlay {
+  position: fixed;
+  z-index: 100;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-size: contain;
+  background-position: 0% 50%;
 }
 
 .preview {
@@ -259,7 +322,6 @@ div, p {
 
 .autotext-link {
   display: block;
-  width: 100%;
   background: gainsboro;
   color: blue;
   font-weight: bold;
@@ -276,6 +338,7 @@ div, p {
 .modal-footer button {
   opacity: 0.9;
   transition: all 0.3s ease;
+  border: none;
 }
 .modal-footer:hover button {
   opacity: 1;
@@ -292,7 +355,7 @@ button.nav-prev {
 }
 
 .status button {
-  margin: 0 0.8em 0 0;
+  margin: 0 0.5em 0 0;
   font-size: 80%;
 }
 .status {
@@ -322,10 +385,53 @@ button.nav-prev {
 }
 
 .webembed {
-  width: 100%;
-  height: 500px;
+  width: 400px;
+  height: 240px;
+  max-width: 100%;
   border: 1px solid silver;
-  box-shadow: 5px 5px 10px #535353;
+  box-shadow: 5px 5px 10px #cce;
+  padding: 0px;
+  margin: 0px;
+}
+
+.go-fullscreen {
+  font-size: 1em;
+  margin-top: -0.5em;
+}
+@media (min-width: 768px) {
+  .go-fullscreen {
+    margin-left: -3em;
+    margin-top: 0em;
+    float: left;
+    box-shadow: none;
+  }
+  .go-fullscreen span { font-size: 0px; }
+}
+.webembed-fullscreen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: white;
+  z-index: 9998;
+}
+.webembed-fullscreen button {
+  bottom: 0px;
+  right: 0px;
+  position: absolute;
+  z-index: 9999;
+  box-shadow: none;
+  border: none;
+  font-size: 1em;
+}
+.webembed-fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  border: 0px;
   padding: 0px;
   margin: 0px;
 }
@@ -342,7 +448,6 @@ button.nav-prev {
     left: 50%;
     margin-left: -13em;
     margin-bottom: 0em;
-    border: 1px solid #ddd;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom: none;

@@ -54,6 +54,7 @@ export default {
   min-height: 700px;
   text-align: left;
   margin: 0 auto;
+  line-height: 0px;
 }
 @media (max-width: 980px) {
   .honeycomb {
@@ -148,14 +149,14 @@ export default {
 }
 
 /* --- Hexagon default palette --- */
-.project.hexagon  { background-color: #f5d1e4; } /* primary color */
-.hexagon.stage-5  { background-color: #f5d1e4; }
-.hexagon.stage-10 { background-color: #e3d0e3; }
-.hexagon.stage-20 { background-color: #e0c9ca; }
-.hexagon.stage-30 { background-color: #e8b6a6; }
-.hexagon.stage-40 { background-color: #f1cfad; }
-.hexagon.stage-50 { background-color: #f6e8c0; }
-/* https://colorkit.co/palette/f5d1e4-e3d0e3-e0c9ca-e8b6a6-f1cfad-f6e8c0/ */
+.project.hexagon  { background-color: #ebd8c3; } /* primary color */
+.hexagon.stage-5  { background-color: #ebd8c3; }
+.hexagon.stage-10 { background-color: #ffeeba; }
+.hexagon.stage-20 { background-color: #ffd9ba; }
+.hexagon.stage-30 { background-color: #ffe7ba; }
+.hexagon.stage-40 { background-color: #fff5ba; }
+.hexagon.stage-50 { background-color: #fbffba; }
+/* hhttps://colorkit.co/palette/ffeeba-ffd9ba-ffe7ba-fff5ba-fbffba/ */
 
 @font-face{
   font-family: M3Regular;
@@ -203,7 +204,7 @@ export default {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: -1px 22px;
+  margin: 2px 22px;
   background-color: white;
   text-align: center;
   padding: 0px;
