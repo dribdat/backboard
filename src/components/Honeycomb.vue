@@ -55,6 +55,7 @@ export default {
   text-align: left;
   margin: 0 auto;
   line-height: 0px;
+  clear: both;
 }
 @media (max-width: 980px) {
   .honeycomb {
