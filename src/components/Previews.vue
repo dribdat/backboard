@@ -73,9 +73,9 @@
             </div>
 
             <div class="eventheader"
-                v-if="eventData">
+                v-if="false && eventData">
                 <Header :event="eventData"></Header>
-              </div>
+            </div>
           </div>
 
           <div class="status">
