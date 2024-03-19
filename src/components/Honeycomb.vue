@@ -171,18 +171,22 @@ export default {
   font-weight: normal;
   padding: 4px 0px;
   max-height: 120px;
-  font-size: 12pt;
   line-height: 13pt;
-  font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;
+  /*font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;*/
+  font-family: "Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1.0rem;
+  text-shadow: 1px 1px 1px #fff;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 .hexagontent .ident {
   font-weight: bold;
-  font-size: 100%;
-  color: white;
-  text-shadow: 1px 1px 1px black;
+  font-size: 90%;    
+  text-shadow: 2px 1px 1px white;
+  color: #777;
   font-family: monospace;
   line-height: 0em;
-  margin: 2em 0 0 -2.2em;
+  margin: 2.2em 0 0 -2.4em;
   padding: 0px;
   position: absolute;
   text-align: center;
@@ -209,6 +213,7 @@ export default {
   background-color: white;
   text-align: center;
   padding: 0px;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
 }
 .hexagon, .hexagon::before, .hexagon::after {
   /* easy way: height is width * 1.732
@@ -217,6 +222,11 @@ export default {
   width: 82px;
   height: 142px;
   border-radius: 20%/5%;
+}
+.project.hexagon, .project.hexagon::before, .project.hexagon::after {
+  border-color: transparent !important;
+  border-top: none;
+  border-bottom: none;
 }
 .hexagon::before {
   background-color: inherit;
