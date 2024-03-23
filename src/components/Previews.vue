@@ -40,22 +40,22 @@
           <div class="preview" v-if="showExcerpt">
 
             <markdown class="excerpt" 
-                     v-if="!project.is_webembed && !project.longtext && project.excerpt"
+                     v-if="!isEmbeddable(project) && !project.longtext && project.excerpt"
                      :source="project.excerpt" 
                      :postrender="tweakPreview"
                      :html="true" />
 
             <iframe class="webembed"
-                    v-if="project.is_webembed"
+                    v-if="isEmbeddable(project)"
                     :src="getEmbed(project)"></iframe>
 
             <div class="webembed-fullscreen"
-                 v-if="project.is_webembed && fullscreen">
+                 v-if="isEmbeddable(project) && fullscreen">
               <button class="close" @click="toggleFullscreen()" title="Close fullscreen">❌</button>
               <iframe class="webembed"
                     :src="getEmbed(project)"></iframe>
             </div>
-            <button v-if="project.is_webembed"
+            <button v-if="isEmbeddable(project)"
                     class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">🖵 <span>Fullscreen</span></button>
 
             <markdown class="preview-longtext" 
@@ -85,15 +85,15 @@
                    :href="project.url">
                    📖 Open
             </button>
-            <button v-if="project.is_webembed"
+            <button v-if="isEmbeddable(project)"
                     title="Open in full screen mode"
                   @click="toggleFullscreen()">
                    👁️ Fullscreen</button>
-            <button v-if="false && project.webpage_url"
-                    title="Open project slides or demo link" 
+            <button v-if="isEmbeddable(project)"
+                    title="Download" 
                    @click="seeEmbed(project)">
-                   🖼️ Presentation 
-            </button>
+                   🖼️</button>
+
             <button v-if="withComments" 
                     @click="openComment(project)" 
                     title="Write a comment to the team">
@@ -157,6 +157,9 @@ export default {
     },
     seeDetails: function (project) {
       window.open(project.url);
+    },
+    isEmbeddable: function (project) {
+      return project.webpage_url && project.is_webembed;
     },
     getEmbed: function (project) {
       if (!project.webpage_url) return '';
