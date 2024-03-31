@@ -12,28 +12,51 @@
             :style="'border-bottom: 4px solid ' + (project.logo_color ? project.logo_color : '#ccc')"
              >
 
-            <div class="imagepreview"
-                 v-if="project.image_url">
-              <div class="imagepreview-overlay" v-if="false"
-                   :style="'background-image:url(' + project.image_url + ')'">
-              </div>
-              <div class="imagepreview-underlay" v-if="false"
-                   :style="'background-image:url(' + project.image_url + ')'">
-              </div>
-              <a class="imagepreview-floating"
-                  title="Open image"
-                  :href="project.image_url" target="_blank"
-                  :style="'background-image:url(' + project.image_url + ')'"></a>
+          <div class="imagepreview"
+               v-if="project.image_url">
+            <div class="imagepreview-overlay" v-if="false"
+                 :style="'background-image:url(' + project.image_url + ')'">
             </div>
-
-            <div class="name">{{ project.name }}</div>
-
-            <div class="ident">{{ project.ident }}</div>
-            <div class="hashtag">{{ project.hashtag }}</div>
-
-            <div v-show="project.summary" class="summary">
-              <p>{{ project.summary }}</p>
+            <div class="imagepreview-underlay" v-if="false"
+                 :style="'background-image:url(' + project.image_url + ')'">
             </div>
+            <a class="imagepreview-floating"
+                title="Open image"
+                :href="project.image_url" target="_blank"
+                :style="'background-image:url(' + project.image_url + ')'"></a>
+          </div>
+
+          <div class="name">{{ project.name }}</div>
+
+          <div class="ident">{{ project.ident }}</div>
+          <div class="hashtag">{{ project.hashtag }}</div>
+
+          <div v-show="project.summary" class="summary">
+            <p>{{ project.summary }}</p>
+          </div>
+
+          <div class="status">
+            <span class="phase">{{ project.phase }}</span>
+            <button title="Open project page" 
+                   @click="seeDetails(project)"
+                   :href="project.url">
+                   ◳ Open
+            </button>
+            <button v-if="isEmbeddable(project)"
+                    title="Download" 
+                   @click="seeEmbed(project)">
+                   ⧨ Get</button>
+            <button v-if="isEmbeddable(project)"
+                    title="Open in full screen mode"
+                  @click="toggleFullscreen()">
+                   ⧐ View</button>
+
+            <button v-if="withComments" 
+                    @click="openComment(project)" 
+                    title="Write a comment to the team">
+                   🗯️ Comment
+            </button>  
+          </div>
         </div>
         <div class="content" slot="body">
 
@@ -90,29 +113,6 @@
                 v-if="false && eventData">
                 <Header :event="eventData"></Header>
             </div>
-          </div>
-
-          <div class="status">
-            <span class="phase">{{ project.phase }}</span>
-            <button title="Open project page" 
-                   @click="seeDetails(project)"
-                   :href="project.url">
-                   ◳ Open
-            </button>
-            <button v-if="isEmbeddable(project)"
-                    title="Download" 
-                   @click="seeEmbed(project)">
-                   ⧨ Get</button>
-            <button v-if="isEmbeddable(project)"
-                    title="Open in full screen mode"
-                  @click="toggleFullscreen()">
-                   ⧐ View</button>
-
-            <button v-if="withComments" 
-                    @click="openComment(project)" 
-                    title="Write a comment to the team">
-                   🗯️ Comment
-            </button>  
           </div>
 
         </div>
@@ -387,7 +387,9 @@ button.nav-next {
 button.nav-prev {
   float: left;
 }
-
+.dark .footer button {
+  background: black; color: white;
+}
 .status button {
   margin: 0 0.5em 0 0;
   font-size: 80%;
@@ -400,6 +402,13 @@ button.nav-prev {
   margin-bottom: 3em;
   padding: 5px 7px;
   background: white;
+  width: 100%;
+  text-align: center;
+}
+
+.dark .status {
+  background: black;
+  color: white;
 }
 
 .frame-container iframe {
@@ -463,6 +472,9 @@ button.nav-prev {
   margin: 0px;
   padding: 0px 0.6em;
   border: 1px solid grey;
+  background: white; color: black;
+}
+.dark .webembed-fullscreen button {
   background: black; color: white;
 }
 .webembed-fullscreen iframe {
@@ -483,6 +495,7 @@ button.nav-prev {
   }
 
   .status {
+    width: auto;
     position: fixed;
     bottom: 0px;
     left: 50%;

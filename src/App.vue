@@ -1,16 +1,17 @@
 <template>
-  <div id="app" class="dark">
+  <div id="app" :class="darkClass">
     <VoteBox class="votebox"
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
-      @closeToolbar="toggleOptions()"
-      @previewOff="previewOff()"
-      @previewOn="previewOn()" 
+      @closeToolbar="toggleOptions"
+      @previewOff="previewOff"
+      @previewOn="previewOn"
+      @darkMode="darkMode"
       :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
     <tt>
       <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
-      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a> &#x1F3C0;
-      <a v-if="allowToolbar" @click="toggleOptions">options</a>
+      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a>
+      <a v-if="allowToolbar" @click="toggleOptions" class="options">&#x1F3C0; <span>options</span></a>
     </tt>
   </div>
 </template>
@@ -48,6 +49,7 @@ export default {
       allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
       showToolbar: false,
+      darkClass: '',
     }
     //console.debug(my_config);
     return my_config;
@@ -61,6 +63,19 @@ export default {
     },
     previewOn() {
       document.body.style.overflowY = 'hidden';
+    },
+    darkMode(value) {
+      console.log(value);
+      if (value == 'default' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        value = 'dark';
+      }
+      if (value == 'dark') {
+        this.darkClass = 'dark';
+        document.body.style.backgroundColor = 'black';
+      } else {
+        this.darkClass = '';
+        document.body.style.backgroundColor = '';
+      }
     },
   }
 };
@@ -76,9 +91,6 @@ export default {
 #app.dark {
   background: black;
   color: white;
-}
-html, body {
-  background: black;
 }
 i.fa {
   font-style: normal;
@@ -162,6 +174,16 @@ button.tiny:hover {
   width: auto;
 }
 
+a.options {
+  text-decoration: none;
+  margin-left: 0.6em;
+}
+a.options span {
+  opacity: 0;
+}
+a.options:hover span {
+  opacity: 1;
+}
 .options .modal-close-button {
   margin-top: -18px;
 }

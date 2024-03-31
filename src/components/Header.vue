@@ -37,6 +37,14 @@ export default {
 <style scoped>
 /* -- Headline -- */
 
+.dark .section-header {
+  color: white;
+}
+.section-header {
+  color: black;
+}
+
+
 .header-logo img {
   height: 6em;
   margin-bottom: 2em;
@@ -57,7 +65,6 @@ export default {
 }
 
 .event-name {
-  color: black;
   font-size: 250%;
   margin: 0px;
   text-align: left;

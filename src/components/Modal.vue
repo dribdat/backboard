@@ -72,9 +72,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
   display: table;
   transition: opacity 0.3s ease;
+  background-color: white;
+}
+
+.dark .modal-mask {
+  background-color: black;
 }
 
 .modal-wrapper {
@@ -103,7 +107,7 @@
 @media (min-width: 768px) {
   .modal-container {
     height: 90%;
-    padding: 20px 30px;
+    padding: 30px 50px;
   }
   .modal-close-button {
     margin-right: -1em;

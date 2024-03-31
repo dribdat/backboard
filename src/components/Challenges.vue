@@ -104,6 +104,12 @@
         <label for="isChallenges" title="🏆">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
         <label for="isHexagons" title="⬣">Hexgrid</label>
+      <select v-model="darkMode" id="darkMode"
+             @change="changeDark">
+        <option value="default" selected>🌗 Colors</option>
+        <option v-for="option in darkOptions" 
+                v-bind:value="option.id" >{{ option.name }}</option>
+      </select>
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
         <option value="default" selected>🡻 Sort</option>
@@ -162,6 +168,12 @@ export default {
         { id: 'summary', name: 'Summary' },
         { id: 'hashtag', name: 'Hashtag' },
         { id: 'score', name: 'Score' }
+      ],
+      darkMode: 'default',
+      darkOptions: [
+        { id: 'default', name: 'System' },
+        { id: 'light', name: 'Light' },
+        { id: 'dark', name: 'Dark' }
       ]
     };
   },
@@ -188,6 +200,7 @@ export default {
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
     this.sortOrder = urlParams.get("sort") || "default";
+    this.darkMode = urlParams.get("dark") || "default";
     const datapackage_json = this.src; // TODO urlParams.get("src") ?
     // Continue with loading event
     console.info("Loading", datapackage_json);
@@ -278,7 +291,9 @@ export default {
           // console.log(this.event);
         }
 
+        // Propagate initial values
         this.changeOrder();
+        this.changeDark();
       })
       .catch((error) => {
         this.errorMessage = error;
@@ -297,6 +312,9 @@ export default {
     },
     seeDetails: function (project) {
       window.open(project.url);
+    },
+    changeDark: function() {
+      this.$emit('darkMode', this.darkMode);
     },
     changeOrder: function () {
       console.log('Sorting by', this.sortOrder);
@@ -348,6 +366,7 @@ export default {
         (this.isButtons ? '&buttons=1' : '') +
         (this.isComments ? '&comments=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
+        (this.darkMode ? '&dark=' + this.darkMode : '') +
         (this.sortOrder ? '&sort=' + this.sortOrder : '') +
       '';
     }
