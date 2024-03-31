@@ -93,7 +93,7 @@
                     :src="getEmbed(project)"></iframe>
             </div>
             <button v-if="isEmbeddable(project)"
-                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">🖵 <span>Fullscreen</span></button>
+                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">⧐ <span>Fullscreen</span></button>
 
             <markdown class="preview-longtext" 
                      v-if="project.longtext"
