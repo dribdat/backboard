@@ -54,7 +54,7 @@
             <button v-if="withComments" 
                     @click="openComment(project)" 
                     title="Write a comment to the team">
-                   🗯️ Comment
+                   🗨️ Comment
             </button>  
           </div>
         </div>
