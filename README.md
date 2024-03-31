@@ -23,11 +23,12 @@ Put a `datapackage.json` file that you exported from dribdat into the **public**
 
 You can use the following environment variables:
 
-- `VUE_APP_DRIBDAT_URL` - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package (\* see examples)
-- `VUE_APP_DEFAULT_OPTS` (optional) - the default display settings - copy the part after ? from the Share link.
-- `VUE_APP_HIDE_TOOLBAR` (optional) - makes the options toolbar in the footer unavailable.
-- `VUE_APP_VOTE_FORM_URL` (optional) - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
-- `BACKBOARD_ROOT` (optional) - if your deployment is not at the root, change it here (e.g. `/backboard`)
+- `VUE_APP_DRIBDAT_URL` (required) - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package (\* see examples)
+- `VUE_APP_DEFAULT_OPTS` - the default display settings - copy the part after ? from the Share link.
+- `VUE_APP_HIDE_TOOLBAR` - makes the options toolbar in the footer unavailable.
+- `VUE_APP_VOTE_FORM_URL` - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
+- `VUE_APP_TIMER_LENGTH` - in minutes, how long the countdown timer should run for in presentation mode (0 to disable).
+- `BACKBOARD_ROOT` - if your deployment is not at the root, change it here (e.g. `/backboard`)
 
 \* Examples:
 

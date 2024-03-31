@@ -65,7 +65,6 @@ export default {
       document.body.style.overflowY = 'hidden';
     },
     darkMode(value) {
-      console.log(value);
       if (value == 'default' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         value = 'dark';
       }

@@ -203,7 +203,7 @@ export default {
     this.darkMode = urlParams.get("dark") || "default";
     const datapackage_json = this.src; // TODO urlParams.get("src") ?
     // Continue with loading event
-    console.info("Loading", datapackage_json);
+    console.debug("Loading", datapackage_json);
     fetch(datapackage_json)
       .then(async (response) => {
         const data = await response.json();
@@ -317,7 +317,7 @@ export default {
       this.$emit('darkMode', this.darkMode);
     },
     changeOrder: function () {
-      console.log('Sorting by', this.sortOrder);
+      console.debug('Sorting by', this.sortOrder);
       if (this.sortOrder == 'id') {
         // Sort by id
         this.projects.sort((a, b) => a.id < b.id);

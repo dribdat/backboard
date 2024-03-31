@@ -77,10 +77,6 @@
   background-color: white;
 }
 
-.dark .modal-mask {
-  background-color: black;
-}
-
 .modal-wrapper {
   display: table-cell;
   vertical-align: middle;
@@ -108,6 +104,9 @@
   .modal-container {
     height: 90%;
     padding: 30px 50px;
+  }
+  .dark .modal-mask {
+    background-color: black;
   }
   .modal-close-button {
     margin-right: -1em;

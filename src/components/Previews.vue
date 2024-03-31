@@ -36,7 +36,9 @@
           </div>
 
           <div class="status">
-            <span class="phase">{{ project.phase }}</span>
+            <span class="phase" title="Current project phase">
+              {{ project.phase }}
+            </span>
             <button title="Open project page" 
                    @click="seeDetails(project)"
                    :href="project.url">
@@ -93,7 +95,7 @@
                     :src="getEmbed(project)"></iframe>
             </div>
             <button v-if="isEmbeddable(project)"
-                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">⧐ <span>Fullscreen</span></button>
+                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">⧐<span>&nbsp;Fullscreen</span></button>
 
             <markdown class="preview-longtext" 
                      v-if="project.longtext"
@@ -133,8 +135,9 @@ import VueMarkdown from '@adapttive/vue-markdown'
 import Modal from "./Modal"
 import Header from "./Header"
 
-const TIMER_LENGTH_MINUTES = 3;
-const pc_per_tick = 100 / (60 * TIMER_LENGTH_MINUTES);
+// TODO: make this into an option / variable
+const TIMER_LENGTH_MINUTES = parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
+const pc_per_tick = (TIMER_LENGTH_MINUTES > 0) ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
 
 export default {
   name: "Previews",
@@ -245,13 +248,13 @@ export default {
         }, 200);
       } else {
         this.ruigehond = 100;        
+        document.getElementsByClassName('modal-container')[0].focus();
       }
     },
     countDown() {
-      if (this.ruigehond >= 100) {
+      if (pc_per_tick == 0) return; // disabled
+      if (this.ruigehond >= 100) { // completed
         this.ruigehond = 100; return;
-      } else if (this.ruigehond >= 80) {
-        // flash
       }
       this.ruigehond += pc_per_tick;
       let ths = this;
