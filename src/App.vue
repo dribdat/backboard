@@ -1,9 +1,11 @@
 <template>
-  <div id="app">
+  <div id="app" class="dark">
     <VoteBox class="votebox"
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
-      @close="toggleOptions()"
+      @closeToolbar="toggleOptions()"
+      @previewOff="previewOff()"
+      @previewOn="previewOn()" 
       :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
     <tt>
       <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
@@ -43,9 +45,9 @@ export default {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
       voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
-      showToolbar: false,
       allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
+      showToolbar: false,
     }
     //console.debug(my_config);
     return my_config;
@@ -53,7 +55,13 @@ export default {
   methods: {
     toggleOptions() {
       this.showToolbar = !this.showToolbar;
-    }
+    },
+    previewOff() {
+      document.body.style.overflowY = '';
+    },
+    previewOn() {
+      document.body.style.overflowY = 'hidden';
+    },
   }
 };
 </script>
@@ -65,6 +73,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
+#app.dark {
+  background: black;
+  color: white;
+}
+html, body {
+  background: black;
+}
 i.fa {
   font-style: normal;
 }
@@ -72,7 +87,6 @@ body {
   color: #000;
   background-color: transparent;
 }
-tt { color: black; }
 .votebox {
   margin: 2em;
 }

@@ -51,8 +51,22 @@
 
             <div class="webembed-fullscreen"
                  v-if="isEmbeddable(project) && fullscreen">
-              <button class="close" @click="toggleFullscreen()" title="Close fullscreen">❌</button>
-              <iframe class="webembed"
+
+              <div id="ruigehond" :class="'' + ruigehond<100 ? '' : 'finished'">
+                <div role="progressbar" aria-valuemin="0" aria-valuemax="100" tabindex="-1" title="Time remaining"
+                    :style="'width:' + ruigehond + '%;background:rgb(' + (ruigehond*2) + ',0,0);'"
+                    :aria-valuenow="ruigehond"></div>
+              </div>
+
+              <div class="fullscreen-controls">
+                <!--
+                  // Time remaining
+                  // Event name
+                  // Focused
+                -->
+                <button @click="toggleFullscreen()" title="Close fullscreen">▲</button>
+              </div>
+              <iframe class="webembed" id="webembedframe"
                     :src="getEmbed(project)"></iframe>
             </div>
             <button v-if="isEmbeddable(project)"
@@ -83,30 +97,30 @@
             <button title="Open project page" 
                    @click="seeDetails(project)"
                    :href="project.url">
-                   📖 Open
+                   ◳ Open
             </button>
-            <button v-if="isEmbeddable(project)"
-                    title="Open in full screen mode"
-                  @click="toggleFullscreen()">
-                   👁️ Fullscreen</button>
             <button v-if="isEmbeddable(project)"
                     title="Download" 
                    @click="seeEmbed(project)">
-                   🖼️</button>
+                   ⧨ Get</button>
+            <button v-if="isEmbeddable(project)"
+                    title="Open in full screen mode"
+                  @click="toggleFullscreen()">
+                   ⧐ View</button>
 
             <button v-if="withComments" 
                     @click="openComment(project)" 
                     title="Write a comment to the team">
-                   💬 Comment
+                   🗯️ Comment
             </button>  
           </div>
 
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
-          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
-          <button @click="selectNone()" title="Go back">⬆️</button>
-          <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
+          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">◁</button>
+          <button @click="selectNone()" title="Go back">▲</button>
+          <button class="nav nav-next" @click="goNext(project)" title="Next">▷</button>
         </div>
       </Modal>
     </div>
@@ -118,6 +132,9 @@ import VueMarkdown from '@adapttive/vue-markdown'
 
 import Modal from "./Modal"
 import Header from "./Header"
+
+const TIMER_LENGTH_MINUTES = 3;
+const pc_per_tick = 100 / (60 * TIMER_LENGTH_MINUTES);
 
 export default {
   name: "Previews",
@@ -145,7 +162,8 @@ export default {
   },
   data: function() {
     return {
-      fullscreen: false
+      fullscreen: false,
+      ruigehond: 0,
     }
   },
   methods: {
@@ -172,6 +190,7 @@ export default {
     selectNone: function () {
       this.active = -1;
       this.fullscreen = false;
+      this.$emit('close');
     },
     letsGo: function () {
       // Project navigation
@@ -218,6 +237,25 @@ export default {
     },
     toggleFullscreen () {
       this.fullscreen = !this.fullscreen;
+      if (this.fullscreen) {
+        this.ruigehond = 0;
+        this.countDown();
+        setTimeout(() => {
+          document.getElementById('webembedframe').contentWindow.focus();
+        }, 200);
+      } else {
+        this.ruigehond = 100;        
+      }
+    },
+    countDown() {
+      if (this.ruigehond >= 100) {
+        this.ruigehond = 100; return;
+      } else if (this.ruigehond >= 80) {
+        // flash
+      }
+      this.ruigehond += pc_per_tick;
+      let ths = this;
+      setTimeout(() => { ths.countDown() }, 1000);
     }
   }
 };
@@ -403,6 +441,9 @@ button.nav-prev {
   }
   .go-fullscreen span { font-size: 0px; }
 }
+.dark .webembed-fullscreen {
+  background: black;
+}
 .webembed-fullscreen {
   position: fixed;
   width: 100%;
@@ -418,8 +459,11 @@ button.nav-prev {
   position: absolute;
   z-index: 9999;
   box-shadow: none;
-  border: none;
   font-size: 1em;
+  margin: 0px;
+  padding: 0px 0.6em;
+  border: 1px solid grey;
+  background: black; color: white;
 }
 .webembed-fullscreen iframe {
   width: 100%;
@@ -448,6 +492,41 @@ button.nav-prev {
     border-top-right-radius: 10px;
     border-bottom: none;
   }
+}
+
+/* Shaggy dog style progress bar */
+#ruigehond {
+    z-index: 9998;
+    position: fixed;
+    display: block;
+    left: 0;
+    bottom: 0px;
+    width: 100%;
+    height: 10px;
+    margin: 0;
+    overflow: visible;
+    background-color: rgb(0,0,0);
+}
+#ruigehond.finished {
+    animation-name: pulsate;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+    animation-timing-function: ease;
+}
+@keyframes pulsate {
+  from {background-color: rgb(255,0,0);}
+  to {background-color: rgb(0,0,0);}
+}
+#ruigehond.finished > div {
+    display: none;
+}
+#ruigehond > div {
+    display: block;
+    background: linear-gradient(to right, #0E91F8, #e42fe2);
+    border-right: 1px solid gray;
+    width: 0px;
+    height: 100%;
 }
 
 </style>

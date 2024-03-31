@@ -70,6 +70,7 @@
     </row>
 
     <Previews v-if="isPreviews" v-model="activePreview"
+            @close="$emit('previewOff')"
             :withChallenges="isChallenges"
             :withComments="isComments"
             :showExcerpt="isExcerpts"
@@ -86,7 +87,7 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
-      <button class="modal-close-button" @click="$emit('close')">
+      <button class="modal-close-button" @click="$emit('closeToolbar')">
         &#10060;
       </button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
@@ -330,8 +331,13 @@ export default {
       if (!this.isPreviews) {
         return this.seeDetails(project);
       }
-      this.activePreview = (this.activePreview == project.id) ?
-                              -1 : project.id;
+      if (this.activePreview == project.id) {
+        this.activePreview = -1;
+        this.$emit('previewOff');
+      } else {
+        this.activePreview = project.id;
+        this.$emit('previewOn');
+      }
     },
     shareUrl: function () {
       return '?' +
