@@ -1,14 +1,17 @@
 <template>
-  <div id="app">
+  <div id="app" :class="darkClass">
     <VoteBox class="votebox"
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
-      @close="toggleOptions()"
-      :src="dribdatApi" :toolbar="showToolbar" :options="defaultOptions" />
+      @closeToolbar="toggleOptions"
+      @previewOff="previewOff"
+      @previewOn="previewOn"
+      @darkMode="darkMode"
+      :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
     <tt>
-      <button v-if="allowToolbar" class="small" @click="toggleOptions">options</button>
       <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
       powered by <a href="https://dribdat.cc" target="_blank">dribdat</a>
+      <a v-if="allowToolbar" @click="toggleOptions" class="options">&#x1F3C0; <span>options</span></a>
     </tt>
   </div>
 </template>
@@ -39,19 +42,40 @@ export default {
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
     }
-    return {
+    let my_config = {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
       voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
-      showToolbar: false,
       allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
+      showToolbar: false,
+      darkClass: '',
     }
+    //console.debug(my_config);
+    return my_config;
   },
   methods: {
     toggleOptions() {
       this.showToolbar = !this.showToolbar;
-    }
+    },
+    previewOff() {
+      document.body.style.overflowY = '';
+    },
+    previewOn() {
+      document.body.style.overflowY = 'hidden';
+    },
+    darkMode(value) {
+      if (value == 'default' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        value = 'dark';
+      }
+      if (value == 'dark') {
+        this.darkClass = 'dark';
+        document.body.style.backgroundColor = 'black';
+      } else {
+        this.darkClass = '';
+        document.body.style.backgroundColor = '';
+      }
+    },
   }
 };
 </script>
@@ -63,6 +87,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
+#app.dark {
+  background: black;
+  color: white;
+}
 i.fa {
   font-style: normal;
 }
@@ -70,21 +98,33 @@ body {
   color: #000;
   background-color: transparent;
 }
-tt { color: black; }
 .votebox {
   margin: 2em;
 }
 a:active, a:hover {
   outline-width: 0;
+  color: #91170a;
+  text-decoration: underline;
+  cursor: pointer;
 }
-
-
+a {
+  color: #d9230f;
+  text-decoration: none;
+  background-color: transparent;
+}
 .content img,
 .preview img {
   max-width: 100% !important;
 }
 .preview > p:first-child {
   margin: 0;
+}
+.preview > p {
+  margin-bottom: 1em;
+}
+
+.modal-container:active, .modal-container:hover {
+  outline-width: 0;
 }
 
 button {
@@ -133,6 +173,19 @@ button.tiny:hover {
   width: auto;
 }
 
+a.options {
+  text-decoration: none;
+  margin-left: 0.6em;
+}
+a.options span {
+  opacity: 0;
+}
+a.options:hover span {
+  opacity: 1;
+}
+.options .modal-close-button {
+  margin-top: -18px;
+}
 button.modal-close-button {
   background: transparent;
   border: none;

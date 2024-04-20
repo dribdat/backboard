@@ -15,6 +15,7 @@
         <div
           class="col project-container"
           :challenge="project.is_challenge"
+          v-if="isChallenges || !project.is_challenge"
           :style="
             project.image_url ?
               'background-image:url(' + project.image_url + ')'
@@ -26,19 +27,7 @@
           <div :class="project.image_url ? 'project has-thumb' : 'project'"
                @click="seePreview(project)"
           >
-            
-            <div class="name">
-              {{ project.name }}
-            </div>
-
-            <div class="progress"
-              :title="project.phase + ': ' + project.score + '%'"
-              v-if="!project.is_challenge && project.score && project.score > 0">
-              <div class="progress-bar" role="progressbar"
-                :style="'width:' + project.score + '%'">
-              </div>
-            </div>
-
+          
             <div class="team-stats">
               <div class="team-counter"
                    :title="project.team.join(', ')">
@@ -52,6 +41,18 @@
                 <div class="count" v-if="project.stats">{{ project.stats.total }}</div>
               </div>
             </div>
+            
+            <div class="name">
+              {{ project.name }}
+            </div>
+
+            <div class="progress"
+              :title="project.phase + ': ' + project.score + '%'"
+              v-if="!project.is_challenge && project.score && project.score > 0">
+              <div class="progress-bar" role="progressbar"
+                :style="'width:' + project.score + '%'">
+              </div>
+            </div>
 
             <div v-show="project.summary || !project.is_challenge" class="summary">
               <p>{{ project.summary }}</p>
@@ -59,6 +60,7 @@
 
             <div class="team-join" v-if="isButtons">
               <button @click="joinTeam(project)" title="Join">👍</button>
+              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
 
@@ -68,12 +70,15 @@
     </row>
 
     <Previews v-if="isPreviews" v-model="activePreview"
+            @close="$emit('previewOff')"
             :withChallenges="isChallenges"
             :withComments="isComments"
+            :showExcerpt="isExcerpts"
             :projects="projects"
+            :eventData="isHeadline ? event : null"
             ></Previews>
 
-    <Honeycomb v-if="isHexagons"
+    <Honeycomb v-if="isHexagons && projects != null"
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
@@ -82,21 +87,35 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
-      <button class="modal-close-button" @click="$emit('close')">
+      <button class="modal-close-button" @click="$emit('closeToolbar')">
         &#10060;
       </button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
-        <label for="isHeadline">Headline</label>
+        <label for="isHeadline" title="⛳">Header</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
-        <label for="isPreviews">Previews</label>
+        <label for="isPreviews" title="👀">Popup</label>
+      <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
+        <label for="isExcerpts" title="🖼️ ">Excerpt</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons">Buttons</label>
+        <label for="isButtons" title="🪟">Button</label>
       <input type="checkbox" v-model="isComments" id="isComments">
-        <label for="isComments">Comments</label>
+        <label for="isComments" title="💬">Comment</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges">Challenges</label>
+        <label for="isChallenges" title="🏆">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons">Hexagons</label>
+        <label for="isHexagons" title="⬣">Hexgrid</label>
+      <select v-model="darkMode" id="darkMode"
+             @change="changeDark">
+        <option value="default" selected>🌗 Colors</option>
+        <option v-for="option in darkOptions" 
+                v-bind:value="option.id" >{{ option.name }}</option>
+      </select>
+      <select v-model="sortOrder" id="sortBy"
+             @change="changeOrder">
+        <option value="default" selected>🡻 Sort</option>
+        <option v-for="option in sortOptions" 
+                v-bind:value="option.id" >{{ option.name }}</option>
+      </select>
       <span class="share-button">
         🌐<a :href="shareUrl()">Share</a>
       </span>
@@ -139,7 +158,23 @@ export default {
       isHeadline: false,
       isHexagons: false,
       isPreviews: false,
+      isExcerpts: false,
       activePreview: -1,
+      sortOrder: 'title',
+      sortOptions: [
+        { id: 'id', name: 'id' },
+        { id: 'ident', name: 'Ident' },
+        { id: 'name', name: 'Name' },
+        { id: 'summary', name: 'Summary' },
+        { id: 'hashtag', name: 'Hashtag' },
+        { id: 'score', name: 'Score' }
+      ],
+      darkMode: 'default',
+      darkOptions: [
+        { id: 'default', name: 'System' },
+        { id: 'light', name: 'Light' },
+        { id: 'dark', name: 'Dark' }
+      ]
     };
   },
   computed: {
@@ -148,7 +183,7 @@ export default {
       let showChallenges = this.isChallenges;
       return this.projects.filter(function (p) {
         return showChallenges || !p.is_challenge
-      })
+      });
     }
   },
   mounted() {
@@ -161,11 +196,15 @@ export default {
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
+    this.isExcerpts = Boolean(urlParams.get("excerpts"));
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
+    this.sortOrder = urlParams.get("sort") || "default";
+    this.darkMode = urlParams.get("dark") || "default";
+    const datapackage_json = this.src; // TODO urlParams.get("src") ?
     // Continue with loading event
-    console.info("Loading", this.src);
-    fetch(this.src)
+    console.debug("Loading", datapackage_json);
+    fetch(datapackage_json)
       .then(async (response) => {
         const data = await response.json();
         // console.debug(data);
@@ -207,39 +246,28 @@ export default {
 
         data.projects.forEach((p) => {
           // Assign a boolean for challenge status
-          p.is_challenge = p.progress < 1;
+          p.is_challenge = p.progress < 2;
           // Format the date
           p.date = moment(p.updated_at).format('MMM Do, YYYY');
           // Ensure image_url attribute always present
           p.image_url = typeof p.image_url === "undefined" ? null : p.image_url;
+          if (!p.image_url && data.event && data.event.logo_url) {
+            p.image_url = data.event.logo_url;
+          }
           // Check format of team
           p.team = (typeof p.team === 'string') ?
             p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ") : p.team;
           this.projects.push(p);
         });
 
-        /*
-        // TODO: configurable sort
-        
-        // Sort by name
-        this.projects.sort((a, b) => a.name.localeCompare(b.name));
-        // Sort by id
-        this.projects.sort((a, b) => a.id < b.id);
-        // Sort by score
-        this.projects.sort((a, b) => a.score < b.score);
-        */
-
-        // Sort by score then name
-        this.projects.sort((a, b) => a.score <= b.score && a.name.localeCompare(b.name));
-
         this.projects.forEach((p) => {
           // Prepare statistics summary
           p.statistics = "";
           if (p.stats) {
-            p.stats['words pitch'] = p.stats['wordslong'];
-            delete p.stats['wordslong'];
-            p.stats['words all'] = p.stats['wordcount'];
-            delete p.stats['wordcount'];
+            p.stats['bytes pitch'] = p.stats['sizepitch'];
+            delete p.stats['sizepitch'];
+            p.stats['bytes total'] = p.stats['sizetotal'];
+            delete p.stats['sizetotal'];
             Object.keys(p.stats).forEach(function(k) {
               p.statistics += k + ': ' + p.stats[k] + '\n';
             })
@@ -262,6 +290,10 @@ export default {
           this.event.webpage = this.event.webpage_url || this.event.community_url || data.homepage;
           // console.log(this.event);
         }
+
+        // Propagate initial values
+        this.changeOrder();
+        this.changeDark();
       })
       .catch((error) => {
         this.errorMessage = error;
@@ -272,27 +304,70 @@ export default {
     joinTeam: function (project) {
       window.open(project.url + "/star/me");
     },
+    openComment: function (project) {
+      window.open(project.url + "/comment");
+    },
     contactTeam: function (project) {
       window.open(project.contact_url);
     },
     seeDetails: function (project) {
       window.open(project.url);
     },
+    changeDark: function() {
+      this.$emit('darkMode', this.darkMode);
+    },
+    changeOrder: function () {
+      console.debug('Sorting by', this.sortOrder);
+      if (this.sortOrder == 'id') {
+        // Sort by id
+        this.projects.sort((a, b) => a.id < b.id);
+      } else if (this.sortOrder == 'name') {
+        // Sort by name
+        this.projects.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (this.sortOrder == 'summary') {
+        // Sort by summary
+        this.projects.sort((a, b) => a.summary.localeCompare(b.summary));
+      } else if (this.sortOrder == 'ident') {
+        // Sort by ident
+        this.projects.sort((a, b) => a.ident.localeCompare(b.ident));
+      } else if (this.sortOrder == 'hashtag') {
+        // Sort by hashtag
+        this.projects.sort((a, b) => a.hashtag.localeCompare(b.hashtag));
+      } else if (this.sortOrder == 'score') {
+        // Sort by score
+        this.projects.sort((a, b) => a.score < b.score);
+      } else {
+        // Sort by score then id (challenge) or name (project)
+        this.projects.sort((a, b) =>
+          a.is_challenge ? 
+              a.id < b.id :
+              a.score <= b.score && a.name.localeCompare(b.name)
+        );
+      }
+    },
     seePreview: function (project) {
       if (!this.isPreviews) {
         return this.seeDetails(project);
       }
-      this.activePreview = (this.activePreview == project.id) ?
-                              -1 : project.id;
+      if (this.activePreview == project.id) {
+        this.activePreview = -1;
+        this.$emit('previewOff');
+      } else {
+        this.activePreview = project.id;
+        this.$emit('previewOn');
+      }
     },
     shareUrl: function () {
       return '?' +
         (this.isHeadline ? '&headline=1' : '') +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
+        (this.isExcerpts ? '&excerpts=1' : '') +
         (this.isButtons ? '&buttons=1' : '') +
         (this.isComments ? '&comments=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
+        (this.darkMode ? '&dark=' + this.darkMode : '') +
+        (this.sortOrder ? '&sort=' + this.sortOrder : '') +
       '';
     }
   }
@@ -303,11 +378,42 @@ export default {
 
 /* -- Main display -- */
 
-.challenges {
-  padding: 20px 38px;
-  box-sizing: border-box;
-  color: #263238;
+.challenges > .section-header {
+  margin-left: 15%;
+  margin-bottom: 2em;
 }
+
+@media (max-width: 768px) {
+  .challenges > .section-header {
+    margin-left: 5%;
+  }
+  .challenges .header-logo {
+    display: block;
+    float: none;
+    margin: none;
+  }
+}
+
+.challenges {
+  color: #263238;
+  box-sizing: border-box;
+  padding: 20px 38px;
+}
+
+@media (max-width: 478px) {
+  .challenges {
+    padding: 0px;
+    min-width: 320px;
+  }
+  .honeycomb {
+    width: 80%;
+    margin-top: 10em;
+    margin-bottom: 20em;
+    text-align: center;
+    transform: scale(1.2);
+  }
+}
+
 .options {
   font-size: 90%;
   cursor: pointer;
@@ -414,7 +520,7 @@ export default {
 .project .name .hex {
   -webkit-transform: rotate(30deg);
   transform: rotate(30deg);
-  display: inline-block;
+  display: block;
   opacity: 0.4;
   float: right;
   margin-top: -0.8em;
@@ -425,8 +531,8 @@ export default {
 }
 .project .team-stats {
   background: white;
+  display: block;
   float: right;
-  display: inline-block;
   font-size: 80%;
   color: #999;
   width: 3em;

@@ -3,19 +3,22 @@
       <div
         v-for="project in projects"
         :key="project.id"
-        :class="'hexagon ' + (project.is_challenge ? 'challenge' : 'project')"
+        :class="'hexagon ' + getHexagonClass(project)"
         :challenge="project.is_challenge"
         :style="project.logo_color ? ('border-width: 3px; border-color:' + project.logo_color) : ''"
         :title="project.summary"
         @click="$emit('preview', project)"
       >
         <div class="hexagontent">
-          <span>{{ project.name }}</span>
-          <div class="hexaicon"
-              v-if="project.image_url"
+          <div class="name">
+            <span v-if="project.name.length > 30" class="padme"></span>
+            {{ project.name }}
+          </div>
+          <div v-if="project.ident" class="ident">{{ fitme(project.ident) }}</div>
+          <div v-if="project.image_url" class="hexaicon"
               :style="'background-image:url(' + project.image_url + ')'"></div>
               <div class="progress"
-                v-if="!project.is_challenge && project.score && project.score > 0">
+                v-if="!project.is_challenge && project.score && project.score > 0 && project.score < 80">
                 <div class="progress-bar" role="progressbar"
                   :style="'width:' + project.score + '%'">
                 </div>
@@ -28,7 +31,16 @@
 export default {
   name: "Honeycomb",
   props: {
-    projects: Object
+    projects: Array
+  },
+  methods: {
+    fitme: (text) => {
+      return text.substr(0, 7)
+    },
+    getHexagonClass: (project) => {
+      return (project.is_challenge ? 'challenge' : 'project') +
+             (project.progress ? ' stage-' + project.progress : '')
+    }
   }
 }
 </script>
@@ -42,6 +54,8 @@ export default {
   min-height: 700px;
   text-align: left;
   margin: 0 auto;
+  line-height: 0px;
+  clear: both;
 }
 @media (max-width: 980px) {
   .honeycomb {
@@ -70,12 +84,12 @@ export default {
   }
 }
 
-.challenge.hexagon .hexagontent {
-  color: #35a;
-  font-weight: normal;
-  padding: 4px 0px;
-  font-size: 90%;
+.padme {
+  display: inline-block;
+  width: 0.1em; height: 1em;
+  visibility: hidden;
 }
+
 .challenge.hexagon {
   background-color: white;
   border-top: 1px dashed rgba(0,0,200,0.4);
@@ -90,16 +104,19 @@ export default {
   border-bottom: 1px dashed rgba(0,0,200,0.4);
 }
 
-.project .hexagontent {
+.hexagon .hexagontent .name {
+  max-height: 4.5em;
+  overflow: hidden;
+  display: block;
+}
+
+.project.hexagon  .hexagontent {
   overflow: hidden;
   color: black;
-  line-height: 1.5;
+  margin-top: 0.2em;
 }
 .project .hexagontent.with-icon div {
   font-size: 90%;
-}
-.project .hexagontent div {
-  max-height: 5.4em;
 }
 .project .hexagontent .fa {
   font-size: 240%;
@@ -113,10 +130,11 @@ export default {
   margin-left: -36px;
   left: 50%;
   opacity: 1;
-  border: 1px solid white;
+  border: 1px solid rgba(0,0,0,0.1);
 }
 .project .hexagontent .progress-bar {
-  background-color: #aaa;
+  background-color: rgba(0,0,0,0.2);
+  height: 3px;
 }
 .project.hexagon {
   border-top: 1px solid rgba(0,0,0,0.2);
@@ -131,14 +149,71 @@ export default {
   border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 
+/* --- Hexagon default palette --- */
+.project.hexagon  { background-color: #ebd8c3; } /* primary color */
+.hexagon.stage-5  { background-color: #ebd8c3; }
+.hexagon.stage-10 { background-color: #ffeeba; }
+.hexagon.stage-20 { background-color: #ffd9ba; }
+.hexagon.stage-30 { background-color: #ffe7ba; }
+.hexagon.stage-40 { background-color: #fff5ba; }
+.hexagon.stage-50 { background-color: #fbffba; }
+/* hhttps://colorkit.co/palette/ffeeba-ffd9ba-ffe7ba-fff5ba-fbffba/ */
+
+@font-face{
+  font-family: M3Regular;
+  src: url(../assets/m3regular-webfont.woff2) format("woff2"),
+       url(../assets/m3regular-webfont.woff) format("woff");
+  font-style: normal;
+}
+
+.hexagon .hexagontent {
+  color: #139;
+  font-weight: normal;
+  padding: 4px 0px;
+  max-height: 120px;
+  line-height: 13pt;
+  /*font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;*/
+  font-family: "Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1.0rem;
+  text-shadow: 1px 1px 1px #fff;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+.hexagontent .ident {
+  font-weight: bold;
+  font-size: 90%;    
+  text-shadow: 2px 1px 1px white;
+  color: #777;
+  font-family: monospace;
+  line-height: 0em;
+  margin: 2.2em 0 0 -2.4em;
+  padding: 0px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
+}
+.hexagon .hexaicon {
+  width: 2em;
+  height: 2em;
+  background-color: white;
+  background-size: cover;
+  position: relative;
+  left: 50%;
+  margin: 1em 0 0 -1em;
+  box-shadow: -2px -2px 1px rgb(0 0 0 / 20%);
+  border-radius: 1em;
+}
+
 .hexagon {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: -2px 22px;
+  margin: 2px 22px;
   background-color: white;
   text-align: center;
   padding: 0px;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
 }
 .hexagon, .hexagon::before, .hexagon::after {
   /* easy way: height is width * 1.732
@@ -147,6 +222,11 @@ export default {
   width: 82px;
   height: 142px;
   border-radius: 20%/5%;
+}
+.project.hexagon, .project.hexagon::before, .project.hexagon::after {
+  border-color: transparent !important;
+  border-top: none;
+  border-bottom: none;
 }
 .hexagon::before {
   background-color: inherit;
