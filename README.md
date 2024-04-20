@@ -19,7 +19,9 @@ Deploy this application with any service that supports Node.js
 
 ## Usage
 
-Put a `datapackage.json` file that you exported from dribdat into the **public** folder - or just configure with a link to your dribdat event.
+Put a `datapackage.json` file that you exported from dribdat into the **public** folder.
+
+Or use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event or data package elsewhere.
 
 You can use the following environment variables:
 
