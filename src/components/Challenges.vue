@@ -409,7 +409,7 @@ export default {
     width: 80%;
     margin-top: 10em;
     margin-bottom: 20em;
-    text-align: center;
+    text-align: left;
     transform: scale(1.2);
   }
 }
