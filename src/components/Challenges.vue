@@ -70,6 +70,7 @@
     </row>
 
     <Previews v-if="isPreviews" v-model="activePreview"
+            @close="$emit('previewOff')"
             :withChallenges="isChallenges"
             :withComments="isComments"
             :showExcerpt="isExcerpts"
@@ -86,7 +87,7 @@
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
-      <button class="modal-close-button" @click="$emit('close')">
+      <button class="modal-close-button" @click="$emit('closeToolbar')">
         &#10060;
       </button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
@@ -103,6 +104,12 @@
         <label for="isChallenges" title="🏆">Challenges</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
         <label for="isHexagons" title="⬣">Hexgrid</label>
+      <select v-model="darkMode" id="darkMode"
+             @change="changeDark">
+        <option value="default" selected>🌗 Colors</option>
+        <option v-for="option in darkOptions" 
+                v-bind:value="option.id" >{{ option.name }}</option>
+      </select>
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
         <option value="default" selected>🡻 Sort</option>
@@ -155,11 +162,18 @@ export default {
       activePreview: -1,
       sortOrder: 'title',
       sortOptions: [
-        { id: 'id', name: 'ID' },
+        { id: 'id', name: 'id' },
+        { id: 'ident', name: 'Ident' },
         { id: 'name', name: 'Name' },
         { id: 'summary', name: 'Summary' },
         { id: 'hashtag', name: 'Hashtag' },
         { id: 'score', name: 'Score' }
+      ],
+      darkMode: 'default',
+      darkOptions: [
+        { id: 'default', name: 'System' },
+        { id: 'light', name: 'Light' },
+        { id: 'dark', name: 'Dark' }
       ]
     };
   },
@@ -185,10 +199,12 @@ export default {
     this.isExcerpts = Boolean(urlParams.get("excerpts"));
     this.isComments = Boolean(urlParams.get("comments"));
     this.isChallenges = Boolean(urlParams.get("challenges"));
-    this.sortOrder = urlParams.get("sort");
+    this.sortOrder = urlParams.get("sort") || "default";
+    this.darkMode = urlParams.get("dark") || "default";
+    const datapackage_json = this.src; // TODO urlParams.get("src") ?
     // Continue with loading event
-    console.info("Loading", this.src);
-    fetch(this.src)
+    console.debug("Loading", datapackage_json);
+    fetch(datapackage_json)
       .then(async (response) => {
         const data = await response.json();
         // console.debug(data);
@@ -275,7 +291,9 @@ export default {
           // console.log(this.event);
         }
 
+        // Propagate initial values
         this.changeOrder();
+        this.changeDark();
       })
       .catch((error) => {
         this.errorMessage = error;
@@ -295,8 +313,11 @@ export default {
     seeDetails: function (project) {
       window.open(project.url);
     },
+    changeDark: function() {
+      this.$emit('darkMode', this.darkMode);
+    },
     changeOrder: function () {
-      console.log('Sorting by', this.sortOrder);
+      console.debug('Sorting by', this.sortOrder);
       if (this.sortOrder == 'id') {
         // Sort by id
         this.projects.sort((a, b) => a.id < b.id);
@@ -306,6 +327,9 @@ export default {
       } else if (this.sortOrder == 'summary') {
         // Sort by summary
         this.projects.sort((a, b) => a.summary.localeCompare(b.summary));
+      } else if (this.sortOrder == 'ident') {
+        // Sort by ident
+        this.projects.sort((a, b) => a.ident.localeCompare(b.ident));
       } else if (this.sortOrder == 'hashtag') {
         // Sort by hashtag
         this.projects.sort((a, b) => a.hashtag.localeCompare(b.hashtag));
@@ -325,8 +349,13 @@ export default {
       if (!this.isPreviews) {
         return this.seeDetails(project);
       }
-      this.activePreview = (this.activePreview == project.id) ?
-                              -1 : project.id;
+      if (this.activePreview == project.id) {
+        this.activePreview = -1;
+        this.$emit('previewOff');
+      } else {
+        this.activePreview = project.id;
+        this.$emit('previewOn');
+      }
     },
     shareUrl: function () {
       return '?' +
@@ -337,6 +366,7 @@ export default {
         (this.isButtons ? '&buttons=1' : '') +
         (this.isComments ? '&comments=1' : '') +
         (this.isChallenges ? '&challenges=1' : '') +
+        (this.darkMode ? '&dark=' + this.darkMode : '') +
         (this.sortOrder ? '&sort=' + this.sortOrder : '') +
       '';
     }
@@ -348,11 +378,42 @@ export default {
 
 /* -- Main display -- */
 
-.challenges {
-  padding: 20px 38px;
-  box-sizing: border-box;
-  color: #263238;
+.challenges > .section-header {
+  margin-left: 15%;
+  margin-bottom: 2em;
 }
+
+@media (max-width: 768px) {
+  .challenges > .section-header {
+    margin-left: 5%;
+  }
+  .challenges .header-logo {
+    display: block;
+    float: none;
+    margin: none;
+  }
+}
+
+.challenges {
+  color: #263238;
+  box-sizing: border-box;
+  padding: 20px 38px;
+}
+
+@media (max-width: 478px) {
+  .challenges {
+    padding: 0px;
+    min-width: 320px;
+  }
+  .honeycomb {
+    width: 80%;
+    margin-top: 10em;
+    margin-bottom: 20em;
+    text-align: left;
+    transform: scale(1.2);
+  }
+}
+
 .options {
   font-size: 90%;
   cursor: pointer;

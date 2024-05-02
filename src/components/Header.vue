@@ -9,13 +9,13 @@
       <a :href="event.webpage" target="_blank">
         <h3 class="event-name">{{ event.name }}</h3>
       </a>
-      <span class="event-hostname" v-if="false && event.hostname">
+      <span class="event-hostname" v-if="event.hostname">
         <i class="fa fa-bank">🏢</i>
         {{ event.hostname }}</span>
-      <span class="event-location" v-if="false && event.location">
+      <span class="event-location" v-if="event.location">
         <i class="fa fa-map">🗺️</i>
         {{ event.location }}</span>
-      <div class="event-date" v-if="false && event.date">
+      <div class="event-date" v-if="event.date">
         <i class="fa fa-calendar">📆</i>
         {{ event.date }}</div>
       <p class="header-summary" v-if="event.summary">
@@ -37,30 +37,54 @@ export default {
 <style scoped>
 /* -- Headline -- */
 
+.dark .section-header {
+  color: white;
+}
+.section-header {
+  color: black;
+}
+
+
 .header-logo img {
-  width: 100px;
-  height: auto;
-  margin-bottom: 10px;
+  height: 6em;
+  margin-bottom: 2em;
 }
 
 .header-logo {
+  display: inline-block;
   float: left;
   margin-right: 1em;
 }
 
+@media (max-width: 768px) {
+  .header-logo {
+    display: block;
+    float: none;
+    margin: none;
+  }
+}
+
 .event-name {
-  color: black;
-  font-size: 200%;
+  font-size: 250%;
   margin: 0px;
   text-align: left;
-  margin-left: 15%;
+  line-height: 1.4em;
+  margin-bottom: 1pt;
+}
+
+.header-content {
+  text-align: left;
+}
+.header-content span {
+  margin-right: 1em;
+  opacity: 0.7;
 }
 
 .header-summary {
   font-size: 90%;
   font-style: italic;
   text-align: left;
-  max-width: 80%;
-  margin-left: 15%;
+  margin-top: 0.5em;
+  opacity: 0.7;
 }
 </style>
