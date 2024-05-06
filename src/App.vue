@@ -7,7 +7,9 @@
       @previewOff="previewOff"
       @previewOn="previewOn"
       @darkMode="darkMode"
-      :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
+      :toolbar="showToolbar" 
+      :options="defaultOptions"
+      :src="dribdatApi || dribdatHome" />
     <tt>
       // human sourced with <a href="https://dribdat.cc" target="_blank">dribdat</a>
       <a v-if="allowToolbar" @click="toggleOptions" class="options">&#x1F3C0; <span>options</span></a>

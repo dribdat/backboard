@@ -51,9 +51,8 @@ export default {
 
 .honeycomb {
   width: 760px;
-  min-height: 700px;
+  margin: 0 auto 120px auto;
   text-align: left;
-  margin: 0 auto;
   line-height: 0px;
   clear: both;
 }
