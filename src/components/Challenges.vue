@@ -72,6 +72,7 @@
             @close="$emit('previewOff')"
             :withChallenges="isChallenges"
             :withComments="isComments"
+            :withButtons="isButtons"
             :showExcerpt="isExcerpts"
             :projects="projects"
             :eventData="isHeadline ? event : null"
@@ -98,7 +99,7 @@
       <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
         <label for="isExcerpts" title="🖼️ ">Excerpt</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons" title="🪟">Button</label>
+        <label for="isButtons" title="🪟">Join/Contact</label>
       <input type="checkbox" v-model="isComments" id="isComments">
         <label for="isComments" title="💬">Comment</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
