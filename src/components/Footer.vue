@@ -2,9 +2,7 @@
   <div class="section-footer"
       :title="timespan">
 
-    <countdown 
-       v-if="deadline"
-      :deadline="deadline" />
+    <countdown :deadline="deadline" />
 
     <div container v-if="event.description" class="event-details">
       <markdown class="description col" 
@@ -21,24 +19,28 @@ import VueMarkdown from '@adapttive/vue-markdown'
 export default {
   name: "Footer",
   props: {
-    event: Object
+    event: {
+      required: true
+    }
   },
   components: {
     markdown: VueMarkdown,
     countdown: FlipCountdown 
   },
   data() {
-    return { 
-      deadline: (this.event && !this.event.has_started && this.event.starts_at) ?
-                 this.event.starts_at.replace('T', ' ') :
-                 (this.event && this.event.ends_at) ?
-                  this.event.ends_at.replace('T', ' ') : null,
-      timespan: (this.event && this.event.starts_at) ? 
-                 this.event.starts_at + ' → ' + this.event.ends_at : '' 
+    return {
+      timespan: '',
+      deadline: '2000-01-01 12:00'
     }
   },
   mounted() {
-  }
+    this.deadline = (!this.event.has_started && this.event.starts_at) ?
+                 this.event.starts_at.replace('T', ' ') :
+                 (this.event.ends_at) ?
+                  this.event.ends_at.replace('T', ' ') : null;
+    this.timespan = (this.event.starts_at) ? 
+                 this.event.starts_at + ' → ' + this.event.ends_at : '';
+  },
 }
 </script>
 
