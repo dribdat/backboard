@@ -1,8 +1,7 @@
 <template>
   <div class="challenges">
 
-    <Header v-if="isHeadline"
-      :event="event"></Header>
+    <Header v-if="isHeadline" :event="event"></Header>
 
     <row container :gutter="20" v-if="!isHexagons">
       <column
@@ -73,6 +72,7 @@
             @close="$emit('previewOff')"
             :withChallenges="isChallenges"
             :withComments="isComments"
+            :withButtons="isButtons"
             :showExcerpt="isExcerpts"
             :projects="projects"
             :eventData="isHeadline ? event : null"
@@ -81,6 +81,8 @@
     <Honeycomb v-if="isHexagons && projects != null"
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
+
+    <Footer v-if="isHeadline" :event="event"></Footer>
 
     <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
 
@@ -97,7 +99,7 @@
       <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
         <label for="isExcerpts" title="🖼️ ">Excerpt</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons" title="🪟">Button</label>
+        <label for="isButtons" title="🪟">Join/Contact</label>
       <input type="checkbox" v-model="isComments" id="isComments">
         <label for="isComments" title="💬">Comment</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
@@ -129,6 +131,7 @@ import { Row, Column } from "vue-grid-responsive";
 import moment from 'moment'
 
 import Header from './Header'
+import Footer from './Footer'
 import Previews from './Previews'
 import Honeycomb from './Honeycomb'
 
@@ -144,7 +147,8 @@ export default {
     column: Column,
     Honeycomb,
     Previews,
-    Header
+    Header,
+    Footer
   },
   data() {
     return {
@@ -288,6 +292,8 @@ export default {
         if (typeof data.event !== 'undefined') {
           this.event = data.event;
           this.event.webpage = this.event.webpage_url || this.event.community_url || data.homepage;
+          this.event.starts_at = this.event.starts_at || this.event.date;
+          this.event.ends_at = this.event.ends_at || this.event.starts_at || this.event.date;
           // console.log(this.event);
         }
 
@@ -408,8 +414,9 @@ export default {
   .honeycomb {
     width: 80%;
     margin-top: 10em;
-    margin-bottom: 20em;
-    text-align: center;
+    margin-bottom: 15em;
+    margin-left: 15%;
+    text-align: left;
     transform: scale(1.2);
   }
 }

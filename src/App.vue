@@ -1,16 +1,17 @@
 <template>
   <div id="app" :class="darkClass">
-    <VoteBox class="votebox"
+    <ModalFrame class="framebox"
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
       @closeToolbar="toggleOptions"
       @previewOff="previewOff"
       @previewOn="previewOn"
       @darkMode="darkMode"
-      :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
+      :toolbar="showToolbar" 
+      :options="defaultOptions"
+      :src="dribdatApi || dribdatHome" />
     <tt>
-      <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
-      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a>
+      // human sourced with <a href="https://dribdat.cc" target="_blank">dribdat</a>
       <a v-if="allowToolbar" @click="toggleOptions" class="options">&#x1F3C0; <span>options</span></a>
     </tt>
   </div>
@@ -18,13 +19,13 @@
 
 <script>
 import Challenges from "./components/Challenges";
-import VoteBox from "./components/VoteBox";
+import ModalFrame from "./components/ModalFrame";
 
 export default {
   name: "App",
   components: {
     Challenges,
-    VoteBox,
+    ModalFrame,
   },
   data() {
     let apiUrl = null;
@@ -98,7 +99,7 @@ body {
   color: #000;
   background-color: transparent;
 }
-.votebox {
+.framebox {
   margin: 2em;
 }
 a:active, a:hover {
