@@ -179,13 +179,14 @@ a.options {
   margin-left: 0.6em;
 }
 a.options span {
-  opacity: 0;
+  opacity: 0.3;
 }
 a.options:hover span {
   opacity: 1;
 }
 .options .modal-close-button {
   margin-top: -18px;
+  margin-right: 10px;
 }
 button.modal-close-button {
   background: transparent;

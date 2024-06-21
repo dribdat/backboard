@@ -82,18 +82,21 @@
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
-    <Footer v-if="isHeadline" :event="event" :isCountdown="isCountdown"></Footer>
+    <Countdown v-if="isCountdown" :event="event"></Countdown>
+
+    <Footer v-if="isHeadline" :event="event"></Footer>
 
     <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
 
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
-      <button class="modal-close-button" @click="$emit('closeToolbar')">
-        &#10060;
-      </button>
+      <button class="modal-close-button" @click="$emit('closeToolbar')" title="Close">⬡</button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
         <label for="isHeadline" title="Header">⛳</label>
+      <label for="isChallenges" title="Show Challenges">🏆</label>
+      <input type="checkbox" v-model="isHexagons" id="isHexagons">
+        <label for="isHexagons" title="Hexgrid mode">⬣</label>
       <input type="checkbox" v-model="isCountdown" id="isCountdown">
         <label for="isCountdown" title="Countdown">⏰</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
@@ -105,9 +108,6 @@
       <input type="checkbox" v-model="isComments" id="isComments">
         <label for="isComments" title="Comment buttons">💬</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges" title="Show Challenges">🏆</label>
-      <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons" title="Hexgrid mode">⬣</label>
       <select v-model="darkMode" id="darkMode"
              @change="changeDark">
         <option value="default" selected>🌗 Colors</option>
@@ -135,6 +135,7 @@ import moment from 'moment'
 import Header from './Header'
 import Footer from './Footer'
 import Previews from './Previews'
+import Countdown from './Countdown'
 import Honeycomb from './Honeycomb'
 
 export default {
@@ -147,6 +148,7 @@ export default {
   components: {
     row: Row,
     column: Column,
+    Countdown,
     Honeycomb,
     Previews,
     Header,
@@ -433,7 +435,7 @@ export default {
   text-align: center;
   width: 100%;
   padding: 1em;
-  top: 0px;
+  bottom: 0px;
   left: 0px;
   margin: 0px;
   background: white;
