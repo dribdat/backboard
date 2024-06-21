@@ -54,10 +54,6 @@ export default {
   overflow: hidden;
 }
 
-.event-details img, .event-details iframe {
-  max-width: 100%;
-}
-
 @media(max-width: 700px) {
   .event-details {
     margin: 1em;

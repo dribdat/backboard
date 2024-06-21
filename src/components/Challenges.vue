@@ -400,11 +400,6 @@ export default {
   .challenges > .section-header {
     margin-left: 5%;
   }
-  .challenges .header-logo {
-    display: block;
-    float: none;
-    margin: none;
-  }
 }
 
 .challenges {
@@ -420,7 +415,7 @@ export default {
   }
   .honeycomb {
     width: 80%;
-    margin-top: 10em;
+    margin-top: 7em;
     margin-bottom: 15em;
     margin-left: 15%;
     text-align: left;
