@@ -113,6 +113,7 @@ a {
   text-decoration: none;
   background-color: transparent;
 }
+.description img,
 .content img,
 .preview img {
   max-width: 100% !important;

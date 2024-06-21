@@ -384,6 +384,7 @@ div, p {
 
 .phase {
   margin: 0em 1em;
+  opacity: 0.5;
 }
 
 .modal-footer button {

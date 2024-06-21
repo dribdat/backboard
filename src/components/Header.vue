@@ -41,6 +41,11 @@ export default {
   color: black;
 }
 
+.header-logo {
+  display: block;
+  float: none;
+  margin: none;
+}
 
 .header-logo img {
   height: 6em;
@@ -58,6 +63,10 @@ export default {
     display: block;
     float: none;
     margin: none;
+  }
+  .header-logo img {
+    width: 100%;
+    height: auto;
   }
 }
 
