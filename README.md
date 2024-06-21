@@ -1,12 +1,14 @@
-# Backboard for Dribdat
+# Backboard
 
 This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [Dribdat](https://dribdat.cc). 
 
-Project data is shown for a specific event, with flexible configuration options for displaying and sorting the results in different ways. You can seamlessly navigate using your mouse or keyboard between projects and challenges. More functionality is planned in the future, with the long-term goal of creating a more modern, decoupled frontend for Dribdat.
+Project data is shown for a specific event, with flexible configuration options for displaying and sorting the results in different ways. You can seamlessly navigate using your mouse or keyboard between projects and challenges. 
+
+Currently most functions link back to Dribdat, for example, when you click on the Join team button you get directed to the main web application. The long-term goal is to create a more modern, decoupled frontend for Dribdat.
 
 The Backboard has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results. If you are developing a Vue.js app, you can import the Challenges, Honeycomb and Preview components into your app.
 
-**Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) in the options at the footer of the page. 
+**Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) through clicking the `options` button found at the footer of the page (which opens a configuration menu). 
 Use the handy *Share* link to get a URL with your config.
 
 **Demo:** https://backboard.vercel.app/

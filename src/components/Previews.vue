@@ -512,7 +512,7 @@ button.nav-prev {
     position: fixed;
     bottom: 0px;
     left: 50%;
-    margin-left: -13em;
+    margin-left: -20em;
     margin-bottom: 0em;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
