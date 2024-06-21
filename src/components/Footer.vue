@@ -59,14 +59,24 @@ export default {
   background: #333;
   color: white;
 }
+
 .event-details {
-  margin: 1em 20%;
+  margin: 2em 20%;
+  position: relative;
   padding: 0.5em 1em;
-  border: 1px solid lightgray;
+  border: 1px solid rgba(0,0,0,0.3);
+  border-radius: 6px;
   background: #fafafa;
-  box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+  box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
   font-size: 90%;
   text-align: left;
+  overflow: hidden;
+}
+
+@media(max-width: 700px) {
+  .event-details {
+    margin: 1em;
+  }
 }
 
 </style>
