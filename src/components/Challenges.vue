@@ -82,7 +82,9 @@
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
-    <Footer v-if="isHeadline" :event="event" :isCountdown="isCountdown"></Footer>
+    <Countdown v-if="isCountdown" :event="event"></Countdown>
+
+    <Footer v-if="isHeadline" :event="event"></Footer>
 
     <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
 
@@ -133,6 +135,7 @@ import moment from 'moment'
 import Header from './Header'
 import Footer from './Footer'
 import Previews from './Previews'
+import Countdown from './Countdown'
 import Honeycomb from './Honeycomb'
 
 export default {
@@ -145,6 +148,7 @@ export default {
   components: {
     row: Row,
     column: Column,
+    Countdown,
     Honeycomb,
     Previews,
     Header,
