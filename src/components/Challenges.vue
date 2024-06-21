@@ -82,7 +82,7 @@
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
-    <Footer v-if="isHeadline" :event="event"></Footer>
+    <Footer v-if="isHeadline" :event="event" :isCountdown="isCountdown"></Footer>
 
     <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
 
@@ -93,31 +93,33 @@
         &#10060;
       </button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
-        <label for="isHeadline" title="⛳">Header</label>
+        <label for="isHeadline" title="Header">⛳</label>
+      <input type="checkbox" v-model="isCountdown" id="isCountdown">
+        <label for="isCountdown" title="Countdown">⏰</label>
       <input type="checkbox" v-model="isPreviews" id="isPreviews">
-        <label for="isPreviews" title="👀">Popup</label>
+        <label for="isPreviews" title="Pop-ups">👀</label>
       <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
-        <label for="isExcerpts" title="🖼️ ">Excerpt</label>
+        <label for="isExcerpts" title="Excerpts">🖼️</label>
       <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons" title="🪟">Join/Contact</label>
+        <label for="isButtons" title="Join/Contact button">🪟</label>
       <input type="checkbox" v-model="isComments" id="isComments">
-        <label for="isComments" title="💬">Comment</label>
+        <label for="isComments" title="Comment buttons">💬</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges" title="🏆">Challenges</label>
+        <label for="isChallenges" title="Show Challenges">🏆</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons" title="⬣">Hexgrid</label>
+        <label for="isHexagons" title="Hexgrid mode">⬣</label>
       <select v-model="darkMode" id="darkMode"
              @change="changeDark">
         <option value="default" selected>🌗 Colors</option>
         <option v-for="option in darkOptions" 
                 v-bind:value="option.id" >{{ option.name }}</option>
-      </select>
+      </select>&nbsp;
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
         <option value="default" selected>🡻 Sort</option>
         <option v-for="option in sortOptions" 
                 v-bind:value="option.id" >{{ option.name }}</option>
-      </select>
+      </select>&nbsp;
       <span class="share-button">
         🌐<a :href="shareUrl()">Share</a>
       </span>
@@ -160,6 +162,7 @@ export default {
       isComments: false,
       isChallenges: false,
       isHeadline: false,
+      isCountdown: false,
       isHexagons: false,
       isPreviews: false,
       isExcerpts: false,
@@ -197,6 +200,7 @@ export default {
     const shareOptions = window.location.search || this.options;
     const urlParams = new URLSearchParams(shareOptions);
     this.isHeadline = Boolean(urlParams.get("headline"));
+    this.isCountdown = Boolean(urlParams.get("countdown"));
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
@@ -366,6 +370,7 @@ export default {
     shareUrl: function () {
       return '?' +
         (this.isHeadline ? '&headline=1' : '') +
+        (this.isCountdown ? '&countdown=1' : '') +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isExcerpts ? '&excerpts=1' : '') +

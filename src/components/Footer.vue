@@ -2,7 +2,7 @@
   <div class="section-footer"
       :title="timespan">
 
-    <countdown :deadline="deadline" />
+    <countdown :deadline="deadline" v-if="isCountdown" />
 
     <div container v-if="event.description" class="event-details">
       <markdown class="description col" 
@@ -21,7 +21,8 @@ export default {
   props: {
     event: {
       required: true
-    }
+    },
+    isCountdown: Boolean
   },
   components: {
     markdown: VueMarkdown,
@@ -60,10 +61,12 @@ export default {
 }
 .event-details {
   margin: 1em 20%;
-  padding: 0 0.8em;
+  padding: 0.5em 1em;
   border: 1px solid lightgray;
-  background: #eee;
-  box-shadow: 5px 5px 0px black;
+  background: #fafafa;
+  box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+  font-size: 90%;
+  text-align: left;
 }
 
 </style>
