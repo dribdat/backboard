@@ -15,7 +15,7 @@
     "vue2-flip-countdown": "^1"
   },
   "devDependencies": {
-    "@vue/cli-service": "*",
+    "@vue/cli-service": "^5.0.8",
     "execa": "*",
     "vue-template-compiler": "*"
   },
