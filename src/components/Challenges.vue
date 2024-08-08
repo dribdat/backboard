@@ -58,7 +58,7 @@
             </div>
 
             <div class="team-join" v-if="isButtons">
-              <button @click="joinTeam(project)" title="Join">👍</button>
+              <button @click="joinTeam(project)" title="Join">🏀</button>
               <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>

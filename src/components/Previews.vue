@@ -55,7 +55,7 @@
 
             <button v-if="withButtons" 
                     @click="joinTeam(project)" 
-                    title="Join this team">👍 Join</button>
+                    title="Join this team">🏀 Join</button>
 
             <button v-if="withComments" 
                     @click="openComment(project)" 
