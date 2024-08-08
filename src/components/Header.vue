@@ -15,9 +15,6 @@
       <span class="event-location" v-if="event.location">
         <i class="fa fa-map">🗺️</i>
         {{ event.location }}</span>
-      <div class="event-date" v-if="event.date">
-        <i class="fa fa-calendar">📆</i>
-        {{ event.date }}</div>
       <p class="header-summary" v-if="event.summary">
         {{ event.summary }}
       </p>
@@ -44,6 +41,11 @@ export default {
   color: black;
 }
 
+.header-logo {
+  display: block;
+  float: none;
+  margin: none;
+}
 
 .header-logo img {
   height: 6em;
@@ -61,6 +63,10 @@ export default {
     display: block;
     float: none;
     margin: none;
+  }
+  .header-logo img {
+    width: 100%;
+    height: auto;
   }
 }
 
