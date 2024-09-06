@@ -30,6 +30,9 @@
 
           <div class="ident">{{ project.ident }}</div>
           <div class="hashtag">{{ project.hashtag }}</div>
+          <div class="teamroster" v-for="person in project.team">
+            <span>{{ person }}</span>
+          </div>
 
           <div v-show="project.summary" class="summary">
             <p>{{ project.summary }}</p>
@@ -299,6 +302,17 @@ div, p {
   font-family: monospace;
   font-weight: bold;
   color: #999;
+}
+.teamroster {
+  display: inline;
+  float: right;
+}
+.teamroster span {
+  margin: 0 0.4em;
+  padding: 0 0.4em;
+}
+.teamroster span:before {
+  content: '🏀 ';
 }
 .ident {
   font-weight: bold;
