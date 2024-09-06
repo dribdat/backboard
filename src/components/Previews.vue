@@ -43,18 +43,17 @@
               {{ project.phase }}
             </span>
             <button title="Open project page" 
-                   @click="seeDetails(project)"
-                   :href="project.url">
+                   @click="seeDetails(project.url)">
                    ◳ Open
             </button>
             <button v-if="isEmbeddable(project)"
-                    title="Download" 
+                    title="Open in a new window" 
                    @click="seeEmbed(project)">
-                   ⧨ Get</button>
-            <button v-if="isEmbeddable(project)"
-                    title="Open in full screen mode"
-                  @click="toggleFullscreen()">
                    ⧐ View</button>
+            <button v-if="project.download_url"
+                    title="Open demo or download link"
+                    @click="seeDetails(project.download_url)">
+                   ⧨ Demo</button>
 
             <button v-if="withButtons" 
                     @click="joinTeam(project)" 
@@ -189,8 +188,8 @@ export default {
     contactTeam: function (project) {
       window.open(project.contact_url);
     },
-    seeDetails: function (project) {
-      window.open(project.url);
+    seeDetails: function (project_url) {
+      window.open(project_url);
     },
     isEmbeddable: function (project) {
       return project.webpage_url && project.is_webembed;
