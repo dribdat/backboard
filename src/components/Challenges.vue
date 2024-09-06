@@ -1,8 +1,7 @@
 <template>
   <div class="challenges">
 
-    <Header v-if="isHeadline"
-      :event="event"></Header>
+    <Header v-if="isHeadline" :event="event"></Header>
 
     <row container :gutter="20" v-if="!isHexagons">
       <column
@@ -59,7 +58,7 @@
             </div>
 
             <div class="team-join" v-if="isButtons">
-              <button @click="joinTeam(project)" title="Join">👍</button>
+              <button @click="joinTeam(project)" title="Join">🏀</button>
               <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
@@ -73,6 +72,7 @@
             @close="$emit('previewOff')"
             :withChallenges="isChallenges"
             :withComments="isComments"
+            :withButtons="isButtons"
             :showExcerpt="isExcerpts"
             :projects="projects"
             :eventData="isHeadline ? event : null"
@@ -82,40 +82,44 @@
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
+    <Countdown v-if="isCountdown" :event="event"></Countdown>
+
+    <Footer v-if="isHeadline" :event="event"></Footer>
+
     <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
 
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
-      <button class="modal-close-button" @click="$emit('closeToolbar')">
-        &#10060;
-      </button>
+      <button class="modal-close-button" @click="$emit('closeToolbar')" title="Close">⬡</button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
-        <label for="isHeadline" title="⛳">Header</label>
-      <input type="checkbox" v-model="isPreviews" id="isPreviews">
-        <label for="isPreviews" title="👀">Popup</label>
-      <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
-        <label for="isExcerpts" title="🖼️ ">Excerpt</label>
-      <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons" title="🪟">Button</label>
-      <input type="checkbox" v-model="isComments" id="isComments">
-        <label for="isComments" title="💬">Comment</label>
-      <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges" title="🏆">Challenges</label>
+        <label for="isHeadline" title="Header">⛳</label>
+      <label for="isChallenges" title="Show Challenges">🏆</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons" title="⬣">Hexgrid</label>
+        <label for="isHexagons" title="Hexgrid mode">⬣</label>
+      <input type="checkbox" v-model="isCountdown" id="isCountdown">
+        <label for="isCountdown" title="Countdown">⏰</label>
+      <input type="checkbox" v-model="isPreviews" id="isPreviews">
+        <label for="isPreviews" title="Pop-ups">👀</label>
+      <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
+        <label for="isExcerpts" title="Excerpts">🖼️</label>
+      <input type="checkbox" v-model="isButtons" id="isButtons">
+        <label for="isButtons" title="Join/Contact button">🪟</label>
+      <input type="checkbox" v-model="isComments" id="isComments">
+        <label for="isComments" title="Comment buttons">💬</label>
+      <input type="checkbox" v-model="isChallenges" id="isChallenges">
       <select v-model="darkMode" id="darkMode"
              @change="changeDark">
         <option value="default" selected>🌗 Colors</option>
         <option v-for="option in darkOptions" 
                 v-bind:value="option.id" >{{ option.name }}</option>
-      </select>
+      </select>&nbsp;
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
         <option value="default" selected>🡻 Sort</option>
         <option v-for="option in sortOptions" 
                 v-bind:value="option.id" >{{ option.name }}</option>
-      </select>
+      </select>&nbsp;
       <span class="share-button">
         🌐<a :href="shareUrl()">Share</a>
       </span>
@@ -129,7 +133,9 @@ import { Row, Column } from "vue-grid-responsive";
 import moment from 'moment'
 
 import Header from './Header'
+import Footer from './Footer'
 import Previews from './Previews'
+import Countdown from './Countdown'
 import Honeycomb from './Honeycomb'
 
 export default {
@@ -142,9 +148,11 @@ export default {
   components: {
     row: Row,
     column: Column,
+    Countdown,
     Honeycomb,
     Previews,
-    Header
+    Header,
+    Footer
   },
   data() {
     return {
@@ -156,6 +164,7 @@ export default {
       isComments: false,
       isChallenges: false,
       isHeadline: false,
+      isCountdown: false,
       isHexagons: false,
       isPreviews: false,
       isExcerpts: false,
@@ -193,6 +202,7 @@ export default {
     const shareOptions = window.location.search || this.options;
     const urlParams = new URLSearchParams(shareOptions);
     this.isHeadline = Boolean(urlParams.get("headline"));
+    this.isCountdown = Boolean(urlParams.get("countdown"));
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
@@ -288,6 +298,8 @@ export default {
         if (typeof data.event !== 'undefined') {
           this.event = data.event;
           this.event.webpage = this.event.webpage_url || this.event.community_url || data.homepage;
+          this.event.starts_at = this.event.starts_at || this.event.date;
+          this.event.ends_at = this.event.ends_at || this.event.starts_at || this.event.date;
           // console.log(this.event);
         }
 
@@ -360,6 +372,7 @@ export default {
     shareUrl: function () {
       return '?' +
         (this.isHeadline ? '&headline=1' : '') +
+        (this.isCountdown ? '&countdown=1' : '') +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isExcerpts ? '&excerpts=1' : '') +
@@ -387,11 +400,6 @@ export default {
   .challenges > .section-header {
     margin-left: 5%;
   }
-  .challenges .header-logo {
-    display: block;
-    float: none;
-    margin: none;
-  }
 }
 
 .challenges {
@@ -407,8 +415,9 @@ export default {
   }
   .honeycomb {
     width: 80%;
-    margin-top: 10em;
-    margin-bottom: 20em;
+    margin-top: 7em;
+    margin-bottom: 15em;
+    margin-left: 15%;
     text-align: left;
     transform: scale(1.2);
   }
@@ -421,7 +430,7 @@ export default {
   text-align: center;
   width: 100%;
   padding: 1em;
-  top: 0px;
+  bottom: 0px;
   left: 0px;
   margin: 0px;
   background: white;

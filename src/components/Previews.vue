@@ -53,11 +53,17 @@
                   @click="toggleFullscreen()">
                    ⧐ View</button>
 
+            <button v-if="withButtons" 
+                    @click="joinTeam(project)" 
+                    title="Join this team">🏀 Join</button>
+
             <button v-if="withComments" 
                     @click="openComment(project)" 
-                    title="Write a comment to the team">
-                   🗨️ Comment
-            </button>  
+                    title="Write a comment to the team">🗨️ Comment</button>  
+
+            <button v-if="withButtons" v-show="project.contact_url" 
+                    @click="contactTeam(project)" 
+                    title="Open the contact page">👋 Contact</button>
           </div>
         </div>
         <div class="content" slot="body">
@@ -149,6 +155,7 @@ export default {
     projects: Array,
     selected: Number,
     eventData: Object,
+    withButtons: Boolean,
     withComments: Boolean,
     withChallenges: Boolean,
     showExcerpt: Boolean,
@@ -170,6 +177,9 @@ export default {
     }
   },
   methods: {
+    joinTeam: function (project) {
+      window.open(project.url + "/star/me");
+    },
     openComment: function (project) {
       window.open(project.url + "/comment");
     },
@@ -374,6 +384,7 @@ div, p {
 
 .phase {
   margin: 0em 1em;
+  opacity: 0.5;
 }
 
 .modal-footer button {
@@ -502,7 +513,7 @@ button.nav-prev {
     position: fixed;
     bottom: 0px;
     left: 50%;
-    margin-left: -13em;
+    margin-left: -20em;
     margin-bottom: 0em;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
