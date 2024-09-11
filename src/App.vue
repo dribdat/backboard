@@ -10,9 +10,10 @@
       :toolbar="showToolbar" 
       :options="defaultOptions"
       :src="dribdatApi || dribdatHome" />
-    <tt>
+    <tt class="app-footer">
       // human sourced with <a href="https://dribdat.cc" target="_blank">dribdat</a>
-      <a v-if="allowToolbar" @click="toggleOptions" class="options">&#x1F3C0; <span>options</span></a>
+      &#x1F3C0;
+      <a v-if="allowToolbar" @click="toggleOptions" class="options"><span>options</span></a>
     </tt>
   </div>
 </template>
@@ -82,11 +83,23 @@ export default {
 </script>
 
 <style>
+
+@font-face{
+  font-family: M3Regular;
+  src: url(./assets/m3regular-webfont.woff2) format("woff2"),
+       url(./assets/m3regular-webfont.woff) format("woff");
+  font-style: normal;
+}
+
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: M3Regular,"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  /*font-family: "Avenir", Helvetica, Arial, sans-serif;*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+}
+.description {
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 #app.dark {
   background: black;
@@ -129,7 +142,7 @@ a {
   outline-width: 0;
 }
 
-button {
+.btn, button {
   color: blue;
   background: white;
   border: 1px solid rgba(200,200,255,0.7);
@@ -141,6 +154,11 @@ button {
   text-decoration: none;
   cursor: pointer;
   padding: 6px 10px;
+  display: inline-block;
+}
+.btn {
+  font-size: initial;
+  margin-bottom: 1em;
 }
 button:hover {
   background: lightyellow;
@@ -175,15 +193,18 @@ button.tiny:hover {
   width: auto;
 }
 
-a.options {
-  text-decoration: none;
-  margin-left: 0.6em;
+.app-footer {
+  opacity: 0.6;
 }
-a.options span {
-  opacity: 0.3;
-}
-a.options:hover span {
+.app-footer:hover {
   opacity: 1;
+}
+a.options {
+  border: 1px solid transparent;
+  padding: 2px 5px;
+}
+a.options:hover {
+  border: 1px solid orange;
 }
 .options .modal-close-button {
   margin-top: -18px;

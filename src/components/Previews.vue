@@ -1,15 +1,16 @@
 <template>
-  <div class="previews">
+  <div>
     <div v-for="project in projects" :key="project.id">
       <Modal v-if="active == project.id"
              @close="selectNone()"
-             @prev="goPrev(project)"
-             @next="goNext(project)"
+             @prev="goPrev()"
+             @next="goNext()"
+             @keydown.esc="toggleFullscreen()"
              >
-        <div slot="title"
+        <div slot="title" class="titlebar"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
-            :style="'border-bottom: 4px solid ' + (project.logo_color ? project.logo_color : '#ccc')"
+            :style="'border-color:' + (project.logo_color ? project.logo_color : '#ccc')"
              >
 
           <div class="imagepreview"
@@ -30,28 +31,28 @@
 
           <div class="ident">{{ project.ident }}</div>
           <div class="hashtag">{{ project.hashtag }}</div>
+          <div class="teamroster" 
+            v-for="person in project.team">
+              <span v-show="person">{{ person }}</span>
+          </div>
 
-          <div v-show="project.summary" class="summary">
-            <p>{{ project.summary }}</p>
+          <div class="summary">
+            <p v-show="project.summary">{{ project.summary }}</p>
           </div>
 
           <div class="status">
-            <span class="phase" title="Current project phase">
-              {{ project.phase }}
-            </span>
             <button title="Open project page" 
-                   @click="seeDetails(project)"
-                   :href="project.url">
-                   ◳ Open
+                   @click="seeDetails(project.url)">
+                   ◳ {{ project.phase }}
             </button>
             <button v-if="isEmbeddable(project)"
-                    title="Download" 
+                    title="Open in a new window" 
                    @click="seeEmbed(project)">
-                   ⧨ Get</button>
-            <button v-if="isEmbeddable(project)"
-                    title="Open in full screen mode"
-                  @click="toggleFullscreen()">
                    ⧐ View</button>
+            <button v-if="project.download_url"
+                    title="Open demo or download link"
+                    @click="seeDetails(project.download_url)">
+                   ⧨ Demo</button>
 
             <button v-if="withButtons" 
                     @click="joinTeam(project)" 
@@ -95,7 +96,12 @@
                   // Event name
                   // Focused
                 -->
-                <button @click="toggleFullscreen()" title="Close fullscreen">▲</button>
+                <button @click="toggleNextproject()" 
+                  class="fullscreen-next-button"
+                  title="Next project">▷</button>
+                <button @click="toggleFullscreen()" 
+                  class="fullscreen-close-button"
+                  title="Close fullscreen">⬡</button>
               </div>
               <iframe class="webembed" id="webembedframe"
                     :src="getEmbed(project)"></iframe>
@@ -126,9 +132,9 @@
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
-          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">◁</button>
+          <button class="nav nav-prev" @click="goPrev()" title="Previous">◁</button>
           <button @click="selectNone()" title="Go back">▲</button>
-          <button class="nav nav-next" @click="goNext(project)" title="Next">▷</button>
+          <button class="nav nav-next" @click="goNext()" title="Next">▷</button>
         </div>
       </Modal>
     </div>
@@ -186,8 +192,8 @@ export default {
     contactTeam: function (project) {
       window.open(project.contact_url);
     },
-    seeDetails: function (project) {
-      window.open(project.url);
+    seeDetails: function (project_url) {
+      window.open(project_url);
     },
     isEmbeddable: function (project) {
       return project.webpage_url && project.is_webembed;
@@ -261,6 +267,10 @@ export default {
         document.getElementsByClassName('modal-container')[0].focus();
       }
     },
+    toggleNextproject () {
+      this.toggleFullscreen()
+      this.goNext()
+    },
     countDown() {
       if (pc_per_tick == 0) return; // disabled
       if (this.ruigehond >= 100) { // completed
@@ -276,14 +286,21 @@ export default {
 
 <style scoped>
 
-div, p {
+div, p, button {
+  font-family: M3Regular,"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+div.content * {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+.titlebar {
+  border-bottom: 0.5em solid transparent;
+  clear: both;
+}
 .name {
   margin-top: 0em;
   color: black;
-  font-weight: bold;
+  /*font-weight: bold;*/
   font-size: 2.5rem;
   line-height: 1.2;
   display: block;
@@ -294,11 +311,25 @@ div, p {
 .summary {
   font-weight: bolder;
   text-align: left;
+  min-height: 2em;
 }
 .hashtag {
   font-family: monospace;
   font-weight: bold;
   color: #999;
+}
+.teamroster {
+  display: inline;
+  float: right;
+}
+.teamroster span {
+  margin: 0 0.4em;
+  padding: 0 0.4em;
+}
+.teamroster span:before {
+  content: '🏀 ';
+  font-size: 80%;
+  vertical-align: super;
 }
 .ident {
   font-weight: bold;
@@ -484,9 +515,13 @@ button.nav-prev {
   box-shadow: none;
   font-size: 1em;
   margin: 0px;
-  padding: 0px 0.6em;
+  padding: 3px 9px;
   border: 1px solid grey;
+  cursor: pointer;
   background: white; color: black;
+}
+.webembed-fullscreen button:hover {
+  border: 1px solid black; color: black;
 }
 .dark .webembed-fullscreen button {
   background: black; color: white;
@@ -501,6 +536,9 @@ button.nav-prev {
   padding: 0px;
   margin: 0px;
 }
+button.fullscreen-next-button {
+  right: 30px;
+}
 
 @media (min-width: 768px) {
   .preview {
@@ -513,6 +551,8 @@ button.nav-prev {
     position: fixed;
     bottom: 0px;
     left: 50%;
+    text-align: center;
+    width: 40em;
     margin-left: -20em;
     margin-bottom: 0em;
     border-top-left-radius: 10px;
