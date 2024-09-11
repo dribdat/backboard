@@ -94,7 +94,8 @@
       <button class="modal-close-button" @click="$emit('closeToolbar')" title="Close">⬡</button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
         <label for="isHeadline" title="Header">⛳</label>
-      <label for="isChallenges" title="Show Challenges">🏆</label>
+      <input type="checkbox" v-model="isChallenges" id="isChallenges">
+        <label for="isChallenges" title="Show Challenges">🏆</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
         <label for="isHexagons" title="Hexgrid mode">⬣</label>
       <input type="checkbox" v-model="isCountdown" id="isCountdown">
