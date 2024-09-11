@@ -49,13 +49,13 @@ export default {
 
 .header-logo img {
   height: 6em;
-  margin-bottom: 2em;
+  margin-bottom: 3em;
 }
 
 .header-logo {
   display: inline-block;
   float: left;
-  margin-right: 1em;
+  margin-right: 2em;
 }
 
 @media (max-width: 768px) {
@@ -71,11 +71,13 @@ export default {
 }
 
 .event-name {
+  font-weight: normal;
   font-size: 250%;
   margin: 0px;
   text-align: left;
-  line-height: 1.4em;
+  line-height: 1.2em;
   margin-bottom: 1pt;
+  padding-bottom: 0.2em;
 }
 
 .header-content {
