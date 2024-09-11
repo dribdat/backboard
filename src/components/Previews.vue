@@ -41,12 +41,9 @@
           </div>
 
           <div class="status">
-            <span class="phase" title="Current project phase">
-              {{ project.phase }}
-            </span>
             <button title="Open project page" 
                    @click="seeDetails(project.url)">
-                   ◳ Open
+                   ◳ {{ project.phase }}
             </button>
             <button v-if="isEmbeddable(project)"
                     title="Open in a new window" 
@@ -289,7 +286,10 @@ export default {
 
 <style scoped>
 
-div, p {
+div, p, button {
+  font-family: M3Regular,"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+div.content * {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
@@ -300,7 +300,7 @@ div, p {
 .name {
   margin-top: 0em;
   color: black;
-  font-weight: bold;
+  /*font-weight: bold;*/
   font-size: 2.5rem;
   line-height: 1.2;
   display: block;
@@ -551,6 +551,8 @@ button.fullscreen-next-button {
     position: fixed;
     bottom: 0px;
     left: 50%;
+    text-align: center;
+    width: 40em;
     margin-left: -20em;
     margin-bottom: 0em;
     border-top-left-radius: 10px;

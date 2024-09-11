@@ -86,7 +86,7 @@
 
     <Footer v-if="isHeadline" :event="event"></Footer>
 
-    <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
+    <div class="loading" v-if="projects == null" title="Loading ..."><i class="ball">🏀</i></div>
 
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
@@ -618,16 +618,32 @@ export default {
 }
 
 .loading {
+  position: fixed;
+  top: 55%;
   display: inline-block;
   width: 1em; height: 1em;
   font-size: 300%;
-  margin: 1em;
-  animation: rotate 3s  infinite;
+  margin: 0em;
+  line-height: 0px;
+  animation: bounce 0.5s infinite;
+  animation-fill-mode: both;
+  animation-direction: alternate;
+  animation-timing-function: cubic-bezier(1,0,1,0);
+}
+.loading .ball {
+  font-style: normal;
+  display: inline-block;
+  animation: rotate 3s infinite;
   animation-timing-function: cubic-bezier(0,0,0,0);
+  transform-origin: 50% 0%;
 }
 
 @-webkit-keyframes rotate {
     from { -webkit-transform: rotate(-180deg) } 
     to { -webkit-transform: rotate(180deg) } 
+}
+@-webkit-keyframes bounce {
+    from { margin-top: -5em } 
+    to { margin-top: 0em } 
 }
 </style>

@@ -158,21 +158,12 @@ export default {
 .hexagon.stage-50 { background-color: #fbffba; }
 /* hhttps://colorkit.co/palette/ffeeba-ffd9ba-ffe7ba-fff5ba-fbffba/ */
 
-@font-face{
-  font-family: M3Regular;
-  src: url(../assets/m3regular-webfont.woff2) format("woff2"),
-       url(../assets/m3regular-webfont.woff) format("woff");
-  font-style: normal;
-}
-
 .hexagon .hexagontent {
   color: #139;
   font-weight: normal;
   padding: 4px 0px;
   max-height: 120px;
   line-height: 13pt;
-  /*font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;*/
-  font-family: "Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   font-size: 1.0rem;
   text-shadow: 1px 1px 1px #fff;
   -webkit-text-size-adjust: 100%;
