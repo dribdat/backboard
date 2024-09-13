@@ -91,6 +91,11 @@
               </div>
 
               <div class="fullscreen-controls">
+                <button v-if="project.download_url"
+                  class="fullscreen-demo-button"
+                  title="Open demo or download link"
+                  @click="seeDetails(project.download_url)">
+                       Demo</button>
                 <!--
                   // Time remaining
                   // Event name
@@ -535,6 +540,10 @@ button.nav-prev {
   border: 0px;
   padding: 0px;
   margin: 0px;
+}
+button.fullscreen-demo-button {
+  right: 56px;
+  color: gray;
 }
 button.fullscreen-next-button {
   right: 30px;
