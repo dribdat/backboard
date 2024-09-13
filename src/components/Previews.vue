@@ -299,7 +299,7 @@ div.content * {
 }
 
 .titlebar {
-  border-bottom: 0.5em solid transparent;
+  border-top: 0.5em solid transparent;
   clear: both;
 }
 .name {
