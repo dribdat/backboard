@@ -29,15 +29,16 @@
 
           <div class="name">{{ project.name }}</div>
 
-          <div class="ident">{{ project.ident }}</div>
-          <div class="hashtag">{{ project.hashtag }}</div>
-          <div class="teamroster" 
-            v-for="person in project.team">
-              <span v-show="person">{{ person }}</span>
-          </div>
-
           <div class="summary">
             <p v-show="project.summary">{{ project.summary }}</p>
+          </div>
+
+          <div class="ident">{{ project.ident }}</div>
+          <div class="hashtag">{{ project.hashtag }}</div>
+          <div class="teamroster">
+            <div v-for="person in project.team">
+              <span v-show="person">{{ person }}</span>
+            </div>
           </div>
 
           <div class="status">
@@ -299,7 +300,8 @@ div.content * {
 }
 
 .titlebar {
-  border-bottom: 0.5em solid transparent;
+  border-top: 0.5em solid transparent;
+  text-align: center;
   clear: both;
 }
 .name {
@@ -324,8 +326,13 @@ div.content * {
   color: #999;
 }
 .teamroster {
+  max-width: 80%;
+  text-align: left;
+  margin-bottom: 2em;
+  opacity: 0.5;
+}
+.teamroster div {
   display: inline;
-  float: right;
 }
 .teamroster span {
   margin: 0 0.4em;
@@ -333,7 +340,8 @@ div.content * {
 }
 .teamroster span:before {
   content: '🏀 ';
-  font-size: 80%;
+  font-size: 50%;
+  white-space: nowrap;
   vertical-align: super;
 }
 .ident {
