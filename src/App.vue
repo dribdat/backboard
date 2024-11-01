@@ -1,27 +1,32 @@
 <template>
-  <div id="app">
-    <VoteBox class="votebox"
+  <div id="app" :class="darkClass">
+    <ModalFrame class="framebox"
       :href="voteUrl" v-show="voteUrl" />
     <Challenges
-      @close="toggleOptions()"
-      :src="dribdatApi || dribdatHome" :toolbar="showToolbar" :options="defaultOptions" />
-    <tt>
-      <button v-if="allowToolbar" class="small" @click="toggleOptions">options</button>
-      <a href="https://github.com/dribdat/backboard" target="_blank" style="text-decoration:none">backboard//</a>
-      powered by <a href="https://dribdat.cc" target="_blank">dribdat</a>
+      @closeToolbar="toggleOptions"
+      @previewOff="previewOff"
+      @previewOn="previewOn"
+      @darkMode="darkMode"
+      :toolbar="showToolbar" 
+      :options="defaultOptions"
+      :src="dribdatApi || dribdatHome" />
+    <tt class="app-footer">
+      // human sourced with <a href="https://dribdat.cc" target="_blank">dribdat</a>
+      &#x1F3C0;
+      <a v-if="allowToolbar" @click="toggleOptions" class="options"><span>options</span></a>
     </tt>
   </div>
 </template>
 
 <script>
 import Challenges from "./components/Challenges";
-import VoteBox from "./components/VoteBox";
+import ModalFrame from "./components/ModalFrame";
 
 export default {
   name: "App",
   components: {
     Challenges,
-    VoteBox,
+    ModalFrame,
   },
   data() {
     let apiUrl = null;
@@ -43,9 +48,10 @@ export default {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
       voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
-      showToolbar: false,
       allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
+      showToolbar: false,
+      darkClass: '',
     }
     //console.debug(my_config);
     return my_config;
@@ -53,17 +59,51 @@ export default {
   methods: {
     toggleOptions() {
       this.showToolbar = !this.showToolbar;
-    }
+    },
+    previewOff() {
+      document.body.style.overflowY = '';
+    },
+    previewOn() {
+      document.body.style.overflowY = 'hidden';
+    },
+    darkMode(value) {
+      if (value == 'default' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        value = 'dark';
+      }
+      if (value == 'dark') {
+        this.darkClass = 'dark';
+        document.body.style.backgroundColor = 'black';
+      } else {
+        this.darkClass = '';
+        document.body.style.backgroundColor = '';
+      }
+    },
   }
 };
 </script>
 
 <style>
+
+@font-face{
+  font-family: M3Regular;
+  src: url(./assets/m3regular-webfont.woff2) format("woff2"),
+       url(./assets/m3regular-webfont.woff) format("woff");
+  font-style: normal;
+}
+
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: M3Regular,"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  /*font-family: "Avenir", Helvetica, Arial, sans-serif;*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+}
+.description {
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+#app.dark {
+  background: black;
+  color: white;
 }
 i.fa {
   font-style: normal;
@@ -72,20 +112,21 @@ body {
   color: #000;
   background-color: transparent;
 }
-tt { color: black; }
-.votebox {
+.framebox {
   margin: 2em;
 }
 a:active, a:hover {
   outline-width: 0;
   color: #91170a;
   text-decoration: underline;
+  cursor: pointer;
 }
 a {
   color: #d9230f;
   text-decoration: none;
   background-color: transparent;
 }
+.description img,
 .content img,
 .preview img {
   max-width: 100% !important;
@@ -101,7 +142,7 @@ a {
   outline-width: 0;
 }
 
-button {
+.btn, button {
   color: blue;
   background: white;
   border: 1px solid rgba(200,200,255,0.7);
@@ -113,6 +154,11 @@ button {
   text-decoration: none;
   cursor: pointer;
   padding: 6px 10px;
+  display: inline-block;
+}
+.btn {
+  font-size: initial;
+  margin-bottom: 1em;
 }
 button:hover {
   background: lightyellow;
@@ -147,8 +193,22 @@ button.tiny:hover {
   width: auto;
 }
 
+.app-footer {
+  opacity: 0.6;
+}
+.app-footer:hover {
+  opacity: 1;
+}
+a.options {
+  border: 1px solid transparent;
+  padding: 2px 5px;
+}
+a.options:hover {
+  border: 1px solid orange;
+}
 .options .modal-close-button {
   margin-top: -18px;
+  margin-right: 10px;
 }
 button.modal-close-button {
   background: transparent;
@@ -156,6 +216,12 @@ button.modal-close-button {
   box-shadow: none;
   padding: 0px;
   opacity: 0.5;
+}
+.modal-container button.modal-close-button {
+  margin: 0;
+  line-height: 0px;
+  position: relative;
+  right: -1em;
 }
 button.modal-close-button:hover {
   opacity: 1;

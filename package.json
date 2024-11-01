@@ -1,6 +1,6 @@
 {
-  "name": "backboard",
-  "version": "0.1.5",
+  "name": "dribdat-backboard",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,10 +11,11 @@
     "@adapttive/vue-markdown": "^4",
     "moment": "^2",
     "vue": "^2",
-    "vue-grid-responsive": "*"
+    "vue-grid-responsive": "*",
+    "vue2-flip-countdown": "^1"
   },
   "devDependencies": {
-    "@vue/cli-service": "*",
+    "@vue/cli-service": "^5.0.8",
     "execa": "*",
     "vue-template-compiler": "*"
   },

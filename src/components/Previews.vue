@@ -1,58 +1,127 @@
 <template>
-  <div class="previews">
+  <div>
     <div v-for="project in projects" :key="project.id">
       <Modal v-if="active == project.id"
              @close="selectNone()"
-             @prev="goPrev(project)"
-             @next="goNext(project)"
+             @prev="goPrev()"
+             @next="goNext()"
+             @keydown.esc="toggleFullscreen()"
              >
-        <div slot="title"
+        <div slot="title" class="titlebar"
              @touchstart="touchStart"
              title="Swipe here or tap below to advance"
-            :style="project.logo_color ? ('border-bottom: 3px solid ' + project.logo_color) : ''"
+            :style="'border-color:' + (project.logo_color ? project.logo_color : '#ccc')"
              >
 
-            <div class="eventheader"
-                v-if="eventData">
-                <Header :event="eventData"></Header>
-              </div>
-
-            <a class="imagepreview"
+          <div class="imagepreview"
+               v-if="project.image_url">
+            <div class="imagepreview-overlay" v-if="false"
+                 :style="'background-image:url(' + project.image_url + ')'">
+            </div>
+            <div class="imagepreview-underlay" v-if="false"
+                 :style="'background-image:url(' + project.image_url + ')'">
+            </div>
+            <a class="imagepreview-floating"
                 title="Open image"
-                v-if="project.image_url && eventData && project.image_url !== eventData.logo_url"
                 :href="project.image_url" target="_blank"
                 :style="'background-image:url(' + project.image_url + ')'"></a>
+          </div>
 
-            <div class="name">{{ project.name }}</div>
+          <div class="name">{{ project.name }}</div>
 
-            <div v-show="project.summary" class="summary">
-              <p>{{ project.summary }}</p>
+          <div class="summary">
+            <p v-show="project.summary">{{ project.summary }}</p>
+          </div>
+
+          <div class="ident">{{ project.ident }}</div>
+          <div class="hashtag">{{ project.hashtag }}</div>
+          <div class="teamroster">
+            <div v-for="person in project.team">
+              <span v-show="person">{{ person }}</span>
             </div>
+          </div>
 
-            <div class="hashtag">{{ project.hashtag }}</div>
+          <div class="status">
+            <button title="Open project page" 
+                   @click="seeDetails(project.url)">
+                   ◳ {{ project.phase }}
+            </button>
+            <button v-if="isEmbeddable(project)"
+                    title="Open in a new window" 
+                   @click="seeEmbed(project)">
+                   ⧐ View</button>
+            <button v-if="project.download_url"
+                    title="Open demo or download link"
+                    @click="seeDetails(project.download_url)">
+                   ⧨ Demo</button>
 
+            <button v-if="withButtons" 
+                    @click="joinTeam(project)" 
+                    title="Join this team">🏀 Join</button>
+
+            <button v-if="withComments" 
+                    @click="openComment(project)" 
+                    title="Write a comment to the team">🗨️ Comment</button>  
+
+            <button v-if="withButtons" v-show="project.contact_url" 
+                    @click="contactTeam(project)" 
+                    title="Open the contact page">👋 Contact</button>
+          </div>
         </div>
         <div class="content" slot="body">
 
           <div class="preview" v-if="showExcerpt">
 
-            <markdown class="preview" 
-                     v-if="!project.is_webembed && project.excerpt"
+            <markdown class="excerpt" 
+                     v-if="!isEmbeddable(project) && !project.longtext && project.excerpt"
                      :source="project.excerpt" 
                      :postrender="tweakPreview"
                      :html="true" />
 
             <iframe class="webembed"
-                    v-if="project.is_webembed"
-                    :src="project.webpage_url"></iframe>
+                    v-if="isEmbeddable(project)"
+                    :src="getEmbed(project)"></iframe>
+
+            <div class="webembed-fullscreen"
+                 v-if="isEmbeddable(project) && fullscreen">
+
+              <div id="ruigehond" :class="'' + ruigehond<100 ? '' : 'finished'">
+                <div role="progressbar" aria-valuemin="0" aria-valuemax="100" tabindex="-1" title="Time remaining"
+                    :style="'width:' + ruigehond + '%;background:rgb(' + (ruigehond*2) + ',0,0);'"
+                    :aria-valuenow="ruigehond"></div>
+              </div>
+
+              <div class="fullscreen-controls">
+                <button v-if="project.download_url"
+                  class="fullscreen-demo-button"
+                  title="Open demo or download link"
+                  @click="seeDetails(project.download_url)">
+                       Demo</button>
+                <!--
+                  // Time remaining
+                  // Event name
+                  // Focused
+                -->
+                <button @click="toggleNextproject()" 
+                  class="fullscreen-next-button"
+                  title="Next project">▷</button>
+                <button @click="toggleFullscreen()" 
+                  class="fullscreen-close-button"
+                  title="Close fullscreen">⬡</button>
+              </div>
+              <iframe class="webembed" id="webembedframe"
+                    :src="getEmbed(project)"></iframe>
+            </div>
+            <button v-if="isEmbeddable(project)"
+                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">⧐<span>&nbsp;Fullscreen</span></button>
 
             <markdown class="preview-longtext" 
-                     v-if="showExcerpt && project.longtext"
+                     v-if="project.longtext"
                      :source="project.longtext" 
                      :postrender="tweakPreview"
                      :html="true" />
 
-            <div v-if="showExcerpt && project.autotext">
+            <div v-if="project.autotext">
               <a :href="project.autotext_url" class="autotext-link">README</a>
               <markdown class="preview-autotext" 
                        :source="project.autotext" 
@@ -60,36 +129,18 @@
                        :html="true" />
             </div>
 
-          </div>
-
-          <div class="status">
-            <span class="nowrap">
-              <span class="phase">{{ project.phase }}</span>
-              <button title="Open project page" 
-                     @click="seeDetails(project)"
-                     :href="project.url">
-                     📖 Open
-              </button>
-              <button v-if="project.webpage_url"
-                      title="Open project slides or demo link" 
-                     @click="seeEmbed(project)">
-                     🖼️ Presentation 
-              </button>
-              <button v-if="withComments" 
-                      @click="openComment(project)" 
-                      title="Write a comment to the team">
-                     💬 Comment
-              </button>  
-
-            </span>
+            <div class="eventheader"
+                v-if="false && eventData">
+                <Header :event="eventData"></Header>
+            </div>
           </div>
 
         </div>
         <div class="footer" slot="footer"
              @touchstart="touchStart">
-          <button class="nav nav-prev" @click="goPrev(project)" title="Previous">⬅️</button>
-          <button @click="seeDetails(project)" title="Details ...">ℹ️</button>
-          <button class="nav nav-next" @click="goNext(project)" title="Next">➡️</button>
+          <button class="nav nav-prev" @click="goPrev()" title="Previous">◁</button>
+          <button @click="selectNone()" title="Go back">▲</button>
+          <button class="nav nav-next" @click="goNext()" title="Next">▷</button>
         </div>
       </Modal>
     </div>
@@ -102,6 +153,10 @@ import VueMarkdown from '@adapttive/vue-markdown'
 import Modal from "./Modal"
 import Header from "./Header"
 
+// TODO: make this into an option / variable
+const TIMER_LENGTH_MINUTES = parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
+const pc_per_tick = (TIMER_LENGTH_MINUTES > 0) ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
+
 export default {
   name: "Previews",
   components: {
@@ -111,10 +166,11 @@ export default {
   props: {
     projects: Array,
     selected: Number,
+    eventData: Object,
+    withButtons: Boolean,
     withComments: Boolean,
     withChallenges: Boolean,
     showExcerpt: Boolean,
-    eventData: Object
   },
   model: {
     prop: 'selected',
@@ -126,25 +182,40 @@ export default {
       set (val) { this.$emit('setselected', val); }
     }
   },
+  data: function() {
+    return {
+      fullscreen: false,
+      ruigehond: 0,
+    }
+  },
   methods: {
+    joinTeam: function (project) {
+      window.open(project.url + "/star/me");
+    },
     openComment: function (project) {
       window.open(project.url + "/comment");
     },
     contactTeam: function (project) {
       window.open(project.contact_url);
     },
-    seeDetails: function (project) {
-      window.open(project.url);
+    seeDetails: function (project_url) {
+      window.open(project_url);
+    },
+    isEmbeddable: function (project) {
+      return project.webpage_url && project.is_webembed;
+    },
+    getEmbed: function (project) {
+      if (!project.webpage_url) return '';
+      return project.webpage_url.endsWith('.pdf') ?
+        project.url + '/render' : project.webpage_url;
     },
     seeEmbed: function (project) {
-      if (project.webpage_url.lastIndexOf('.pdf') == project.webpage_url.length - 4) {
-        window.open(project.url + '/render');
-      } else {
-        window.open(project.webpage_url);
-      }
+      window.open(project.webpage_url);
     },
     selectNone: function () {
       this.active = -1;
+      this.fullscreen = false;
+      this.$emit('close');
     },
     letsGo: function () {
       // Project navigation
@@ -185,7 +256,35 @@ export default {
       }
     },
     tweakPreview (content) {
-      return content.replace(/href="/g,'target="_blank" href="');
+      return content
+      // Force all links in a new window
+      //return content.replace(/href="/g,'target="_blank" href="');
+    },
+    toggleFullscreen () {
+      this.fullscreen = !this.fullscreen;
+      if (this.fullscreen) {
+        this.ruigehond = 0;
+        this.countDown();
+        setTimeout(() => {
+          document.getElementById('webembedframe').contentWindow.focus();
+        }, 200);
+      } else {
+        this.ruigehond = 100;        
+        document.getElementsByClassName('modal-container')[0].focus();
+      }
+    },
+    toggleNextproject () {
+      this.toggleFullscreen()
+      this.goNext()
+    },
+    countDown() {
+      if (pc_per_tick == 0) return; // disabled
+      if (this.ruigehond >= 100) { // completed
+        this.ruigehond = 100; return;
+      }
+      this.ruigehond += pc_per_tick;
+      let ths = this;
+      setTimeout(() => { ths.countDown() }, 1000);
     }
   }
 };
@@ -193,14 +292,22 @@ export default {
 
 <style scoped>
 
-div, p {
+div, p, button {
+  font-family: M3Regular,"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+div.content * {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+.titlebar {
+  border-top: 0.5em solid transparent;
+  text-align: center;
+  clear: both;
+}
 .name {
   margin-top: 0em;
   color: black;
-  font-weight: bold;
+  /*font-weight: bold;*/
   font-size: 2.5rem;
   line-height: 1.2;
   display: block;
@@ -211,34 +318,93 @@ div, p {
 .summary {
   font-weight: bolder;
   text-align: left;
+  min-height: 2em;
 }
 .hashtag {
+  font-family: monospace;
   font-weight: bold;
-  font-size: 120%;
+  color: #999;
+}
+.teamroster {
+  max-width: 80%;
+  text-align: left;
+  margin-bottom: 2em;
+  opacity: 0.5;
+}
+.teamroster div {
+  display: inline;
+}
+.teamroster span {
+  margin: 0 0.4em;
+  padding: 0 0.4em;
+}
+.teamroster span:before {
+  content: '🏀 ';
+  font-size: 50%;
+  white-space: nowrap;
+  vertical-align: super;
+}
+.ident {
+  font-weight: bold;
+  font-size: 200%;
   color: red;
+  float: right;
   text-align: left;
   text-shadow: 1px 1px 1px white;
   font-family: monospace;
   line-height: 0em;
-  margin: 0.8em 0 2em 0; 
+  margin: 0.3em 0 0em 1em; 
   padding: 0px;
 }
 
 .eventheader {
   display: block;
-  margin-top: 0px;
-  margin-bottom: 60px;
+  border-top: 4px solid #ccc;
+  margin-top: 60px;
+  padding-top: 60px;
+  margin-bottom: 120px;
 }
-.imagepreview {
+
+.imagepreview-floating {
+  display: inline-block;
+  position: fixed;
+  z-index: 100;
+  bottom: 3px; left: 3px;
+  height: 120px;
+  width: 120px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: cover;
+  background-position: 0% 50%;
+}
+
+.imagepreview-overlay,
+.imagepreview-underlay {
   display: block;
   width: 100%;
   height: 120px;
   margin-top: -18px;
   margin-bottom: 27px;
+}
+.imagepreview-underlay {
+  filter: saturate(0%) contrast(0.2) brightness(0.4);
+  z-index: -1;
   background-repeat: no-repeat;
-  background-color: transparent;
   background-size: cover;
   background-position: 50% 50%;
+  margin-left: -10%;
+  position: fixed;
+  z-index: 99;
+}
+.imagepreview-overlay {
+  position: fixed;
+  z-index: 100;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-size: contain;
+  background-position: 0% 50%;
 }
 
 .preview {
@@ -246,11 +412,11 @@ div, p {
   color: black;
   line-height: 140%;
   margin-bottom: 2em;
+  padding-bottom: 4em;
 }
 
 .autotext-link {
   display: block;
-  width: 100%;
   background: gainsboro;
   color: blue;
   font-weight: bold;
@@ -262,11 +428,13 @@ div, p {
 
 .phase {
   margin: 0em 1em;
+  opacity: 0.5;
 }
 
 .modal-footer button {
   opacity: 0.9;
   transition: all 0.3s ease;
+  border: none;
 }
 .modal-footer:hover button {
   opacity: 1;
@@ -277,13 +445,11 @@ button.nav-next {
 button.nav-prev {
   float: left;
 }
-
-.nowrap {
-  white-space: nowrap;
+.dark .footer button {
+  background: black; color: white;
 }
-
 .status button {
-  margin: 0 0.8em 0 0;
+  margin: 0 0.5em 0 0;
   font-size: 80%;
 }
 .status {
@@ -294,6 +460,13 @@ button.nav-prev {
   margin-bottom: 3em;
   padding: 5px 7px;
   background: white;
+  width: 100%;
+  text-align: center;
+}
+
+.dark .status {
+  background: black;
+  color: white;
 }
 
 .frame-container iframe {
@@ -313,12 +486,75 @@ button.nav-prev {
 }
 
 .webembed {
-  width: 100%;
-  height: 500px;
+  width: 400px;
+  height: 240px;
+  max-width: 100%;
   border: 1px solid silver;
-  box-shadow: 5px 5px 10px #535353;
+  box-shadow: 5px 5px 10px #cce;
   padding: 0px;
   margin: 0px;
+}
+
+.go-fullscreen {
+  font-size: 1em;
+  margin-top: -0.5em;
+}
+@media (min-width: 768px) {
+  .go-fullscreen {
+    margin-left: -3em;
+    margin-top: 0em;
+    float: left;
+    box-shadow: none;
+  }
+  .go-fullscreen span { font-size: 0px; }
+}
+.dark .webembed-fullscreen {
+  background: black;
+}
+.webembed-fullscreen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: white;
+  z-index: 9998;
+}
+.webembed-fullscreen button {
+  bottom: 0px;
+  right: 0px;
+  position: absolute;
+  z-index: 9999;
+  box-shadow: none;
+  font-size: 1em;
+  margin: 0px;
+  padding: 3px 9px;
+  border: 1px solid grey;
+  cursor: pointer;
+  background: white; color: black;
+}
+.webembed-fullscreen button:hover {
+  border: 1px solid black; color: black;
+}
+.dark .webembed-fullscreen button {
+  background: black; color: white;
+}
+.webembed-fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+button.fullscreen-demo-button {
+  right: 56px;
+  color: gray;
+}
+button.fullscreen-next-button {
+  right: 30px;
 }
 
 @media (min-width: 768px) {
@@ -328,16 +564,53 @@ button.nav-prev {
   }
 
   .status {
+    width: auto;
     position: fixed;
     bottom: 0px;
     left: 50%;
-    margin-left: -13em;
+    text-align: center;
+    width: 40em;
+    margin-left: -20em;
     margin-bottom: 0em;
-    border: 1px solid #ddd;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom: none;
   }
+}
+
+/* Shaggy dog style progress bar */
+#ruigehond {
+    z-index: 9998;
+    position: fixed;
+    display: block;
+    left: 0;
+    bottom: 0px;
+    width: 100%;
+    height: 10px;
+    margin: 0;
+    overflow: visible;
+    background-color: rgb(0,0,0);
+}
+#ruigehond.finished {
+    animation-name: pulsate;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate-reverse;
+    animation-timing-function: ease;
+}
+@keyframes pulsate {
+  from {background-color: rgb(255,0,0);}
+  to {background-color: rgb(0,0,0);}
+}
+#ruigehond.finished > div {
+    display: none;
+}
+#ruigehond > div {
+    display: block;
+    background: linear-gradient(to right, #0E91F8, #e42fe2);
+    border-right: 1px solid gray;
+    width: 0px;
+    height: 100%;
 }
 
 </style>
