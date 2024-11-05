@@ -2,11 +2,11 @@
   <div class="section-footer">
 
     <div container v-if="event.description" class="event-details">
-      <markdown class="description col" 
-         :source="event.description" 
+      <markdown class="description col"
+         :source="event.description"
          :html="true" />
     </div>
-    
+
   </div>
 </template>
 
@@ -39,6 +39,10 @@ export default {
 .dark .event-details {
   background: #333;
   color: white;
+}
+
+.description {
+  padding: 0em 0.5em;
 }
 
 .event-details {
