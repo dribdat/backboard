@@ -14,11 +14,11 @@
             <span v-if="project.name.length > 30" class="padme"></span>
             {{ project.name }}
           </div>
-          <div v-if="project.hashtag" class="hashtag">{{ fitme(project.hashtag) }}</div>
+          <div v-if="project.ident" class="ident">{{ fitme(project.ident) }}</div>
           <div v-if="project.image_url" class="hexaicon"
               :style="'background-image:url(' + project.image_url + ')'"></div>
               <div class="progress"
-                v-if="!project.is_challenge && project.score && project.score > 0">
+                v-if="!project.is_challenge && project.score && project.score > 0 && project.score < 80">
                 <div class="progress-bar" role="progressbar"
                   :style="'width:' + project.score + '%'">
                 </div>
@@ -51,9 +51,10 @@ export default {
 
 .honeycomb {
   width: 760px;
-  min-height: 700px;
+  margin: 0 auto 120px auto;
   text-align: left;
-  margin: 0 auto;
+  line-height: 0px;
+  clear: both;
 }
 @media (max-width: 980px) {
   .honeycomb {
@@ -148,39 +149,34 @@ export default {
 }
 
 /* --- Hexagon default palette --- */
-.project.hexagon  { background-color: #f5d1e4; } /* primary color */
-.hexagon.stage-5  { background-color: #f5d1e4; }
-.hexagon.stage-10 { background-color: #e3d0e3; }
-.hexagon.stage-20 { background-color: #e0c9ca; }
-.hexagon.stage-30 { background-color: #e8b6a6; }
-.hexagon.stage-40 { background-color: #f1cfad; }
-.hexagon.stage-50 { background-color: #f6e8c0; }
-/* https://colorkit.co/palette/f5d1e4-e3d0e3-e0c9ca-e8b6a6-f1cfad-f6e8c0/ */
-
-@font-face{
-  font-family: M3Regular;
-  src: url(../assets/m3regular-webfont.woff2) format("woff2"),
-       url(../assets/m3regular-webfont.woff) format("woff");
-  font-style: normal;
-}
+.project.hexagon  { background-color: #ebd8c3; } /* primary color */
+.hexagon.stage-5  { background-color: #ebd8c3; }
+.hexagon.stage-10 { background-color: #ffeeba; }
+.hexagon.stage-20 { background-color: #ffd9ba; }
+.hexagon.stage-30 { background-color: #ffe7ba; }
+.hexagon.stage-40 { background-color: #fff5ba; }
+.hexagon.stage-50 { background-color: #fbffba; }
+/* hhttps://colorkit.co/palette/ffeeba-ffd9ba-ffe7ba-fff5ba-fbffba/ */
 
 .hexagon .hexagontent {
   color: #139;
   font-weight: normal;
   padding: 4px 0px;
   max-height: 120px;
-  font-size: 12pt;
   line-height: 13pt;
-  font-family: M3Regular,-apple-system,system-ui,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;
+  font-size: 1.0rem;
+  text-shadow: 1px 1px 1px #fff;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
-.hexagontent .hashtag {
+.hexagontent .ident {
   font-weight: bold;
-  font-size: 120%;
-  color: white;
-  text-shadow: 1px 1px 2px black;
+  font-size: 90%;    
+  text-shadow: 2px 1px 1px white;
+  color: #777;
   font-family: monospace;
   line-height: 0em;
-  margin: 1.6em 0 0; 
+  margin: 2.2em 0 0 -2.4em;
   padding: 0px;
   position: absolute;
   text-align: center;
@@ -203,10 +199,11 @@ export default {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
-  margin: -1px 22px;
+  margin: 2px 22px;
   background-color: white;
   text-align: center;
   padding: 0px;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
 }
 .hexagon, .hexagon::before, .hexagon::after {
   /* easy way: height is width * 1.732
@@ -215,6 +212,11 @@ export default {
   width: 82px;
   height: 142px;
   border-radius: 20%/5%;
+}
+.project.hexagon, .project.hexagon::before, .project.hexagon::after {
+  border-color: transparent !important;
+  border-top: none;
+  border-bottom: none;
 }
 .hexagon::before {
   background-color: inherit;
