@@ -26,7 +26,7 @@
           <div :class="project.image_url ? 'project has-thumb' : 'project'"
                @click="seePreview(project)"
           >
-          
+
             <div class="team-stats">
               <div class="team-counter"
                    :title="project.team.join(', ')">
@@ -40,7 +40,7 @@
                 <div class="count" v-if="project.stats">{{ project.stats.total }}</div>
               </div>
             </div>
-            
+
             <div class="name">
               {{ project.name }}
             </div>
@@ -59,7 +59,7 @@
 
             <div class="team-join" v-if="isButtons">
               <button @click="joinTeam(project)" title="Join">🏀</button>
-              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
+              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
 
@@ -108,17 +108,16 @@
         <label for="isButtons" title="Join/Contact button">🪟</label>
       <input type="checkbox" v-model="isComments" id="isComments">
         <label for="isComments" title="Comment buttons">💬</label>
-      <input type="checkbox" v-model="isChallenges" id="isChallenges">
       <select v-model="darkMode" id="darkMode"
              @change="changeDark">
         <option value="default" selected>🌗 Colors</option>
-        <option v-for="option in darkOptions" 
+        <option v-for="option in darkOptions"
                 v-bind:value="option.id" >{{ option.name }}</option>
       </select>&nbsp;
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
         <option value="default" selected>🡻 Sort</option>
-        <option v-for="option in sortOptions" 
+        <option v-for="option in sortOptions"
                 v-bind:value="option.id" >{{ option.name }}</option>
       </select>&nbsp;
       <span class="share-button">
@@ -352,7 +351,7 @@ export default {
       } else {
         // Sort by score then id (challenge) or name (project)
         this.projects.sort((a, b) =>
-          a.is_challenge ? 
+          a.is_challenge ?
               a.id < b.id :
               a.score <= b.score && a.name.localeCompare(b.name)
         );
@@ -640,11 +639,11 @@ export default {
 }
 
 @-webkit-keyframes rotate {
-    from { -webkit-transform: rotate(-180deg) } 
-    to { -webkit-transform: rotate(180deg) } 
+    from { -webkit-transform: rotate(-180deg) }
+    to { -webkit-transform: rotate(180deg) }
 }
 @-webkit-keyframes bounce {
-    from { margin-top: -5em } 
-    to { margin-top: 0em } 
+    from { margin-top: -5em }
+    to { margin-top: 0em }
 }
 </style>
