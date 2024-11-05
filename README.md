@@ -19,7 +19,7 @@ Deploy this application with any service that supports Node.js
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fdribdat%2Fbackboard)
 
-
+TIP: You may want to set the **options** with the link at the bottom of the page - click the Share button, and paste the query string (everything after ?&) into your `VUE_APP_DEFAULT_OPTS` variable.
 
 ## Usage
 

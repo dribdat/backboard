@@ -1,30 +1,40 @@
 <template>
   <div>
     <div v-for="project in projects" :key="project.id">
-      <Modal v-if="active == project.id"
-             @close="selectNone()"
-             @prev="goPrev()"
-             @next="goNext()"
-             @keydown.esc="toggleFullscreen()"
-             >
-        <div slot="title" class="titlebar"
-             @touchstart="touchStart"
-             title="Swipe here or tap below to advance"
-            :style="'border-color:' + (project.logo_color ? project.logo_color : '#ccc')"
-             >
-
-          <div class="imagepreview"
-               v-if="project.image_url">
-            <div class="imagepreview-overlay" v-if="false"
-                 :style="'background-image:url(' + project.image_url + ')'">
-            </div>
-            <div class="imagepreview-underlay" v-if="false"
-                 :style="'background-image:url(' + project.image_url + ')'">
-            </div>
-            <a class="imagepreview-floating"
-                title="Open image"
-                :href="project.image_url" target="_blank"
-                :style="'background-image:url(' + project.image_url + ')'"></a>
+      <Modal
+        v-if="active == project.id"
+        @close="selectNone()"
+        @prev="goPrev()"
+        @next="goNext()"
+        @keydown.esc="toggleFullscreen()"
+      >
+        <div
+          slot="title"
+          class="titlebar"
+          @touchstart="touchStart"
+          title="Swipe here or tap below to advance"
+          :style="
+            'border-color:' + (project.logo_color ? project.logo_color : '#ccc')
+          "
+        >
+          <div class="imagepreview" v-if="project.image_url">
+            <div
+              class="imagepreview-overlay"
+              v-if="false"
+              :style="'background-image:url(' + project.image_url + ')'"
+            ></div>
+            <div
+              class="imagepreview-underlay"
+              v-if="false"
+              :style="'background-image:url(' + project.image_url + ')'"
+            ></div>
+            <a
+              class="imagepreview-floating"
+              title="Open image"
+              :href="project.image_url"
+              target="_blank"
+              :style="'background-image:url(' + project.image_url + ')'"
+            ></a>
           </div>
 
           <div class="name">{{ project.name }}</div>
@@ -42,103 +52,164 @@
           </div>
 
           <div class="status">
-            <button title="Open project page" 
-                   @click="seeDetails(project.url)">
-                   ◳ {{ project.phase }}
+            <button title="Open project page" @click="seeDetails(project.url)">
+              ◳ {{ project.phase }}
             </button>
-            <button v-if="isEmbeddable(project)"
-                    title="Open in a new window" 
-                   @click="seeEmbed(project)">
-                   ⧐ View</button>
-            <button v-if="project.download_url"
-                    title="Open demo or download link"
-                    @click="seeDetails(project.download_url)">
-                   ⧨ Demo</button>
+            <button
+              v-if="isEmbeddable(project)"
+              title="Open in a new window"
+              @click="seeEmbed(project)"
+            >
+              ⧐ View
+            </button>
+            <button
+              v-if="project.download_url"
+              title="Open demo or download link"
+              @click="seeDetails(project.download_url)"
+            >
+              ⧨ Demo
+            </button>
 
-            <button v-if="withButtons" 
-                    @click="joinTeam(project)" 
-                    title="Join this team">🏀 Join</button>
+            <button
+              v-if="withButtons"
+              @click="joinTeam(project)"
+              title="Join this team"
+            >
+              🏀 Join
+            </button>
 
-            <button v-if="withComments" 
-                    @click="openComment(project)" 
-                    title="Write a comment to the team">🗨️ Comment</button>  
+            <button
+              v-if="withComments"
+              @click="openComment(project)"
+              title="Write a comment to the team"
+            >
+              🗨️ Comment
+            </button>
 
-            <button v-if="withButtons" v-show="project.contact_url" 
-                    @click="contactTeam(project)" 
-                    title="Open the contact page">👋 Contact</button>
+            <button
+              v-if="withButtons"
+              v-show="project.contact_url"
+              @click="contactTeam(project)"
+              title="Open the contact page"
+            >
+              👋 Contact
+            </button>
           </div>
         </div>
         <div class="content" slot="body">
-
           <div class="preview" v-if="showExcerpt">
+            <markdown
+              class="excerpt"
+              v-if="
+                !isEmbeddable(project) && !project.longtext && project.excerpt
+              "
+              :source="project.excerpt"
+              :postrender="tweakPreview"
+              :html="true"
+            />
 
-            <markdown class="excerpt" 
-                     v-if="!isEmbeddable(project) && !project.longtext && project.excerpt"
-                     :source="project.excerpt" 
-                     :postrender="tweakPreview"
-                     :html="true" />
+            <iframe
+              class="webembed"
+              v-if="isEmbeddable(project)"
+              :src="getEmbed(project)"
+            ></iframe>
 
-            <iframe class="webembed"
-                    v-if="isEmbeddable(project)"
-                    :src="getEmbed(project)"></iframe>
-
-            <div class="webembed-fullscreen"
-                 v-if="isEmbeddable(project) && fullscreen">
-
-              <div id="ruigehond" :class="'' + ruigehond<100 ? '' : 'finished'">
-                <div role="progressbar" aria-valuemin="0" aria-valuemax="100" tabindex="-1" title="Time remaining"
-                    :style="'width:' + ruigehond + '%;background:rgb(' + (ruigehond*2) + ',0,0);'"
-                    :aria-valuenow="ruigehond"></div>
+            <div
+              class="webembed-fullscreen"
+              v-if="isEmbeddable(project) && fullscreen"
+            >
+              <div
+                id="ruigehond"
+                :class="'' + ruigehond < 100 ? '' : 'finished'"
+              >
+                <div
+                  role="progressbar"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  tabindex="-1"
+                  title="Time remaining"
+                  :style="
+                    'width:' +
+                    ruigehond +
+                    '%;background:rgb(' +
+                    ruigehond * 2 +
+                    ',0,0);'
+                  "
+                  :aria-valuenow="ruigehond"
+                ></div>
               </div>
 
               <div class="fullscreen-controls">
-                <button v-if="project.download_url"
+                <button
+                  v-if="project.download_url"
                   class="fullscreen-demo-button"
                   title="Open demo or download link"
-                  @click="seeDetails(project.download_url)">
-                       Demo</button>
+                  @click="seeDetails(project.download_url)"
+                >
+                  Demo
+                </button>
                 <!--
                   // Time remaining
                   // Event name
                   // Focused
                 -->
-                <button @click="toggleNextproject()" 
+                <button
+                  @click="toggleNextproject()"
                   class="fullscreen-next-button"
-                  title="Next project">▷</button>
-                <button @click="toggleFullscreen()" 
+                  title="Next project"
+                >
+                  ▷
+                </button>
+                <button
+                  @click="toggleFullscreen()"
                   class="fullscreen-close-button"
-                  title="Close fullscreen">⬡</button>
+                  title="Close fullscreen"
+                >
+                  ⬡
+                </button>
               </div>
-              <iframe class="webembed" id="webembedframe"
-                    :src="getEmbed(project)"></iframe>
+              <iframe
+                class="webembed"
+                id="webembedframe"
+                :src="getEmbed(project)"
+              ></iframe>
             </div>
-            <button v-if="isEmbeddable(project)"
-                    class="go-fullscreen" @click="toggleFullscreen()" title="Open in full screen mode">⧐<span>&nbsp;Fullscreen</span></button>
+            <button
+              v-if="isEmbeddable(project)"
+              class="go-fullscreen"
+              @click="toggleFullscreen()"
+              title="Open in full screen mode - tap ⬡ to close again"
+            >
+              &#x26F6;<span>&nbsp;Zoom</span>
+            </button>
 
-            <markdown class="preview-longtext" 
-                     v-if="project.longtext"
-                     :source="project.longtext" 
-                     :postrender="tweakPreview"
-                     :html="true" />
+            <markdown
+              class="preview-longtext"
+              v-if="project.longtext"
+              :source="project.longtext"
+              :postrender="tweakPreview"
+              :html="true"
+            />
 
             <div v-if="project.autotext">
               <a :href="project.autotext_url" class="autotext-link">README</a>
-              <markdown class="preview-autotext" 
-                       :source="project.autotext" 
-                       :postrender="tweakPreview"
-                       :html="true" />
+              <markdown
+                class="preview-autotext"
+                :source="project.autotext"
+                :postrender="tweakPreview"
+                :html="true"
+              />
             </div>
 
-            <div class="eventheader"
-                v-if="false && eventData">
-                <Header :event="eventData"></Header>
+            <div class="eventheader" v-if="false && eventData">
+              <Header :event="eventData"></Header>
             </div>
           </div>
-
         </div>
-        <div class="footer" slot="footer"
-             @touchstart="touchStart">
-          <button class="nav nav-prev" @click="goPrev()" title="Previous">◁</button>
+        <div class="footer" slot="footer" @touchstart="touchStart">
+          <button class="nav nav-prev" @click="goPrev()" title="Previous">
+            ◁
+          </button>
           <button @click="selectNone()" title="Go back">▲</button>
           <button class="nav nav-next" @click="goNext()" title="Next">▷</button>
         </div>
@@ -148,20 +219,22 @@
 </template>
 
 <script>
-import VueMarkdown from '@adapttive/vue-markdown'
+import VueMarkdown from "@adapttive/vue-markdown";
 
-import Modal from "./Modal"
-import Header from "./Header"
+import Modal from "./Modal";
+import Header from "./Header";
 
 // TODO: make this into an option / variable
 const TIMER_LENGTH_MINUTES = parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
-const pc_per_tick = (TIMER_LENGTH_MINUTES > 0) ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
+const pc_per_tick =
+  TIMER_LENGTH_MINUTES > 0 ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
 
 export default {
   name: "Previews",
   components: {
     markdown: VueMarkdown,
-    Modal, Header
+    Modal,
+    Header,
   },
   props: {
     projects: Array,
@@ -173,20 +246,24 @@ export default {
     showExcerpt: Boolean,
   },
   model: {
-    prop: 'selected',
-    event: 'setselected'
+    prop: "selected",
+    event: "setselected",
   },
   computed: {
     active: {
-      get () { return this.selected },
-      set (val) { this.$emit('setselected', val); }
-    }
+      get() {
+        return this.selected;
+      },
+      set(val) {
+        this.$emit("setselected", val);
+      },
+    },
   },
-  data: function() {
+  data: function () {
     return {
       fullscreen: false,
       ruigehond: 0,
-    }
+    };
   },
   methods: {
     joinTeam: function (project) {
@@ -205,9 +282,10 @@ export default {
       return project.webpage_url && project.is_webembed;
     },
     getEmbed: function (project) {
-      if (!project.webpage_url) return '';
-      return project.webpage_url.endsWith('.pdf') ?
-        project.url + '/render' : project.webpage_url;
+      if (!project.webpage_url) return "";
+      return project.webpage_url.endsWith(".pdf")
+        ? project.url + "/render"
+        : project.webpage_url;
     },
     seeEmbed: function (project) {
       window.open(project.webpage_url);
@@ -215,7 +293,7 @@ export default {
     selectNone: function () {
       this.active = -1;
       this.fullscreen = false;
-      this.$emit('close');
+      this.$emit("close");
     },
     letsGo: function () {
       // Project navigation
@@ -224,26 +302,41 @@ export default {
       let curProjectId = this.active;
       let isChallenges = this.withChallenges;
       if (curProjectId === -1) return;
-      let prev_item = -1, prev = null, next = null;
-      theProjects.forEach(function(p) {
+      let prev_item = -1,
+        prev = null,
+        next = null;
+      theProjects.forEach(function (p) {
         if (!isChallenges && p.is_challenge) return;
         if (next) return;
-        if (prev !== null) { next = p.id; }
-        if (curProjectId == p.id) { prev = prev_item; }
+        if (prev !== null) {
+          next = p.id;
+        }
+        if (curProjectId == p.id) {
+          prev = prev_item;
+        }
         prev_item = p.id;
       });
-      return { 'prev': prev, 'next': next }
+      return { prev: prev, next: next };
     },
-    goNext: function() { this.active = this.letsGo().next },
-    goPrev: function() { this.active = this.letsGo().prev },
-    touchStart (touchEvent) {
-      if (touchEvent.changedTouches.length !== 1) { // one finger
+    goNext: function () {
+      this.active = this.letsGo().next;
+    },
+    goPrev: function () {
+      this.active = this.letsGo().prev;
+    },
+    touchStart(touchEvent) {
+      if (touchEvent.changedTouches.length !== 1) {
+        // one finger
         return;
       }
       const posXStart = touchEvent.changedTouches[0].clientX;
-      addEventListener('touchend', (touchEvent) => this.touchEnd(touchEvent, posXStart), {once: true});
+      addEventListener(
+        "touchend",
+        (touchEvent) => this.touchEnd(touchEvent, posXStart),
+        { once: true }
+      );
     },
-    touchEnd (touchEvent, posXStart) {
+    touchEnd(touchEvent, posXStart) {
       if (touchEvent.changedTouches.length !== 1) {
         return;
       }
@@ -255,48 +348,57 @@ export default {
         this.goNext(); // swipe left
       }
     },
-    tweakPreview (content) {
-      return content
+    tweakPreview(content) {
+      return content;
       // Force all links in a new window
       //return content.replace(/href="/g,'target="_blank" href="');
     },
-    toggleFullscreen () {
+    toggleFullscreen() {
       this.fullscreen = !this.fullscreen;
       if (this.fullscreen) {
         this.ruigehond = 0;
         this.countDown();
         setTimeout(() => {
-          document.getElementById('webembedframe').contentWindow.focus();
+          document.getElementById("webembedframe").contentWindow.focus();
         }, 200);
       } else {
-        this.ruigehond = 100;        
-        document.getElementsByClassName('modal-container')[0].focus();
+        this.ruigehond = 100;
+        document.getElementsByClassName("modal-container")[0].focus();
       }
     },
-    toggleNextproject () {
-      this.toggleFullscreen()
-      this.goNext()
+    toggleNextproject() {
+      this.toggleFullscreen();
+      this.goNext();
     },
     countDown() {
       if (pc_per_tick == 0) return; // disabled
-      if (this.ruigehond >= 100) { // completed
-        this.ruigehond = 100; return;
+      if (this.ruigehond >= 100) {
+        // completed
+        this.ruigehond = 100;
+        return;
       }
       this.ruigehond += pc_per_tick;
       let ths = this;
-      setTimeout(() => { ths.countDown() }, 1000);
-    }
-  }
+      setTimeout(() => {
+        ths.countDown();
+      }, 1000);
+    },
+  },
 };
 </script>
 
 <style scoped>
-
-div, p, button {
-  font-family: M3Regular,"Open Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+div,
+p,
+button {
+  font-family: M3Regular, "Open Sans", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
 }
 div.content * {
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .titlebar {
@@ -339,7 +441,7 @@ div.content * {
   padding: 0 0.4em;
 }
 .teamroster span:before {
-  content: '🏀 ';
+  content: "🏀 ";
   font-size: 50%;
   white-space: nowrap;
   vertical-align: super;
@@ -353,7 +455,7 @@ div.content * {
   text-shadow: 1px 1px 1px white;
   font-family: monospace;
   line-height: 0em;
-  margin: 0.3em 0 0em 1em; 
+  margin: 0.3em 0 0em 1em;
   padding: 0px;
 }
 
@@ -369,7 +471,8 @@ div.content * {
   display: inline-block;
   position: fixed;
   z-index: 100;
-  bottom: 3px; left: 3px;
+  bottom: 3px;
+  left: 3px;
   height: 120px;
   width: 120px;
   border: 1px solid #ccc;
@@ -446,7 +549,8 @@ button.nav-prev {
   float: left;
 }
 .dark .footer button {
-  background: black; color: white;
+  background: black;
+  color: white;
 }
 .status button {
   margin: 0 0.5em 0 0;
@@ -498,15 +602,26 @@ button.nav-prev {
 .go-fullscreen {
   font-size: 1em;
   margin-top: -0.5em;
+  display: block;
+  box-shadow: none;
+}
+.go-fullscreen span {
+  font-size: 0px;
+}
+.go-fullscreen:hover span {
+  font-size: initial;
 }
 @media (min-width: 768px) {
-  .go-fullscreen {
-    margin-left: -3em;
-    margin-top: 0em;
-    float: left;
-    box-shadow: none;
+  .webembed {
+    width: 600px;
+    height: 360px;
   }
-  .go-fullscreen span { font-size: 0px; }
+}
+@media (min-width: 1280px) {
+  .webembed {
+    width: 900px;
+    height: 540px;
+  }
 }
 .dark .webembed-fullscreen {
   background: black;
@@ -531,13 +646,16 @@ button.nav-prev {
   padding: 3px 9px;
   border: 1px solid grey;
   cursor: pointer;
-  background: white; color: black;
+  background: white;
+  color: black;
 }
 .webembed-fullscreen button:hover {
-  border: 1px solid black; color: black;
+  border: 1px solid black;
+  color: black;
 }
 .dark .webembed-fullscreen button {
-  background: black; color: white;
+  background: black;
+  color: white;
 }
 .webembed-fullscreen iframe {
   width: 100%;
@@ -580,37 +698,40 @@ button.fullscreen-next-button {
 
 /* Shaggy dog style progress bar */
 #ruigehond {
-    z-index: 9998;
-    position: fixed;
-    display: block;
-    left: 0;
-    bottom: 0px;
-    width: 100%;
-    height: 10px;
-    margin: 0;
-    overflow: visible;
-    background-color: rgb(0,0,0);
+  z-index: 9998;
+  position: fixed;
+  display: block;
+  left: 0;
+  bottom: 0px;
+  width: 100%;
+  height: 10px;
+  margin: 0;
+  overflow: visible;
+  background-color: rgb(0, 0, 0);
 }
 #ruigehond.finished {
-    animation-name: pulsate;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate-reverse;
-    animation-timing-function: ease;
+  animation-name: pulsate;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate-reverse;
+  animation-timing-function: ease;
 }
 @keyframes pulsate {
-  from {background-color: rgb(255,0,0);}
-  to {background-color: rgb(0,0,0);}
+  from {
+    background-color: rgb(255, 0, 0);
+  }
+  to {
+    background-color: rgb(0, 0, 0);
+  }
 }
 #ruigehond.finished > div {
-    display: none;
+  display: none;
 }
 #ruigehond > div {
-    display: block;
-    background: linear-gradient(to right, #0E91F8, #e42fe2);
-    border-right: 1px solid gray;
-    width: 0px;
-    height: 100%;
+  display: block;
+  background: linear-gradient(to right, #0e91f8, #e42fe2);
+  border-right: 1px solid gray;
+  width: 0px;
+  height: 100%;
 }
-
 </style>
