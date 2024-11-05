@@ -1,12 +1,21 @@
 # Backboard
 
-This is a single page application (SPA) that shows the projects and challenges for a hackathon event using the remote API of [Dribdat](https://dribdat.cc). 
+This is a single page application (SPA) that visualizes data from `hackathon.json`, [Frictionless Data](https://frictionlessdata.io), or the [Dribdat API](https://dribdat.cc). 
 
-Project data is shown for a specific event, with flexible configuration options for displaying and sorting the results in different ways. You can seamlessly navigate using your mouse or keyboard between projects and challenges. 
+Features:
+
+- Projects and challenges are shown for a specific event.
+- Flexible configuration options can be used for displaying and sorting the results.
+- Seamlessly navigate using your mouse or keyboard between individual projects.
+- You can also show presentations in full screen mode, use a mouse, keyboard or clicker to navigate through the slides. 
+- A subtle countdown timer bar is shown at the bottom of the screen to alert your presenters of the time available. 
+- Stylish countdown clock and all the event details can be enabled, for a quick loading home page for your event.
+
+The Backboard has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results. If you are developing a Vue.js app, you can import the Challenges, Honeycomb and Preview components into your app.
 
 Currently most functions link back to Dribdat, for example, when you click on the Join team button you get directed to the main web application. The long-term goal is to create a more modern, decoupled frontend for Dribdat.
 
-The Backboard has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results. If you are developing a Vue.js app, you can import the Challenges, Honeycomb and Preview components into your app.
+Because it works like a static website, you can bundle the Data Package along with this app or point to a permalink location where you have uploaded your `datapackage.json` for archiving the event.
 
 **Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) through clicking the `options` button found at the footer of the page (which opens a configuration menu). 
 Use the handy *Share* link to get a URL with your config.
@@ -19,7 +28,7 @@ Deploy this application with any service that supports Node.js
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fdribdat%2Fbackboard)
 
-TIP: You may want to set the **options** with the link at the bottom of the page - click the Share button, and paste the query string (everything after ?&) into your `VUE_APP_DEFAULT_OPTS` variable.
+Set up app options at the bottom of the page, then click the Share button, and paste the query string (everything after ?&) into your `VUE_APP_DEFAULT_OPTS` variable.
 
 ## Usage
 
