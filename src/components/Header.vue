@@ -59,6 +59,11 @@ export default {
 }
 
 @media (max-width: 768px) {
+  #event-logo {
+    max-width: 128px;
+    max-height: 128px;
+    margin-bottom: 1em;
+  }
   .header-logo {
     display: block;
     float: none;
@@ -67,6 +72,12 @@ export default {
   .header-logo img {
     width: 100%;
     height: auto;
+  }
+  .header-content {
+    padding-bottom: 2em;
+  }
+  .event-location {
+    display: block;
   }
 }
 
