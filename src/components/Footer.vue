@@ -41,6 +41,10 @@ export default {
   color: white;
 }
 
+.description {
+  padding: 0em 0.5em;
+}
+
 .event-details {
   margin: 2em 20%;
   position: relative;
