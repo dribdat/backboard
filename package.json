@@ -1,6 +1,6 @@
 {
-  "name": "vue",
-  "version": "0.1.0",
+  "name": "dribdat-backboard",
+  "version": "0.1.9",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -8,20 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@adapttive/vue-markdown": "^4.0.1",
-    "@vue/cli-plugin-babel": "4.1.1",
-    "moment": "^2.29.1",
-    "vue": "^2.6.11",
-    "vue-grid-responsive": "0.2.0"
+    "@adapttive/vue-markdown": "^4",
+    "moment": "^2",
+    "vue": "^2",
+    "vue-grid-responsive": "*",
+    "vue2-flip-countdown": "^1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-eslint": "4.1.1",
-    "@vue/cli-service": "4.1.1",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.0.1",
-    "execa": "^5.1.1",
-    "vue-template-compiler": "^2.6.11"
+    "@vue/cli-service": "^5.0.8",
+    "execa": "*",
+    "vue-template-compiler": "*"
   },
   "eslintConfig": {
     "root": true,
@@ -52,5 +48,5 @@
     "vuejs",
     "starter"
   ],
-  "description": "Vue.js example starter project"
+  "description": "Backboard SPA for dribdat"
 }

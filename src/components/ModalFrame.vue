@@ -1,6 +1,6 @@
 <template>
   <section>
-    <button @click="isVoteActive = true">🗳️ Vote now!</button>
+    <button @click="isVoteActive = true">🗳️ Contribute</button>
 
     <Modal v-if="isVoteActive" @close="isVoteActive = false">
       <div class="content" slot="body">
@@ -19,10 +19,10 @@
 </template>
 
 <script>
-import Modal from "./Modal";
+import Modal from "./Modal"
 
 export default {
-  name: "VoteBox",
+  name: "ModalFrame",
   props: {
     href: String,
   },
@@ -32,19 +32,23 @@ export default {
   data() {
     return {
       framesrc: null,
-      fullhref: null,
       isVoteActive: false,
     };
   },
   mounted() {
     let formref = this.href;
     if (formref.indexOf("/") < 0) return;
-    formref = formref.split("/");
-    formref = formref[formref.length - 2];
-    formref = formref.split("?")[0];
-    formref = "https://docs.google.com/forms/d/e/" + formref;
-    this.framesrc = formref + "/viewform?embedded=true";
-    this.fullhref = formref + "?usp=sf_link";
+
+    // Use embedded URL for Google Forms
+    if (formref.indexOf("https://docs.google.com/forms") == 0) {
+      formref = formref.split("/");
+      formref = formref[formref.length - 2];
+      formref = formref.split("?")[0];
+      formref = "https://docs.google.com/forms/d/e/" + formref;
+      formref = formref + "/viewform?embedded=true";
+    }
+    
+    this.framesrc = formref;
   },
 };
 </script>
