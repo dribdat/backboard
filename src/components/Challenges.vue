@@ -476,10 +476,6 @@ export default {
     #fefefe 10px,
     #ffffff 20px
   );
-  background-color: #fff;
-  background-size: 95% auto;
-  background-repeat: no-repeat;
-  background-position: center 5px;
   border: 3px solid #eee;
 }
 .col[challenge].project-container .team-stats {
@@ -488,10 +484,10 @@ export default {
 
 .project-container {
   display: inline-block;
-  background-size: auto 50%;
+  background-color: #fff;
+  background-size: 95% auto;
   background-repeat: no-repeat;
-  background-position: center 0px;
-  background-color: #999;
+  background-position: center 5px;
   padding: 0px;
 }
 .project-container > div {
