@@ -51,7 +51,7 @@ export default {
   padding: 0.5em 1em;
   border: 1px solid rgba(0,0,0,0.3);
   border-radius: 6px;
-  background: rgba(255, 230, 255, 0.6);
+  background: rgba(230, 230, 230);
   box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
   font-size: 90%;
   line-height: 140%;
