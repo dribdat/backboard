@@ -57,7 +57,7 @@ export default {
       showToolbar: false,
       darkClass: '',
     }
-    console.debug(my_config);
+    //console.debug(my_config);
     return my_config;
   },
   methods: {

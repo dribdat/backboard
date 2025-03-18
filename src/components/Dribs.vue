@@ -1,14 +1,17 @@
 <template>
   <div container class="section-dribs">
-    <h1>Dribs</h1>
+    <div v-for="drib in activities" :key="drib.id">
 
-    <div v-for="drib in activities" :key="drib.id" class="drib">
-      <markdown class="drib-content"
-                v-if="drib.content"
-         :source="drib.content"
-         :html="true" />
+      <div class="drib" v-if="drib.content">
+        <markdown class="drib-content"
+          :source="drib.content"
+          :html="true" />
+        <div class="drib-since" :title="drib.date">
+          {{ drib.timesince }}
+        </div>
+      </div>
+
     </div>
-
   </div>
 </template>
 
@@ -27,11 +30,15 @@ export default {
 </script>
 
 <style scoped>
-/* -- Footer -- */
+/* -- Dribs -- */
+
+.section-dribs {
+  margin-bottom: 4em;
+}
 
 .drib {
   margin: 2em 20%;
-  padding: 0.5em 1em;
+  padding: 0em 1em;
   border: 1px solid rgba(0,0,0,0.3);
   border-radius: 6px;
   background: rgba(230, 230, 230);
@@ -40,6 +47,14 @@ export default {
   line-height: 140%;
   text-align: left;
   overflow: hidden;
+}
+
+.drib-since {
+  color: grey;
+  text-align: center;
+  font-size: 80%;
+  margin-top: -1.5em;
+  margin-bottom: 0.2em;
 }
 
 @media(max-width: 700px) {

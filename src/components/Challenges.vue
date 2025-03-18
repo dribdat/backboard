@@ -75,7 +75,6 @@
             :withButtons="isButtons"
             :showExcerpt="isExcerpts"
             :projects="projects"
-            :activityData="activities"
             :eventData="isHeadline ? event : null"
             ></Previews>
 
@@ -215,16 +214,6 @@ export default {
     this.sortOrder = urlParams.get("sort") || "default";
     this.darkMode = urlParams.get("dark") || "default";
     const datapackage_json = this.src; // TODO urlParams.get("src") ?
-    // Load the dribs
-    if (this.dribs !== null) {
-      console.debug("Loading Dribs", this.dribs);
-      fetch(this.dribs)
-        .then(async (response) => {
-          const data = await response.json();
-          this.activities = data.activities;
-          console.log(this.activities);
-        });
-    }
     // Continue with loading event
     console.debug("Loading", datapackage_json);
     fetch(datapackage_json)
@@ -314,6 +303,38 @@ export default {
           this.event.starts_at = this.event.starts_at || this.event.date;
           this.event.ends_at = this.event.ends_at || this.event.starts_at || this.event.date;
           // console.log(this.event);
+        }
+
+        // Load the activity data
+        if (this.dribs !== null) {
+          console.debug("Loading Dribs", this.dribs);
+          fetch(this.dribs)
+            .then(async (response) => {
+              const data = await response.json();
+              this.activities = data.activities.sort((a,b) => {
+                return a.time < b.time;
+              });
+              //console.log(this.activities);
+              this.activities.forEach(el => {
+                let proj = this.projects.filter((p) => {
+                  if (p.id == el.project_id) {
+                    if (typeof p.activities === 'undefined') {
+                      p.activities = [];
+                    }
+                    p.activities.push(el);
+                    return true;
+                  }
+                  return false;
+                });
+                if (!proj) {
+                  console.warn('Project not found', el);
+                  return;
+                }
+              });
+            })
+            .catch((error) => {
+              this.errorMessage = error;
+            });
         }
 
         // Propagate initial values

@@ -183,16 +183,30 @@
               &#x26F6;<span>&nbsp;Zoom</span>
             </button>
 
-            <markdown
-              class="preview-longtext"
-              v-if="project.longtext"
-              :source="project.longtext"
-              :postrender="tweakPreview"
-              :html="true"
-            />
+            <div class="autotext-nav">
+              <span v-if="project.autotext">
+                <a href="#readme">README</a>
+              </span>
+              <span v-if="project.activities">
+                <a href="#dribs">DRIBS</a>
+              </span>
+            </div>
+
+            <div v-if="project.longtext">
+              <a class="autotext-link" name="pitch" href="#pitch">PITCH</a>
+              <markdown
+                class="preview-longtext" 
+                v-if="project.longtext"
+                :source="project.longtext"
+                :postrender="tweakPreview"
+                :html="true"
+              />
+            </div>
 
             <div v-if="project.autotext">
-              <a :href="project.autotext_url" class="autotext-link">README</a>
+              <a class="autotext-link" name="readme" href="#pitch">README</a>
+              <a class="autotext-open" target="_blank"
+                 :href="project.autotext_url">Open original ...</a>
               <markdown
                 class="preview-autotext"
                 :source="project.autotext"
@@ -201,7 +215,10 @@
               />
             </div>
 
-            <Dribs :activities="activityData" />
+            <div v-if="project.activities">
+              <a class="autotext-link" name="dribs" href="#pitch">DRIBS</a>
+              <Dribs :activities="project.activities" />
+            </div>
           </div>
         </div>
         <div class="footer" slot="footer" @touchstart="touchStart">
@@ -218,10 +235,12 @@
 
 <script>
 import VueMarkdown from "@adapttive/vue-markdown";
+import VueCollapse from 'vue2-collapse'
 
 import Modal from "./Modal";
 import Header from "./Header";
 import Dribs from "./Dribs";
+
 
 const TIMER_LENGTH_MINUTES = parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
 const pc_per_tick =
@@ -520,13 +539,38 @@ div.content * {
 
 .autotext-link {
   display: block;
-  background: gainsboro;
+  border: 5px solid gainsboro;
+  border-radius: 5em;
   color: blue;
   font-weight: bold;
   font-family: monospace;
   font-size: 200%;
   padding: 1em;
   text-align: center;
+  text-decoration: none;
+}
+.autotext-open {
+  display: block;
+  color: blue;
+  text-align: center;
+  margin: 1em;
+}
+.autotext-nav {
+  display: block;
+  text-align: center;
+  margin-bottom: 0.5em;
+}
+.autotext-nav a {
+  color: #999;
+  margin-right: 1em;
+}
+.autotext-nav a::before {
+  content: '⯆';
+  font-size: 80%;
+  top: -0.1em;
+  left: -0.2em;
+  display: inline-block;
+  position: relative;
 }
 
 .phase {
@@ -538,6 +582,8 @@ div.content * {
   opacity: 0.9;
   transition: all 0.3s ease;
   border: none;
+  height: 1.5em;
+  padding: 2pt 6pt 2pt;
 }
 .modal-footer:hover button {
   opacity: 1;
@@ -561,7 +607,7 @@ button.nav-prev {
   font-weight: normal;
   font-size: 125%;
   margin-top: 1em;
-  margin-bottom: 3em;
+  margin-bottom: 1em;
   padding: 5px 7px;
   background: white;
   width: 100%;
