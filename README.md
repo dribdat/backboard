@@ -35,8 +35,12 @@ Set up app options at the bottom of the page, then click the Share button, and p
 This app currently only works if you have data already available. In the future this may well change - see [json.everyhack.day](https://json.everyhack.day).
 For now, we recommend one of the following:
 
-- Put a `datapackage.json` file that you exported from dribdat's Admin, Reports page, or API into the **public** folder.
-- Or use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event, or a data package elsewhere.
+- Use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event, or the URL to a Data Package.
+
+Or:
+
+- Put a `datapackage.json` file that you exported from dribdat's Admin, Reports page, or API into the **public** folder - e.g. `.../api/event/current/datapackage.json`
+- Optionally, also put a `activity.json` file with an export of the Dribs data from the API - e.g. `.../api/event/current/activity.json?limit=500`
 
 You can use the following environment variables:
 
