@@ -6,8 +6,13 @@
         <markdown class="drib-content"
           :source="drib.content"
           :html="true" />
-        <div class="drib-since" :title="drib.date">
-          {{ drib.timesince }}
+        <div class="drib-meta">
+          <span class="drib-since" :title="drib.date">
+            {{ drib.timesince }}
+          </span>
+          <span class="drib-who" v-if="drib.user_name">
+            {{ drib.user_name }}
+          </span>
         </div>
       </div>
 
@@ -49,12 +54,24 @@ export default {
   overflow: hidden;
 }
 
-.drib-since {
+.drib-meta {
   color: grey;
   text-align: center;
   font-size: 80%;
   margin-top: -1.5em;
   margin-bottom: 0.2em;
+}
+
+.drib-since {
+  font-style: monospace;
+  margin-right: 1em;
+}
+
+.drib-who:before {
+  content: "🏀 ";
+  font-size: 50%;
+  white-space: nowrap;
+  vertical-align: super;
 }
 
 @media(max-width: 700px) {
