@@ -60,7 +60,7 @@
               title="Open in a new window"
               @click="seeEmbed(project)"
             >
-              ⧐ View
+              ⟁ View
             </button>
             <button
               v-if="project.download_url"
