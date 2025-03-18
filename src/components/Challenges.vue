@@ -142,6 +142,7 @@ export default {
   name: "Challenges",
   props: {
     src: String,
+    dribs: String,
     options: String,
     toolbar: Boolean
   },
@@ -158,6 +159,7 @@ export default {
     return {
       event: {},
       projects: null,
+      activities: null,
       profileUrl: null,
       errorMessage: null,
       isButtons: true,
@@ -301,6 +303,38 @@ export default {
           this.event.starts_at = this.event.starts_at || this.event.date;
           this.event.ends_at = this.event.ends_at || this.event.starts_at || this.event.date;
           // console.log(this.event);
+        }
+
+        // Load the activity data
+        if (this.dribs !== null) {
+          console.debug("Loading Dribs", this.dribs);
+          fetch(this.dribs)
+            .then(async (response) => {
+              const data = await response.json();
+              this.activities = data.activities.sort((a,b) => {
+                return a.time < b.time;
+              });
+              //console.log(this.activities);
+              this.activities.forEach(el => {
+                let proj = this.projects.filter((p) => {
+                  if (p.id == el.project_id) {
+                    if (typeof p.activities === 'undefined') {
+                      p.activities = [];
+                    }
+                    p.activities.push(el);
+                    return true;
+                  }
+                  return false;
+                });
+                if (!proj) {
+                  console.warn('Project not found', el);
+                  return;
+                }
+              });
+            })
+            .catch((error) => {
+              this.errorMessage = error;
+            });
         }
 
         // Propagate initial values
