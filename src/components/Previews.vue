@@ -201,9 +201,7 @@
               />
             </div>
 
-            <div class="eventheader" v-if="false && eventData">
-              <Header :event="eventData"></Header>
-            </div>
+            <Dribs :activities="activityData" />
           </div>
         </div>
         <div class="footer" slot="footer" @touchstart="touchStart">
@@ -223,8 +221,8 @@ import VueMarkdown from "@adapttive/vue-markdown";
 
 import Modal from "./Modal";
 import Header from "./Header";
+import Dribs from "./Dribs";
 
-// TODO: make this into an option / variable
 const TIMER_LENGTH_MINUTES = parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
 const pc_per_tick =
   TIMER_LENGTH_MINUTES > 0 ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
@@ -235,11 +233,13 @@ export default {
     markdown: VueMarkdown,
     Modal,
     Header,
+    Dribs,
   },
   props: {
     projects: Array,
     selected: Number,
     eventData: Object,
+    activityData: Object,
     withButtons: Boolean,
     withComments: Boolean,
     withChallenges: Boolean,

@@ -32,17 +32,20 @@ Set up app options at the bottom of the page, then click the Share button, and p
 
 ## Usage
 
-Put a `datapackage.json` file that you exported from dribdat into the **public** folder.
+This app currently only works if you have data already available. In the future this may well change - see [json.everyhack.day](https://json.everyhack.day).
+For now, we recommend one of the following:
 
-Or use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event or data package elsewhere.
+- Put a `datapackage.json` file that you exported from dribdat's Admin, Reports page, or API into the **public** folder.
+- Or use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event, or a data package elsewhere.
 
 You can use the following environment variables:
 
 - `VUE_APP_DRIBDAT_URL` (required) - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package (\* see examples)
+- `VUE_APP_DRIBS_URL` - as above, a link to the export of the Dribdat Activity API.
 - `VUE_APP_DEFAULT_OPTS` - the default display settings - copy the part after ? from the Share link.
 - `VUE_APP_HIDE_TOOLBAR` - makes the options toolbar in the footer unavailable.
 - `VUE_APP_VOTE_FORM_URL` - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
-- `VUE_APP_TIMER_LENGTH` - in minutes, how long the countdown timer should run for in presentation mode (0 to disable).
+- `VUE_APP_TIMER_LENGTH` - in minutes, how long the countdown timer should run for in presentation mode (0 to disable, 3 is the default).
 - `BACKBOARD_ROOT` - if your deployment is not at the root, change it here (e.g. `/backboard`)
 
 \* Examples:

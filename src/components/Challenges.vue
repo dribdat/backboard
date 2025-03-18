@@ -75,6 +75,7 @@
             :withButtons="isButtons"
             :showExcerpt="isExcerpts"
             :projects="projects"
+            :activityData="activities"
             :eventData="isHeadline ? event : null"
             ></Previews>
 
@@ -142,6 +143,7 @@ export default {
   name: "Challenges",
   props: {
     src: String,
+    dribs: String,
     options: String,
     toolbar: Boolean
   },
@@ -158,6 +160,7 @@ export default {
     return {
       event: {},
       projects: null,
+      activities: null,
       profileUrl: null,
       errorMessage: null,
       isButtons: true,
@@ -212,6 +215,16 @@ export default {
     this.sortOrder = urlParams.get("sort") || "default";
     this.darkMode = urlParams.get("dark") || "default";
     const datapackage_json = this.src; // TODO urlParams.get("src") ?
+    // Load the dribs
+    if (this.dribs !== null) {
+      console.debug("Loading Dribs", this.dribs);
+      fetch(this.dribs)
+        .then(async (response) => {
+          const data = await response.json();
+          this.activities = data.activities;
+          console.log(this.activities);
+        });
+    }
     // Continue with loading event
     console.debug("Loading", datapackage_json);
     fetch(datapackage_json)
