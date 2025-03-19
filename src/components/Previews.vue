@@ -47,7 +47,7 @@
           <div class="hashtag">{{ project.hashtag }}</div>
           <div class="teamroster">
             <div v-for="person in project.team">
-              <span v-show="person">{{ person }}</span>
+              <a v-show="person" class="person" @click="seePerson(person)">{{ person }}</a>
             </div>
           </div>
 
@@ -257,6 +257,7 @@ export default {
   props: {
     projects: Array,
     selected: Number,
+    profileUrl: String,
     eventData: Object,
     activityData: Object,
     withButtons: Boolean,
@@ -296,6 +297,11 @@ export default {
     },
     seeDetails: function (project_url) {
       window.open(project_url);
+    },
+    seePerson: function (person) {
+      if (!this.profileUrl) return;
+      const userhref = this.profileUrl + person;
+      window.open(userhref);
     },
     isEmbeddable: function (project) {
       return project.webpage_url && project.is_webembed;
@@ -455,11 +461,11 @@ div.content * {
 .teamroster div {
   display: inline;
 }
-.teamroster span {
+.teamroster .person {
   margin: 0 0.4em;
   padding: 0 0.4em;
 }
-.teamroster span:before {
+.teamroster .person:before {
   content: "🏀 ";
   font-size: 50%;
   white-space: nowrap;

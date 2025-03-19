@@ -33,7 +33,7 @@ export default {
     let apiUrl = null;
     let dribUrl = null;
     let eventId = null;
-    let baseUrl = process.env.VUE_APP_DRIBDAT_URL;
+    let baseUrl = process.env.VUE_APP_DRIBDAT_URL || null;
     if (baseUrl && !eventId && baseUrl.indexOf('/event/')>0) {
       eventId = baseUrl.match('/event/([0-9]+)');
       if (eventId !== null) {
@@ -81,6 +81,7 @@ export default {
         this.darkClass = '';
         document.body.style.backgroundColor = '';
       }
+      return '';
     },
   }
 };

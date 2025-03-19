@@ -76,6 +76,7 @@
             :showExcerpt="isExcerpts"
             :projects="projects"
             :eventData="isHeadline ? event : null"
+            :profileUrl="profileUrl"
             ></Previews>
 
     <Honeycomb v-if="isHexagons && projects != null"
@@ -213,31 +214,40 @@ export default {
     this.isChallenges = Boolean(urlParams.get("challenges"));
     this.sortOrder = urlParams.get("sort") || "default";
     this.darkMode = urlParams.get("dark") || "default";
-    const datapackage_json = this.src; // TODO urlParams.get("src") ?
+    let datasrc = this.src;
+    // Override with URL parameter if default value set
+    if (urlParams.get("src") && (!datasrc || datasrc == './datapackage.json')) {
+      datasrc = urlParams.get("src").replaceAll('#', '');
+      if (datasrc.indexOf('/api/event')<0) {
+        if (datasrc[datasrc.length-1] !== '/') this.src += '/';
+        datasrc += 'api/event/current/datapackage.json';
+      }
+    }
+    if (!datasrc) {
+      return this.errorMessage = "No data source provided.";
+    }
     // Continue with loading event
-    console.debug("Loading", datapackage_json);
-    fetch(datapackage_json)
+    console.debug("Loading", datasrc);
+    fetch(datasrc)
       .then(async (response) => {
-        const data = await response.json();
-        // console.debug(data);
-
         // check for error response
         if (!response.ok) {
           // get error message from body or default to response statusText
-          const error = (data && data.message) || response.statusText;
+          const error = response.statusText;
           return Promise.reject(error);
         }
+
+        const data = await response.json();
+        // console.debug(data);
 
         // get server path
         if (this.src.indexOf('/api/')>0) {
           this.profileUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
-        } else if (data.homepage) {
-          this.profileUrl = (data.homepage + '/user/');
+        } else if (data.sources && data.sources.length) {
+          this.profileUrl = (data.sources[0].path + 'user/');
         } else {
-          this.profileUrl = window.location.href;
-          console.warn("Using default profile:", this.profileUrl);
+          this.profileUrl = null;
         }
-        this.profileUrl = this.profileUrl.replaceAll('//','/');
 
         if (typeof data.projects === 'undefined' && data.resources.length > 0) {
           data.projects = null;
@@ -306,7 +316,7 @@ export default {
         }
 
         // Load the activity data
-        if (this.dribs !== null) {
+        if (this.dribs) {
           console.debug("Loading Dribs", this.dribs);
           fetch(this.dribs)
             .then(async (response) => {
