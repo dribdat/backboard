@@ -17,7 +17,8 @@
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",
     "execa": "*",
-    "vue-template-compiler": "*"
+    "vue-template-compiler": "*",
+    "vue2-collapse": "^1.0.15"
   },
   "eslintConfig": {
     "root": true,

@@ -9,6 +9,7 @@
       @darkMode="darkMode"
       :toolbar="showToolbar" 
       :options="defaultOptions"
+      :dribs="dribdatDribs"
       :src="dribdatApi || dribdatHome" />
     <tt class="app-footer">
       // human sourced with <a href="https://dribdat.cc" target="_blank">dribdat</a>
@@ -30,8 +31,9 @@ export default {
   },
   data() {
     let apiUrl = null;
+    let dribUrl = null;
     let eventId = null;
-    let baseUrl = process.env.VUE_APP_DRIBDAT_URL;
+    let baseUrl = process.env.VUE_APP_DRIBDAT_URL || null;
     if (baseUrl && !eventId && baseUrl.indexOf('/event/')>0) {
       eventId = baseUrl.match('/event/([0-9]+)');
       if (eventId !== null) {
@@ -43,10 +45,12 @@ export default {
     }
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
+      dribUrl = [baseUrl, "api/event", eventId, "activity.json?limit=500"].join("/");
     }
     let my_config = {
       dribdatApi: apiUrl,
       dribdatHome: baseUrl || '#top',
+      dribdatDribs: dribUrl || process.env.VUE_APP_DRIBS_URL || '',
       voteUrl: process.env.VUE_APP_VOTE_FORM_URL || '',
       allowToolbar: !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false),
       defaultOptions: process.env.VUE_APP_DEFAULT_OPTS || '',
@@ -77,6 +81,7 @@ export default {
         this.darkClass = '';
         document.body.style.backgroundColor = '';
       }
+      return '';
     },
   }
 };
