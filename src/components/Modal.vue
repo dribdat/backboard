@@ -12,8 +12,9 @@
           <div class="modal-header">
             <slot name="header">
               <button class="modal-close-button" 
-                     @click="$emit('close')">
-                &#10060;
+                     @click="$emit('close')"
+                     title="Close">
+                ⬡
               </button>
               <slot name="title"></slot>
             </slot>
@@ -79,7 +80,7 @@
 
 .modal-wrapper {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 .modal-container:focus-visible {
@@ -142,9 +143,7 @@
   float: right;
   text-align: center;
   padding: 0px;
-  margin-right: -2.4em;
-  margin-top: 1em;
-  font-size: 70%;
+  margin-top: -0.3em;
 }
 
 /*

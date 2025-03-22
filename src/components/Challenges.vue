@@ -26,7 +26,7 @@
           <div :class="project.image_url ? 'project has-thumb' : 'project'"
                @click="seePreview(project)"
           >
-          
+
             <div class="team-stats">
               <div class="team-counter"
                    :title="project.team.join(', ')">
@@ -40,7 +40,7 @@
                 <div class="count" v-if="project.stats">{{ project.stats.total }}</div>
               </div>
             </div>
-            
+
             <div class="name">
               {{ project.name }}
             </div>
@@ -58,8 +58,8 @@
             </div>
 
             <div class="team-join" v-if="isButtons">
-              <button @click="joinTeam(project)" title="Join">👍</button>
-              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>  
+              <button @click="joinTeam(project)" title="Join">🏀</button>
+              <button v-if="isComments" @click="openComment(project)" title="Comment">💬</button>
               <button v-show="project.contact_url" @click="contactTeam(project)" title="Contact">👋</button>
             </div>
 
@@ -76,48 +76,51 @@
             :showExcerpt="isExcerpts"
             :projects="projects"
             :eventData="isHeadline ? event : null"
+            :profileUrl="profileUrl"
             ></Previews>
 
     <Honeycomb v-if="isHexagons && projects != null"
             @preview="seePreview"
             :projects="filterProjects"></Honeycomb>
 
+    <Countdown v-if="isCountdown" :event="event"></Countdown>
+
     <Footer v-if="isHeadline" :event="event"></Footer>
 
-    <div class="loading" v-if="projects == null" title="Loading ...">🏀</div>
+    <div class="loading" v-if="projects == null" title="Loading ..."><i class="ball">🏀</i></div>
 
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
 
     <div class="options" v-show="toolbar">
-      <button class="modal-close-button" @click="$emit('closeToolbar')">
-        &#10060;
-      </button>
+      <button class="modal-close-button" @click="$emit('closeToolbar')" title="Close">⬡</button>
       <input type="checkbox" v-model="isHeadline" id="isHeadline">
-        <label for="isHeadline" title="⛳">Header</label>
-      <input type="checkbox" v-model="isPreviews" id="isPreviews">
-        <label for="isPreviews" title="👀">Popup</label>
-      <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
-        <label for="isExcerpts" title="🖼️ ">Excerpt</label>
-      <input type="checkbox" v-model="isButtons" id="isButtons">
-        <label for="isButtons" title="🪟">Join/Contact</label>
-      <input type="checkbox" v-model="isComments" id="isComments">
-        <label for="isComments" title="💬">Comment</label>
+        <label for="isHeadline" title="Header">⛳</label>
       <input type="checkbox" v-model="isChallenges" id="isChallenges">
-        <label for="isChallenges" title="🏆">Challenges</label>
+        <label for="isChallenges" title="Show Challenges">🏆</label>
       <input type="checkbox" v-model="isHexagons" id="isHexagons">
-        <label for="isHexagons" title="⬣">Hexgrid</label>
+        <label for="isHexagons" title="Hexgrid mode">⬣</label>
+      <input type="checkbox" v-model="isCountdown" id="isCountdown">
+        <label for="isCountdown" title="Countdown">⏰</label>
+      <input type="checkbox" v-model="isPreviews" id="isPreviews">
+        <label for="isPreviews" title="Pop-ups">👀</label>
+      <input type="checkbox" v-model="isExcerpts" id="isExcerpts">
+        <label for="isExcerpts" title="Excerpts">🖼️</label>
+      <input type="checkbox" v-model="isButtons" id="isButtons">
+        <label for="isButtons" title="Join/Contact button">🪟</label>
+      <input type="checkbox" v-model="isComments" id="isComments">
+        <label for="isComments" title="Comment buttons">💬</label>
       <select v-model="darkMode" id="darkMode"
              @change="changeDark">
         <option value="default" selected>🌗 Colors</option>
-        <option v-for="option in darkOptions" 
+        <option v-for="option in darkOptions"
                 v-bind:value="option.id" >{{ option.name }}</option>
-      </select>
+      </select>&nbsp;
       <select v-model="sortOrder" id="sortBy"
              @change="changeOrder">
         <option value="default" selected>🡻 Sort</option>
-        <option v-for="option in sortOptions" 
+        <option v-for="option in sortOptions"
                 v-bind:value="option.id" >{{ option.name }}</option>
-      </select>
+      </select>&nbsp;
       <span class="share-button">
         🌐<a :href="shareUrl()">Share</a>
       </span>
@@ -133,18 +136,21 @@ import moment from 'moment'
 import Header from './Header'
 import Footer from './Footer'
 import Previews from './Previews'
+import Countdown from './Countdown'
 import Honeycomb from './Honeycomb'
 
 export default {
   name: "Challenges",
   props: {
     src: String,
+    dribs: String,
     options: String,
     toolbar: Boolean
   },
   components: {
     row: Row,
     column: Column,
+    Countdown,
     Honeycomb,
     Previews,
     Header,
@@ -154,12 +160,14 @@ export default {
     return {
       event: {},
       projects: null,
+      activities: null,
       profileUrl: null,
       errorMessage: null,
       isButtons: true,
       isComments: false,
       isChallenges: false,
       isHeadline: false,
+      isCountdown: false,
       isHexagons: false,
       isPreviews: false,
       isExcerpts: false,
@@ -197,6 +205,7 @@ export default {
     const shareOptions = window.location.search || this.options;
     const urlParams = new URLSearchParams(shareOptions);
     this.isHeadline = Boolean(urlParams.get("headline"));
+    this.isCountdown = Boolean(urlParams.get("countdown"));
     this.isHexagons = Boolean(urlParams.get("hexagons"));
     this.isButtons = Boolean(urlParams.get("buttons"));
     this.isPreviews = Boolean(urlParams.get("previews"));
@@ -205,31 +214,40 @@ export default {
     this.isChallenges = Boolean(urlParams.get("challenges"));
     this.sortOrder = urlParams.get("sort") || "default";
     this.darkMode = urlParams.get("dark") || "default";
-    const datapackage_json = this.src; // TODO urlParams.get("src") ?
+    let datasrc = this.src;
+    // Override with URL parameter if default value set
+    if (urlParams.get("src") && (!datasrc || datasrc == './datapackage.json')) {
+      datasrc = urlParams.get("src").replaceAll('#', '');
+      if (datasrc.indexOf('/api/event')<0) {
+        if (datasrc[datasrc.length-1] !== '/') this.src += '/';
+        datasrc += 'api/event/current/datapackage.json';
+      }
+    }
+    if (!datasrc) {
+      return this.errorMessage = "No data source provided.";
+    }
     // Continue with loading event
-    console.debug("Loading", datapackage_json);
-    fetch(datapackage_json)
+    console.debug("Loading", datasrc);
+    fetch(datasrc)
       .then(async (response) => {
-        const data = await response.json();
-        // console.debug(data);
-
         // check for error response
         if (!response.ok) {
           // get error message from body or default to response statusText
-          const error = (data && data.message) || response.statusText;
+          const error = response.statusText;
           return Promise.reject(error);
         }
+
+        const data = await response.json();
+        // console.debug(data);
 
         // get server path
         if (this.src.indexOf('/api/')>0) {
           this.profileUrl = this.src.replace(/(.*)\/api\/.*/, "$1/user/");
-        } else if (data.homepage) {
-          this.profileUrl = (data.homepage + '/user/');
+        } else if (data.sources && data.sources.length) {
+          this.profileUrl = (data.sources[0].path + 'user/');
         } else {
-          this.profileUrl = window.location.href;
-          console.warn("Using default profile:", this.profileUrl);
+          this.profileUrl = null;
         }
-        this.profileUrl = this.profileUrl.replaceAll('//','/');
 
         if (typeof data.projects === 'undefined' && data.resources.length > 0) {
           data.projects = null;
@@ -297,6 +315,38 @@ export default {
           // console.log(this.event);
         }
 
+        // Load the activity data
+        if (this.dribs) {
+          console.debug("Loading Dribs", this.dribs);
+          fetch(this.dribs)
+            .then(async (response) => {
+              const data = await response.json();
+              this.activities = data.activities.sort((a,b) => {
+                return a.time < b.time;
+              });
+              //console.log(this.activities);
+              this.activities.forEach(el => {
+                let proj = this.projects.filter((p) => {
+                  if (p.id == el.project_id) {
+                    if (typeof p.activities === 'undefined') {
+                      p.activities = [];
+                    }
+                    p.activities.push(el);
+                    return true;
+                  }
+                  return false;
+                });
+                if (!proj) {
+                  console.warn('Project not found', el);
+                  return;
+                }
+              });
+            })
+            .catch((error) => {
+              this.errorMessage = error;
+            });
+        }
+
         // Propagate initial values
         this.changeOrder();
         this.changeDark();
@@ -345,7 +395,7 @@ export default {
       } else {
         // Sort by score then id (challenge) or name (project)
         this.projects.sort((a, b) =>
-          a.is_challenge ? 
+          a.is_challenge ?
               a.id < b.id :
               a.score <= b.score && a.name.localeCompare(b.name)
         );
@@ -366,6 +416,7 @@ export default {
     shareUrl: function () {
       return '?' +
         (this.isHeadline ? '&headline=1' : '') +
+        (this.isCountdown ? '&countdown=1' : '') +
         (this.isHexagons ? '&hexagons=1' : '') +
         (this.isPreviews ? '&previews=1' : '') +
         (this.isExcerpts ? '&excerpts=1' : '') +
@@ -393,11 +444,6 @@ export default {
   .challenges > .section-header {
     margin-left: 5%;
   }
-  .challenges .header-logo {
-    display: block;
-    float: none;
-    margin: none;
-  }
 }
 
 .challenges {
@@ -413,7 +459,7 @@ export default {
   }
   .honeycomb {
     width: 80%;
-    margin-top: 10em;
+    margin-top: 7em;
     margin-bottom: 15em;
     margin-left: 15%;
     text-align: left;
@@ -428,7 +474,7 @@ export default {
   text-align: center;
   width: 100%;
   padding: 1em;
-  top: 0px;
+  bottom: 0px;
   left: 0px;
   margin: 0px;
   background: white;
@@ -474,10 +520,6 @@ export default {
     #fefefe 10px,
     #ffffff 20px
   );
-  background-color: #fff;
-  background-size: 95% auto;
-  background-repeat: no-repeat;
-  background-position: center 5px;
   border: 3px solid #eee;
 }
 .col[challenge].project-container .team-stats {
@@ -486,10 +528,10 @@ export default {
 
 .project-container {
   display: inline-block;
-  background-size: auto 50%;
+  background-color: #fff;
+  background-size: 95% auto;
   background-repeat: no-repeat;
-  background-position: center 0px;
-  background-color: #999;
+  background-position: center 5px;
   padding: 0px;
 }
 .project-container > div {
@@ -616,16 +658,32 @@ export default {
 }
 
 .loading {
+  position: fixed;
+  top: 55%;
   display: inline-block;
   width: 1em; height: 1em;
   font-size: 300%;
-  margin: 1em;
-  animation: rotate 3s  infinite;
+  margin: 0em;
+  line-height: 0px;
+  animation: bounce 0.5s infinite;
+  animation-fill-mode: both;
+  animation-direction: alternate;
+  animation-timing-function: cubic-bezier(1,0,1,0);
+}
+.loading .ball {
+  font-style: normal;
+  display: inline-block;
+  animation: rotate 3s infinite;
   animation-timing-function: cubic-bezier(0,0,0,0);
+  transform-origin: 50% 0%;
 }
 
 @-webkit-keyframes rotate {
-    from { -webkit-transform: rotate(-180deg) } 
-    to { -webkit-transform: rotate(180deg) } 
+    from { -webkit-transform: rotate(-180deg) }
+    to { -webkit-transform: rotate(180deg) }
+}
+@-webkit-keyframes bounce {
+    from { margin-top: -5em }
+    to { margin-top: 0em }
 }
 </style>

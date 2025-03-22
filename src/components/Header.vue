@@ -41,32 +41,54 @@ export default {
   color: black;
 }
 
+.header-logo {
+  display: block;
+  float: none;
+  margin: none;
+}
 
 .header-logo img {
   height: 6em;
-  margin-bottom: 2em;
+  margin-bottom: 3em;
 }
 
 .header-logo {
   display: inline-block;
   float: left;
-  margin-right: 1em;
+  margin-right: 2em;
 }
 
 @media (max-width: 768px) {
+  #event-logo {
+    max-width: 128px;
+    max-height: 128px;
+    margin-bottom: 1em;
+  }
   .header-logo {
     display: block;
     float: none;
     margin: none;
   }
+  .header-logo img {
+    width: 100%;
+    height: auto;
+  }
+  .header-content {
+    padding-bottom: 2em;
+  }
+  .event-location {
+    display: block;
+  }
 }
 
 .event-name {
+  font-weight: normal;
   font-size: 250%;
   margin: 0px;
   text-align: left;
-  line-height: 1.4em;
+  line-height: 1.2em;
   margin-bottom: 1pt;
+  padding-bottom: 0.2em;
 }
 
 .header-content {

@@ -1,6 +1,6 @@
 {
   "name": "dribdat-backboard",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -15,9 +15,10 @@
     "vue2-flip-countdown": "^1"
   },
   "devDependencies": {
-    "@vue/cli-service": "*",
+    "@vue/cli-service": "^5.0.8",
     "execa": "*",
-    "vue-template-compiler": "*"
+    "vue-template-compiler": "*",
+    "vue2-collapse": "^1.0.15"
   },
   "eslintConfig": {
     "root": true,
