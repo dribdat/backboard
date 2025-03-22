@@ -304,7 +304,7 @@ export default {
       window.open(userhref);
     },
     isEmbeddable: function (project) {
-      return project.webpage_url && project.is_webembed;
+      return project.webpage_url; // && project.is_webembed;
     },
     getEmbed: function (project) {
       if (!project.webpage_url) return "";

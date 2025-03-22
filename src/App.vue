@@ -215,6 +215,10 @@ a.options:hover {
   margin-top: -18px;
   margin-right: 10px;
 }
+.modal-container {
+  padding: 1em 0em;
+  width: 80%;
+}
 button.modal-close-button {
   background: transparent;
   border: none;
