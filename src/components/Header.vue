@@ -16,14 +16,14 @@
       <p class="header-summary" v-if="event.summary">
         {{ event.summary }}
       </p>
-      <a :href="event.webpage" target="_blank" v-if="event.webpage">
+      <a :href="event.webpage" target="_blank" v-if="event.webpage" class="btn">
         🌐
       </a>
-      <a :href="event.webpage_url" target="_blank" v-if="event.webpage_url">
-        🎫
-      </a>
-      <a :href="event.community_url" target="_blank" v-if="event.community_url">
+      <a :href="event.community_url" target="_blank" v-if="event.community_url" class="btn">
         🗨️
+      </a>
+      <a :href="event.webpage_url" target="_blank" v-if="event.webpage_url" class="btn">
+        🎫
       </a>
     </div>
   </div>
@@ -104,6 +104,11 @@ export default {
 .header-content span {
   margin-right: 1em;
   opacity: 0.7;
+}
+
+.header-content .btn {
+  text-decoration: none;
+  box-shadow: none;
 }
 
 .header-summary {
