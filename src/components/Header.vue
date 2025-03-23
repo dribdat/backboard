@@ -16,14 +16,11 @@
       <p class="header-summary" v-if="event.summary">
         {{ event.summary }}
       </p>
-      <a :href="event.webpage" target="_blank" v-if="event.webpage" class="btn">
+      <a :href="event.webpage_url" target="_blank" v-if="event.webpage_url" class="btn">
         🌐
       </a>
       <a :href="event.community_url" target="_blank" v-if="event.community_url" class="btn">
         🗨️
-      </a>
-      <a :href="event.webpage_url" target="_blank" v-if="event.webpage_url" class="btn">
-        🎫
       </a>
     </div>
   </div>
