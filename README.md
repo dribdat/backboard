@@ -4,6 +4,8 @@ This is a single page application (SPA) that visualizes data from [hackathon.jso
 
 **Demo:** https://backboard.vercel.app/
 
+Issues: https://codeberg.org/dribdat/backboard/issues
+
 ## Features
 
 - Projects, challenges, clocks are shown for a specific event.
@@ -59,6 +61,8 @@ You can use the following environment variables:
 - https://meta.dribdat.cc/api/project/top.json
 - https://meta.dribdat.cc/api/event/current/datapackage.json
 
+If you have any questions or bug reports, please leave them on our [Codeberg issues](https://codeberg.org/dribdat/backboard/issues).
+
 ## Development
 
 To run locally, install Node.js and Yarn, then to start a development server:
@@ -67,7 +71,6 @@ To run locally, install Node.js and Yarn, then to start a development server:
 yarn install
 yarn serve
 ```
-
 ## Credits
 
 Created using Vue.js and CodeSandbox.
