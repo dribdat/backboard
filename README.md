@@ -1,26 +1,23 @@
 # Backboard
 
-This is a single page application (SPA) that visualizes data from `hackathon.json`, [Frictionless Data](https://frictionlessdata.io), or the [Dribdat API](https://dribdat.cc). 
+This is a single page application (SPA) that visualizes data from [hackathon.json](https://json.everyhack.day), [Data Package](https://frictionlessdata.io), or the [Dribdat API](https://dribdat.cc). 
 
-Features:
+**Demo:** https://backboard.vercel.app/
 
-- Projects and challenges are shown for a specific event.
-- Flexible configuration options can be used for displaying and sorting the results.
+## Features
+
+- Projects, challenges, clocks are shown for a specific event.
+- Flexible configuration options for displaying and sorting the results.
 - Seamlessly navigate using your mouse or keyboard between individual projects.
 - You can also show presentations in full screen mode, use a mouse, keyboard or clicker to navigate through the slides. 
 - A subtle countdown timer bar is shown at the bottom of the screen to alert your presenters of the time available. 
-- Stylish countdown clock and all the event details can be enabled, for a quick loading home page for your event.
-
-The Backboard has minimal formatting, tight margins, and is ideal for embedding into your webpage anonuncing the upcoming event or results. If you are developing a Vue.js app, you can import the Challenges, Honeycomb and Preview components into your app.
+- Backboard is FAST, with a quick loading home page and instant navigation of the results of your event.
 
 Currently most functions link back to Dribdat, for example, when you click on the Join team button you get directed to the main web application. The long-term goal is to create a more modern, decoupled frontend for Dribdat.
 
+The Backboard has minimal formatting, tight margins, and is ideal for embedding into your webpage announcing the upcoming event or results. If you are developing a Vue.js app, you can import the Challenges, Honeycomb and Preview components directly into your project.
+
 Because it works like a static website, you can bundle the Data Package along with this app or point to a permalink location where you have uploaded your `datapackage.json` for archiving the event.
-
-**Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) through clicking the `options` button found at the footer of the page (which opens a configuration menu). 
-Use the handy *Share* link to get a URL with your config.
-
-**Demo:** https://backboard.vercel.app/
 
 ## Installation
 
@@ -30,17 +27,20 @@ Deploy this application with any service that supports Node.js
 
 Set up app options at the bottom of the page, then click the Share button, and paste the query string (everything after ?&) into your `VUE_APP_DEFAULT_OPTS` variable.
 
+**Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) through clicking the `options` button found at the footer of the page (which opens a configuration menu). 
+Use the handy *Share* link to get a URL with your config.
+
 ## Usage
 
-This app currently only works if you have data already available. In the future this may well change - see [json.everyhack.day](https://json.everyhack.day).
-For now, we recommend one of the following:
+This app currently only works if you have data already available. To get started, do one of the following:
 
 - Use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event, or the URL to a Data Package.
 
 Or:
 
-- Put a `datapackage.json` file that you exported from dribdat's Admin, Reports page, or API into the **public** folder - e.g. `.../api/event/current/datapackage.json`
-- Optionally, also put a `activity.json` file with an export of the Dribs data from the API - e.g. `.../api/event/current/activity.json?limit=500`
+- Put a `hackathon.json` or `datapackage.json` file that you exported from dribdat's Admin, Reports page, or API into the **public** folder - e.g. `.../api/event/current/datapackage.json`
+
+Optionally, you can also put a `activity.json` file with an export of the Dribs data from the API - e.g. `.../api/event/current/activity.json?limit=500`, or link to it with the `DRIBS_URL`. This is only needed when you are not linking to a Dribdat API, and if your Data Package does not include Dribs.
 
 You can use the following environment variables:
 
