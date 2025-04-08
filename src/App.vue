@@ -43,7 +43,7 @@ export default {
     } else if (!baseUrl) {
       apiUrl = './datapackage.json';
     }
-    if (baseUrl && eventId) {
+    if (baseUrl && eventId && !apiUrl.endsWith('datapackage.json')) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
       dribUrl = [baseUrl, "api/event", eventId, "activity.json?limit=500"].join("/");
     }
@@ -225,12 +225,6 @@ button.modal-close-button {
   box-shadow: none;
   padding: 0px;
   opacity: 0.5;
-}
-.modal-container button.modal-close-button {
-  margin: 0;
-  line-height: 0px;
-  position: relative;
-  right: -1em;
 }
 button.modal-close-button:hover {
   opacity: 1;

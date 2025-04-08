@@ -2,7 +2,7 @@
   <div class="section-countdown"
       :title="timespan">
 
-    <countdown :deadline="deadline" />
+    <countdown v-if="deadline" :deadline="deadline" />
   </div>
 </template>
 

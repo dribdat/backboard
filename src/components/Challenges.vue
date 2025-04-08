@@ -218,7 +218,7 @@ export default {
     // Override with URL parameter if default value set
     if (urlParams.get("src") && (!datasrc || datasrc == './datapackage.json')) {
       datasrc = urlParams.get("src").replaceAll('#', '');
-      if (datasrc.indexOf('/api/event')<0) {
+      if (datasrc.indexOf('/api/event')<0 && !datasrc.endsWith('datapackage.json')) {
         if (datasrc[datasrc.length-1] !== '/') this.src += '/';
         datasrc += 'api/event/current/datapackage.json';
       }

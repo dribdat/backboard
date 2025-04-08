@@ -165,7 +165,7 @@
                   class="fullscreen-close-button"
                   title="Close fullscreen"
                 >
-                  ⬡
+                 ⨱
                 </button>
               </div>
               <iframe
@@ -693,7 +693,7 @@ button.nav-prev {
 }
 .webembed-fullscreen button {
   bottom: 0px;
-  right: 0px;
+  right: 3px;
   position: absolute;
   z-index: 9999;
   box-shadow: none;
