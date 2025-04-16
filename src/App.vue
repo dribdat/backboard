@@ -42,11 +42,11 @@ export default {
       }
     } else if (!baseUrl) {
       apiUrl = './datapackage.json';
-      dribUrl = './activity.json';
+      dribUrl = './posts.json';
     }
     if (baseUrl && eventId && !apiUrl.endsWith('datapackage.json')) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
-      dribUrl = [baseUrl, "api/event", eventId, "activity.json?limit=500"].join("/");
+      dribUrl = [baseUrl, "api/event", eventId, "posts.json?limit=200"].join("/");
     }
     let my_config = {
       dribdatApi: apiUrl,

@@ -227,6 +227,9 @@ export default {
     if (!datasrc) {
       return this.errorMessage = "No data source provided.";
     }
+    if (!this.dribs && datasrc.endsWith('datapackage.json')) {
+      this.dribs = datasrc.replace('datapackage.json', 'posts.json?limit=200');
+    }
     // Continue with loading event
     console.debug("Loading", datasrc);
     fetch(datasrc)
