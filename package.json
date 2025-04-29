@@ -12,7 +12,8 @@
     "moment": "^2",
     "vue": "^2",
     "vue-grid-responsive": "*",
-    "vue2-flip-countdown": "^1"
+    "vue2-flip-countdown": "^1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@vue/cli-service": "^5.0.8",
