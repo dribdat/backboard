@@ -303,11 +303,19 @@ export default {
       const userhref = this.profileUrl + person;
       window.open(userhref);
     },
+    isWithslides: function (project) {
+      return project.is_webembed && (
+        project.longtext.indexOf('\n---')>0 || 
+        project.longtext.indexOf('\n***')>0);
+    },
     isEmbeddable: function (project) {
-      return project.webpage_url; // && project.is_webembed;
+      return project.webpage_url || this.isWithslides(project);
     },
     getEmbed: function (project) {
-      if (!project.webpage_url) return "";
+      if (this.isWithslides(project))
+        return project.url + "/render";
+      if (!project.webpage_url) 
+        return "";
       return project.webpage_url.endsWith(".pdf")
         ? project.url + "/render"
         : project.webpage_url;
@@ -763,7 +771,7 @@ button.fullscreen-next-button {
   height: 10px;
   margin: 0;
   overflow: visible;
-  background-color: rgb(0, 0, 0);
+  background-color: rgb(0, 0, 0, 0);
 }
 #ruigehond.finished {
   animation-name: pulsate;
