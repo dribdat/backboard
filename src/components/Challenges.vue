@@ -347,7 +347,7 @@ export default {
               });
             })
             .catch((error) => {
-              this.errorMessage = error;
+              console.warn('No posts data available.');
             });
         }
 
