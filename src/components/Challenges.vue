@@ -321,9 +321,9 @@ export default {
 
         // Load the activity data
         if (this.dribs) {
-          console.debug("Loading Dribs", this.dribs);
           fetch(this.dribs)
             .then(async (response) => {
+              console.debug("Loading Dribs", this.dribs);
               const data = await response.json();
               this.activities = data.activities.sort((a,b) => {
                 return a.time < b.time;
