@@ -40,12 +40,12 @@ export default {
         eventId = eventId[1];
         baseUrl = baseUrl.substring(0, baseUrl.indexOf('/event/'));
       }
-    } else if (baseUrl.endsWith('datapackage.json')) {
-      apiUrl = baseUrl;
-      dribUrl = baseUrl.replace('datapackage.json', 'posts.json');
     } else if (!baseUrl) {
       apiUrl = './datapackage.json';
       dribUrl = './posts.json';
+    } else if (baseUrl.endsWith('datapackage.json')) {
+      apiUrl = baseUrl;
+      dribUrl = baseUrl.replace('datapackage.json', 'posts.json');
     }
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
