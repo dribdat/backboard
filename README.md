@@ -42,7 +42,7 @@ Or:
 
 - Put a `hackathon.json` or `datapackage.json` file that you exported from dribdat's Admin, Reports page, or API into the **public** folder - e.g. `.../api/event/current/datapackage.json`
 
-Optionally, you can also put a `activity.json` file with an export of the Dribs data from the API - e.g. `.../api/event/current/activity.json?limit=500`, or link to it with the `DRIBS_URL`. This is only needed when you are not linking to a Dribdat API, and if your Data Package does not include Dribs.
+Optionally, you can also put a `posts.json` file with an export of the Dribs data from the API - e.g. `.../api/event/current/posts.json?limit=200`, or link to it with the `DRIBS_URL`. This is only needed when you are not linking to a Dribdat API, and if your Data Package does not include Dribs.
 
 You can use the following environment variables:
 

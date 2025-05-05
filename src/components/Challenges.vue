@@ -227,6 +227,9 @@ export default {
     if (!datasrc) {
       return this.errorMessage = "No data source provided.";
     }
+    if (!this.dribs && datasrc.endsWith('datapackage.json')) {
+      this.dribs = datasrc.replace('datapackage.json', 'posts.json?limit=200');
+    }
     // Continue with loading event
     console.debug("Loading", datasrc);
     fetch(datasrc)
@@ -318,9 +321,9 @@ export default {
 
         // Load the activity data
         if (this.dribs) {
-          console.debug("Loading Dribs", this.dribs);
           fetch(this.dribs)
             .then(async (response) => {
+              console.debug("Loading Dribs", this.dribs);
               const data = await response.json();
               this.activities = data.activities.sort((a,b) => {
                 return a.time < b.time;
@@ -344,7 +347,7 @@ export default {
               });
             })
             .catch((error) => {
-              this.errorMessage = error;
+              console.warn('No posts data available.');
             });
         }
 

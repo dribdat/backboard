@@ -40,13 +40,16 @@ export default {
         eventId = eventId[1];
         baseUrl = baseUrl.substring(0, baseUrl.indexOf('/event/'));
       }
+    } else if (baseUrl.endsWith('datapackage.json')) {
+      apiUrl = baseUrl;
+      dribUrl = baseUrl.replace('datapackage.json', 'posts.json');
     } else if (!baseUrl) {
       apiUrl = './datapackage.json';
-      dribUrl = './activity.json';
+      dribUrl = './posts.json';
     }
-    if (baseUrl && eventId && !apiUrl.endsWith('datapackage.json')) {
+    if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
-      dribUrl = [baseUrl, "api/event", eventId, "activity.json?limit=500"].join("/");
+      dribUrl = [baseUrl, "api/event", eventId, "posts.json?limit=200"].join("/");
     }
     let my_config = {
       dribdatApi: apiUrl,
