@@ -97,11 +97,12 @@
           </div>
         </div>
         <div class="content" slot="body">
-          <div class="preview" v-if="showExcerpt">
+          <div class="preview">
             <markdown
               class="excerpt"
               v-if="
-                !isEmbeddable(project) && !project.longtext && project.excerpt
+                 !project.longtext && project.excerpt &&
+                 !(showExcerpt && isEmbeddable(project))
               "
               :source="project.excerpt"
               :postrender="tweakPreview"
@@ -110,13 +111,13 @@
 
             <iframe
               class="webembed"
-              v-if="isEmbeddable(project)"
+              v-if="showExcerpt && isEmbeddable(project)"
               :src="getEmbed(project)"
             ></iframe>
 
             <div
               class="webembed-fullscreen"
-              v-if="isEmbeddable(project) && fullscreen"
+              v-if="showExcerpt && isEmbeddable(project) && fullscreen"
             >
               <div
                 id="ruigehond"
@@ -175,7 +176,7 @@
               ></iframe>
             </div>
             <button
-              v-if="isEmbeddable(project)"
+              v-if="showExcerpt && isEmbeddable(project)"
               class="go-fullscreen"
               @click="toggleFullscreen()"
               title="Open in full screen mode - tap ⬡ to close again"
