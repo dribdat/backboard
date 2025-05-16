@@ -436,7 +436,7 @@ div.content * {
 }
 
 .titlebar {
-  border-top: 0.5em solid transparent;
+  border-bottom: 0.2em solid transparent;
   text-align: center;
   clear: both;
 }
@@ -447,25 +447,27 @@ div.content * {
   font-size: 2.5rem;
   line-height: 1.2;
   display: block;
-  margin-bottom: 0.5em;
   text-decoration: none;
   text-align: left;
 }
 .summary {
   font-weight: bolder;
   text-align: left;
-  min-height: 2em;
+  min-height: 1em;
+  font-size: 1.5rem;
 }
 .hashtag {
   font-family: monospace;
   font-weight: bold;
   color: #999;
+  font-size: 1rem;
+  float: right;
+  display: inline-block;
 }
 .teamroster {
   max-width: 80%;
   text-align: left;
-  margin-bottom: 2em;
-  opacity: 0.5;
+  margin-bottom: 1em;
 }
 .teamroster div {
   display: inline;
@@ -476,21 +478,22 @@ div.content * {
 }
 .teamroster .person:before {
   content: "🏀 ";
-  font-size: 50%;
+  font-size: 75%;
   white-space: nowrap;
   vertical-align: super;
+  opacity: 0.5;
 }
 .ident {
   font-weight: bold;
   font-size: 200%;
   color: red;
   float: right;
-  text-align: left;
   text-shadow: 1px 1px 1px white;
   font-family: monospace;
   line-height: 0em;
-  margin: 0.3em 0 0em 1em;
+  margin: -1em 0 0em 1em;
   padding: 0px;
+  display: inline-block;
 }
 
 .eventheader {
@@ -566,6 +569,9 @@ div.content * {
 @media (min-width: 768px) {
   .autotext-link {
     transform: translate(-2em, 0);
+  }
+  .summary {
+    max-width: 80%;
   }
 }
 .autotext-open {

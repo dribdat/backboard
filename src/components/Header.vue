@@ -6,6 +6,12 @@
       </a>
     </div>
     <div class="header-content">
+      <a :href="event.webpage_url" target="_blank" title="Home page" v-if="event.webpage_url" class="btn">
+        🌐
+      </a>
+      <a :href="event.community_url" target="_blank" title="Community link" v-if="event.community_url" class="btn">
+        🗨️
+      </a>
       <h3 class="event-name">{{ event.name }}</h3>
       <span class="event-hostname" v-if="event.hostname">
         <i class="fa fa-bank">🏢</i>
@@ -16,12 +22,6 @@
       <p class="header-summary" v-if="event.summary">
         {{ event.summary }}
       </p>
-      <a :href="event.webpage_url" target="_blank" v-if="event.webpage_url" class="btn">
-        🌐
-      </a>
-      <a :href="event.community_url" target="_blank" v-if="event.community_url" class="btn">
-        🗨️
-      </a>
     </div>
   </div>
 </template>
@@ -106,6 +106,7 @@ export default {
 .header-content .btn {
   text-decoration: none;
   box-shadow: none;
+  float: right;
 }
 
 .header-summary {
