@@ -377,6 +377,7 @@ export default {
       this.$emit('darkMode', this.darkMode);
     },
     changeOrder: function () {
+      if (this.projects.length == 0) return;
       console.debug('Sorting by', this.sortOrder);
       if (this.sortOrder == 'id') {
         // Sort by id
@@ -386,18 +387,23 @@ export default {
         this.projects.sort((a, b) => a.name.localeCompare(b.name));
       } else if (this.sortOrder == 'summary') {
         // Sort by summary
+        if (typeof this.projects[0].summary == 'undefined') return;
         this.projects.sort((a, b) => a.summary.localeCompare(b.summary));
       } else if (this.sortOrder == 'ident') {
         // Sort by ident
+        if (typeof this.projects[0].ident == 'undefined') return;
         this.projects.sort((a, b) => a.ident.localeCompare(b.ident));
       } else if (this.sortOrder == 'hashtag') {
         // Sort by hashtag
+        if (typeof this.projects[0].hashtag == 'undefined') return;
         this.projects.sort((a, b) => a.hashtag.localeCompare(b.hashtag));
       } else if (this.sortOrder == 'score') {
         // Sort by score
+        if (typeof this.projects[0].score == 'undefined') return;
         this.projects.sort((a, b) => a.score < b.score);
       } else {
         // Sort by score then id (challenge) or name (project)
+        if (typeof this.projects[0].score == 'undefined') return;
         this.projects.sort((a, b) =>
           a.is_challenge ?
               a.id < b.id :
