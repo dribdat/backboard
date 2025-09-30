@@ -387,19 +387,15 @@ export default {
         this.projects.sort((a, b) => a.name.localeCompare(b.name));
       } else if (this.sortOrder == 'summary') {
         // Sort by summary
-        if (typeof this.projects[0].summary == 'undefined') return;
-        this.projects.sort((a, b) => a.summary.localeCompare(b.summary));
+        this.projects.sort((a, b) => a.summary ? a.summary.localeCompare(b.summary) : false);
       } else if (this.sortOrder == 'ident') {
         // Sort by ident
-        if (typeof this.projects[0].ident == 'undefined') return;
-        this.projects.sort((a, b) => a.ident.localeCompare(b.ident));
+        this.projects.sort((a, b) => a.ident ? a.ident.localeCompare(b.ident) : false);
       } else if (this.sortOrder == 'hashtag') {
         // Sort by hashtag
-        if (typeof this.projects[0].hashtag == 'undefined') return;
-        this.projects.sort((a, b) => a.hashtag.localeCompare(b.hashtag));
+        this.projects.sort((a, b) => a.hashtag ? a.hashtag.localeCompare(b.hashtag) : false);
       } else if (this.sortOrder == 'score') {
         // Sort by score
-        if (typeof this.projects[0].score == 'undefined') return;
         this.projects.sort((a, b) => a.score < b.score);
       } else {
         // Sort by score then id (challenge) or name (project)
