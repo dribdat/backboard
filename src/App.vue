@@ -82,7 +82,7 @@ export default {
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/event/"));
       }
     } else if (baseUrl == null) {
-      baseUrl = "./public/datapackage.json";
+      baseUrl = "./datapackage.json";
     }
     if (baseUrl.endsWith("datapackage.json")) {
       apiUrl = baseUrl;
