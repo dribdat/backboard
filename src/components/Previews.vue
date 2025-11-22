@@ -77,7 +77,7 @@
                   @click="openComment(project)"
                   title="Write a comment to the team"
                 >
-                  🗨️ Comment
+                  🗨️ Post
                 </button>
 
                 <button

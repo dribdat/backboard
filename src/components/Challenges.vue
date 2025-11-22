@@ -497,6 +497,7 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 20px;
   clear: both;
+  margin-bottom: 2em;
 }
 
 .challenges > .section-header {
