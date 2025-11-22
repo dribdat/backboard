@@ -322,7 +322,7 @@ export default {
       let datasrc = props.src;
       if (
         urlParams.get("src") &&
-        (!datasrc || datasrc == "./datapackage.json")
+        (!datasrc || datasrc == "./public/datapackage.json")
       ) {
         datasrc = urlParams.get("src").replaceAll("#", "");
         if (
