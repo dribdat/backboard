@@ -1,45 +1,51 @@
 <template>
-  <div class="section-countdown" :title="timespan">
-    <vue3-flip-countdown v-if="deadline" :deadline="deadline" />
+  <div class="section-countdown" :title="timespan" v-if="deadline">
+    <vue3-flip-countdown :deadline="deadline" mainColor="#FFFFFF" secondFlipColor="#EEEEEE" />
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import Vue3FlipCountdown from "vue3-flip-countdown";
+import { ref } from "vue"
+import { Countdown } from 'vue3-flip-countdown'
+
 
 export default {
   name: "EventCountdown",
+  components: {
+    "vue3-flip-countdown": Countdown,
+  },
   props: {
     event: {
       required: true,
-    },
-  },
-  components: {
-    "vue3-flip-countdown": Vue3FlipCountdown,
+    }
   },
   setup(props) {
-    const timespan = ref("");
-    const deadline = ref("2000-01-01 12:00");
-
-    onMounted(() => {
-      setTimeout(() => {
-        deadline.value =
-          !props.event.has_started && props.event.starts_at
-            ? props.event.starts_at.replace("T", " ")
-            : props.event.ends_at
-            ? props.event.ends_at.replace("T", " ")
-            : null;
-        timespan.value = props.event.starts_at
-          ? props.event.starts_at + " → " + props.event.ends_at
-          : "";
-      }, 1000);
-    });
-
+    let timespan = ref("");
+    let deadline = ref("2000-01-01 12:00");
     return {
       timespan,
       deadline,
     };
   },
+  mounted() {
+    setTimeout(() => {
+      const evt = this.event;
+      if (!evt) return;
+      console.log(evt);
+      this.deadline =
+        (!evt.has_started &&
+          evt.starts_at
+          ? evt.starts_at.replace("T", " ")
+          : null
+        ) || (!evt.has_finished &&
+          evt.ends_at
+          ? evt.ends_at.replace("T", " ")
+          : null
+        );
+      this.timespan = evt.starts_at && evt.ends_at
+        ? evt.starts_at + " → " + evt.ends_at
+        : "";
+    }, 500);
+  }
 };
 </script>
