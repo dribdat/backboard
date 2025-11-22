@@ -1,10 +1,12 @@
-# Backboard
+# Backboard for Dribdat
 
 This is a single page application (SPA) that visualizes data from [hackathon.json](https://json.everyhack.day), [Data Package](https://frictionlessdata.io), or the [Dribdat API](https://dribdat.cc).
 
 **Demo:** <https://backboard.vercel.app/>
 
 Issues: <https://codeberg.org/dribdat/backboard/issues>
+
+Note: this is a new Vue 3 version, not all features are working yet! Please see the `vue-2` branch for the old releases.
 
 ## Features
 
@@ -53,7 +55,7 @@ You can use the following environment variables:
 - `VITE_VOTE_FORM_URL` - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
 - `VITE_TIMER_LENGTH` - in minutes, how long the countdown timer should run for in presentation mode (0 to disable, 3 is the default).
 
-\* Examples:
+Examples:
 
 - <https://meta.dribdat.cc/event/5>
 - <https://meta.dribdat.cc/hackathon.json>
