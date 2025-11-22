@@ -496,6 +496,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 20px;
+  clear: both;
 }
 
 .challenges > .section-header {
@@ -560,9 +561,9 @@ export default {
 .project-container {
   display: inline-block;
   background-color: #fff;
-  background-size: 95% auto;
+  background-size: cover;
   background-repeat: no-repeat;
-  background-position: center 5px;
+  background-position: center;
   padding: 0px;
   border: 1px solid #eee;
   border-radius: 6px;
@@ -571,7 +572,7 @@ export default {
   border-color: #ccc;
 }
 .project-container[challenge="true"] {
-  background: repeating-linear-gradient(
+  background-image: repeating-linear-gradient(
     45deg,
     #dde,
     #dde 10px,
