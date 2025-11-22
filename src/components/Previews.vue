@@ -3,11 +3,6 @@
     <div v-for="project in projects" :key="project.id">
       <div v-if="active == project.id" class="modal-backdrop">
         <div class="modal">
-          <div class="modal-header">
-            <button @click="selectNone()" class="modal-close-button">
-              &times;
-            </button>
-          </div>
           <div class="modal-body">
             <div
               class="titlebar"
@@ -97,16 +92,6 @@
             </div>
             <div class="content">
               <div class="preview">
-                <markdown
-                  class="excerpt"
-                  v-if="
-                    !project.longtext &&
-                    project.excerpt &&
-                    !(showExcerpt && isEmbeddable(project))
-                  "
-                  :source="project.excerpt"
-                  :html="true"
-                />
 
                 <iframe
                   class="webembed"
@@ -189,11 +174,9 @@
 
                 <div v-if="project.longtext">
                   <a class="autotext-link" name="pitch" href="#pitch">PITCH</a>
-                  <markdown
+                  <Markdown
                     class="preview-longtext"
-                    v-if="project.longtext"
                     :source="project.longtext"
-                    :html="true"
                   />
                 </div>
 
@@ -201,17 +184,16 @@
                   <a class="autotext-link" name="readme" href="#pitch"
                     >README</a
                   >
+                  <Markdown
+                    class="preview-autotext"
+                    :source="project.autotext"
+                  />
                   <a
                     class="autotext-open"
                     target="_blank"
                     :href="project.autotext_url"
                     >Open original ...</a
                   >
-                  <markdown
-                    class="preview-autotext"
-                    :source="project.autotext"
-                    :html="true"
-                  />
                 </div>
 
                 <div v-if="project.activities">
@@ -225,7 +207,9 @@
             <button class="nav nav-prev" @click="goPrev()" title="Previous">
               ◁
             </button>
-            <button @click="selectNone()" title="Go back">▲</button>
+            <button @click="selectNone()" class="nav nav-close" title="Close project">
+              &check;
+            </button>
             <button class="nav nav-next" @click="goNext()" title="Next">
               ▷
             </button>
@@ -239,11 +223,13 @@
 <script>
 import { ref, computed } from "vue";
 import Dribs from "./Dribs.vue";
+import Markdown from 'vue3-markdown-it';
 
 export default {
   name: "ProjectPreviews",
   components: {
     Dribs,
+    Markdown
   },
   props: {
     projects: Array,
@@ -397,8 +383,9 @@ export default {
     };
 
     const countDown = () => {
-      const TIMER_LENGTH_MINUTES =
-        parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
+      const TIMER_LENGTH_MINUTES = 3;
+      // TODO: make configurable again
+      //  parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
       const pc_per_tick =
         TIMER_LENGTH_MINUTES > 0 ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
       if (pc_per_tick == 0) return;
@@ -482,16 +469,17 @@ export default {
 
 .modal-body {
   position: relative;
-  padding: 20px 10px;
+  padding: 30px;
   overflow-y: auto;
+  height: 100%;
 }
 
 .modal-close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: -15px;
+  right: 3px;
   border: none;
-  font-size: 20px;
+  font-size: 34px;
   padding: 10px;
   cursor: pointer;
   font-weight: bold;
@@ -584,7 +572,7 @@ div.content * {
 .imagepreview-floating {
   display: inline-block;
   position: fixed;
-  z-index: 100;
+  z-index: -1;
   bottom: 3px;
   left: 3px;
   height: 120px;
@@ -622,6 +610,12 @@ div.content * {
   background-color: transparent;
   background-size: contain;
   background-position: 0% 50%;
+}
+@media (max-width: 766px) {
+  .imagepreview-floating { display: none; }
+  .modal {
+    width: 100%; height: 100%;
+  }
 }
 
 .preview {
@@ -680,12 +674,17 @@ div.content * {
   opacity: 0.5;
 }
 
+.modal-footer {
+  display: block;
+}
 .modal-footer button {
   opacity: 0.9;
   transition: all 0.3s ease;
   border: none;
   height: 1.5em;
   padding: 2pt 6pt 2pt;
+  display: inline-block;
+  width: 2em;
 }
 .modal-footer:hover button {
   opacity: 1;

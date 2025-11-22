@@ -5,8 +5,7 @@ import router from './router'
 
 const app = createApp(App)
 
-app.component('vue-markdown', Markdown)
-
 app.use(router)
+app.use(Markdown)
 
 app.mount('#app')

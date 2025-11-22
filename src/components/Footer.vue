@@ -1,7 +1,7 @@
 <template>
   <div class="section-footer">
     <div container v-if="event.description" class="event-details">
-      <markdown
+      <Markdown
         class="description col"
         :source="event.description"
         :html="true"
@@ -11,14 +11,19 @@
 </template>
 
 <script>
+import Markdown from 'vue3-markdown-it'
+
 export default {
   name: "EventFooter",
+  components: {
+    Markdown
+  },
   props: {
     event: {
       required: true,
     },
   },
-};
+}
 </script>
 
 <style scoped>

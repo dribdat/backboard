@@ -446,7 +446,13 @@ export default {
           changeDark();
         })
         .catch((err) => {
-          errorMessage.value = err;
+          if (err.message.indexOf('not valid JSON')) {
+            errorMessage.value = 'Could not load valid hackathon metadata.'
+            console.warn(err.message);
+            console.log(datasrc);
+          } else {
+            errorMessage.value = err;
+          }
         });
     });
 

@@ -2,7 +2,7 @@
   <div container class="section-dribs">
     <div v-for="drib in activities" :key="drib.id">
       <div class="drib" v-if="drib.content">
-        <markdown class="drib-content" :source="drib.content" :html="true" />
+        <Markdown class="drib-content" :source="drib.content" :html="true" />
         <div class="drib-meta">
           <span class="drib-since" :title="drib.date">
             {{ drib.timesince }}
@@ -17,8 +17,13 @@
 </template>
 
 <script>
+import Markdown from 'vue3-markdown-it';
+
 export default {
   name: "ProjectDribs",
+  components: {
+    Markdown
+  },
   props: {
     activities: Array,
   },
@@ -49,7 +54,7 @@ export default {
   color: grey;
   text-align: center;
   font-size: 80%;
-  margin-top: -1.5em;
+  margin-top: -0.5em;
   margin-bottom: 0.2em;
 }
 

@@ -1,18 +1,18 @@
 # Backboard
 
-This is a single page application (SPA) that visualizes data from [hackathon.json](https://json.everyhack.day), [Data Package](https://frictionlessdata.io), or the [Dribdat API](https://dribdat.cc). 
+This is a single page application (SPA) that visualizes data from [hackathon.json](https://json.everyhack.day), [Data Package](https://frictionlessdata.io), or the [Dribdat API](https://dribdat.cc).
 
-**Demo:** https://backboard.vercel.app/
+**Demo:** <https://backboard.vercel.app/>
 
-Issues: https://codeberg.org/dribdat/backboard/issues
+Issues: <https://codeberg.org/dribdat/backboard/issues>
 
 ## Features
 
 - Projects, challenges, clocks are shown for a specific event.
 - Flexible configuration options for displaying and sorting the results.
 - Seamlessly navigate using your mouse or keyboard between individual projects.
-- You can also show presentations in full screen mode, use a mouse, keyboard or clicker to navigate through the slides. 
-- A subtle countdown timer bar is shown at the bottom of the screen to alert your presenters of the time available. 
+- You can also show presentations in full screen mode, use a mouse, keyboard or clicker to navigate through the slides.
+- A subtle countdown timer bar is shown at the bottom of the screen to alert your presenters of the time available.
 - Backboard is FAST, with a quick loading home page and instant navigation of the results of your event.
 
 Currently most functions link back to Dribdat, for example, when you click on the Join team button you get directed to the main web application. The long-term goal is to create a more modern, decoupled frontend for Dribdat.
@@ -23,20 +23,20 @@ Because it works like a static website, you can bundle the Data Package along wi
 
 ## Installation
 
-Deploy this application with any service that supports Node.js 
+Deploy this application with any service that supports Node.js
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Fdribdat%2Fbackboard)
 
-Set up app options at the bottom of the page, then click the Share button, and paste the query string (everything after ?&) into your `VUE_APP_DEFAULT_OPTS` variable.
+Set up app options at the bottom of the page, then click the Share button, and paste the query string (everything after ?&) into your `VITE_DEFAULT_OPTS` variable.
 
-**Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) through clicking the `options` button found at the footer of the page (which opens a configuration menu). 
+**Tip:** You may want to enable *Challenges* and *Previews* (opens a modal dialog with swipable navigation) through clicking the `options` button found at the footer of the page (which opens a configuration menu).
 Use the handy *Share* link to get a URL with your config.
 
 ## Usage
 
 This app currently only works if you have data already available. To get started, do one of the following:
 
-- Use the `VUE_APP_DRIBDAT_URL` configured with a link to your dribdat event, or the URL to a Data Package.
+- Use the `VITE_DRIBDAT_URL` configured with a link to your dribdat event, or the URL to a Data Package.
 
 Or:
 
@@ -46,20 +46,19 @@ Optionally, you can also put a `posts.json` file with an export of the Dribs dat
 
 You can use the following environment variables:
 
-- `VUE_APP_DRIBDAT_URL` (required) - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package (\* see examples)
-- `VUE_APP_DRIBS_URL` - as above, a link to the export of the Dribdat Activity API.
-- `VUE_APP_DEFAULT_OPTS` - the default display settings - copy the part after ? from the Share link.
-- `VUE_APP_HIDE_TOOLBAR` - makes the options toolbar in the footer unavailable.
-- `VUE_APP_VOTE_FORM_URL` - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
-- `VUE_APP_TIMER_LENGTH` - in minutes, how long the countdown timer should run for in presentation mode (0 to disable, 3 is the default).
-- `BACKBOARD_ROOT` - if your deployment is not at the root, change it here (e.g. `/backboard`)
+- `VITE_DRIBDAT_URL` (required) - fully qualified link to your [Dribdat](https://dribdat.cc) event, or online hosted Data Package (\* see examples)
+- `VITE_DRIBS_URL` - as above, a link to the export of the Dribdat Activity API.
+- `VITE_DEFAULT_OPTS` - the default display settings - copy the part after ? from the Share link.
+- `VITE_HIDE_TOOLBAR` - makes the options toolbar in the footer unavailable.
+- `VITE_VOTE_FORM_URL` - link to a form where you are collecting votes or feedback, otherwise the Dribs Post feature will be used.
+- `VITE_TIMER_LENGTH` - in minutes, how long the countdown timer should run for in presentation mode (0 to disable, 3 is the default).
 
 \* Examples:
 
-- https://meta.dribdat.cc/event/5
-- https://meta.dribdat.cc/hackathon.json
-- https://meta.dribdat.cc/api/project/top.json
-- https://meta.dribdat.cc/api/event/current/datapackage.json
+- <https://meta.dribdat.cc/event/5>
+- <https://meta.dribdat.cc/hackathon.json>
+- <https://meta.dribdat.cc/api/project/top.json>
+- <https://meta.dribdat.cc/api/event/current/datapackage.json>
 
 If you have any questions or bug reports, please leave them on our [Codeberg issues](https://codeberg.org/dribdat/backboard/issues).
 
@@ -77,7 +76,7 @@ yarn lint
 ### Recommended Browser Setup
 
 - Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
   - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
 - Firefox:
   - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
@@ -91,7 +90,7 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 Created using [Vue.js](https://awesome-vue.js.org/) 3 and [opencode](https://opencode.ai/).
 
-See also these earlier versions: 
+See also these earlier versions:
 
 - [backboard for Vue 2](https://github.com/dribdat/backboard/tree/vue-2)
 - [dribdat2_frontend](https://github.com/dribdat/dribdat2_frontend)
@@ -100,6 +99,6 @@ See also these earlier versions:
 
 ![](https://upload.wikimedia.org/wikipedia/commons/9/9a/Zh_Basketball_backboard_and_basket_bitmap_1940.svg)
 
-_Players typically aim for the box in the backboard when making a shot in basketball._
+*Players typically aim for the box in the backboard when making a shot in basketball.*
 
 [MIT License](LICENSE)

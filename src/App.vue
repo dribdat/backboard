@@ -8,22 +8,22 @@
       :toolbar="showToolbar"
       :options="defaultOptions"
       :dribs="dribdatDribs"
-      :src="dribdatApi || dribdatHome"
+      :src="dribdatApi"
     />
-    <tt class="app-footer">
+    <div class="app-footer">
       // human sourced with
       <a href="https://dribdat.cc" target="_blank">dribdat</a>
       &#x1F3C0;
       <a v-if="allowToolbar" @click="toggleOptions" class="options"
         ><span>options</span></a
       >
-    </tt>
+    </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
-import Challenges from "./components/Challenges.vue";
+<script>
+import { ref, onMounted } from "vue"
+import Challenges from "./components/Challenges.vue"
 
 export default {
   name: "App",
@@ -36,56 +36,23 @@ export default {
     const dribdatDribs = ref("");
     const voteUrl = ref("");
     const allowToolbar = ref(
-      !(Boolean(process.env.VUE_APP_HIDE_TOOLBAR) || false)
+      !(Boolean(import.meta.env.VITE_HIDE_TOOLBAR) || false)
     );
-    const defaultOptions = ref(process.env.VUE_APP_DEFAULT_OPTS || "");
+    const defaultOptions = ref(import.meta.env.VITE_DEFAULT_OPTS || "");
     const showToolbar = ref(false);
     const darkClass = ref("");
 
-    onMounted(() => {
-      let apiUrl = null;
-      let dribUrl = null;
-      let eventId = null;
-      let baseUrl = process.env.VUE_APP_DRIBDAT_URL || null;
-      if (baseUrl && !eventId && baseUrl.indexOf("/event/") > 0) {
-        const match = baseUrl.match(/\/event\/([0-9]+)/);
-        if (match) {
-          eventId = match[1];
-          baseUrl = baseUrl.substring(0, baseUrl.indexOf("/event/"));
-        }
-      } else if (!baseUrl) {
-        apiUrl = "./datapackage.json";
-        dribUrl = "./posts.json";
-      } else if (baseUrl.endsWith("datapackage.json")) {
-        apiUrl = baseUrl;
-        dribUrl = baseUrl.replace("datapackage.json", "posts.json");
-      }
-      if (baseUrl && eventId) {
-        apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
-        dribUrl = [
-          baseUrl,
-          "api/event",
-          eventId,
-          "posts.json?limit=200",
-        ].join("/");
-      }
-      dribdatApi.value = apiUrl;
-      dribdatHome.value = baseUrl || "#top";
-      dribdatDribs.value = dribUrl || process.env.VUE_APP_DRIBS_URL || "";
-      voteUrl.value = process.env.VUE_APP_VOTE_FORM_URL || "";
-    });
-
     const toggleOptions = () => {
       showToolbar.value = !showToolbar.value;
-    };
+    }
 
     const previewOff = () => {
       document.body.style.overflowY = "";
-    };
+    }
 
     const previewOn = () => {
       document.body.style.overflowY = "hidden";
-    };
+    }
 
     const setDarkMode = (value) => {
       if (
@@ -102,7 +69,38 @@ export default {
         darkClass.value = "";
         document.body.style.backgroundColor = "";
       }
-    };
+    }
+
+    let apiUrl = null;
+    let dribUrl = null;
+    let eventId = null;
+    let baseUrl = import.meta.env.VITE_DRIBDAT_URL || null;
+    if (baseUrl && !eventId && baseUrl.indexOf("/event/") > 0) {
+      const match = baseUrl.match(/\/event\/([0-9]+)/);
+      if (match) {
+        eventId = match[1];
+        baseUrl = baseUrl.substring(0, baseUrl.indexOf("/event/"));
+      }
+    } else if (baseUrl == null) {
+      baseUrl = "./public/datapackage.json";
+    }
+    if (baseUrl.endsWith("datapackage.json")) {
+      apiUrl = baseUrl;
+      dribUrl = baseUrl.replace("datapackage.json", "posts.json");
+    }
+    if (baseUrl && eventId) {
+      apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
+      dribUrl = [
+        baseUrl,
+        "api/event",
+        eventId,
+        "posts.json?limit=200",
+      ].join("/");
+    }
+    dribdatApi.value = apiUrl;
+    dribdatHome.value = baseUrl || "#top";
+    dribdatDribs.value = dribUrl || import.meta.env.VITE_DRIBS_URL || "";
+    voteUrl.value = import.meta.env.VITE_VOTE_FORM_URL || "";
 
     return {
       dribdatApi,
@@ -117,32 +115,22 @@ export default {
       previewOff,
       previewOn,
       setDarkMode,
-    };
-  },
-};
+    }
+  }
+}
 </script>
 
-<style scoped>
-@font-face {
-  font-family: M3Regular;
-  src: url(./assets/m3regular-webfont.woff2) format("woff2"),
-    url(./assets/m3regular-webfont.woff) format("woff");
-  font-style: normal;
-}
+<style>
+@import 'https://cdn.jsdelivr.net/gh/maxwell-k/dejavu-sans-mono-web-font/index.css';
 
 #app {
-  font-family: M3Regular, "Open Sans", -apple-system, BlinkMacSystemFont,
+  font-family: "DejaVu Sans Mono", "Open Sans", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
   /*font-family: "Avenir", Helvetica, Arial, sans-serif;*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-}
-.description {
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol";
 }
 #app.dark {
   background: black;
