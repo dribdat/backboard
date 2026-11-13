@@ -11,6 +11,7 @@
           frameborder="0"
           marginheight="0"
           marginwidth="0"
+          sandbox="allow-scripts allow-same-origin allow-forms"
           >Loading…</iframe
         >
       </div>
@@ -28,6 +29,11 @@ export default {
   },
   components: {
     Modal,
+  },
+  methods: {
+    isValidUrl(url) {
+      return url && (url.startsWith("http://") || url.startsWith("https://"));
+    },
   },
   data() {
     return {
@@ -48,7 +54,7 @@ export default {
       formref = formref + "/viewform?embedded=true";
     }
 
-    this.framesrc = formref;
+    this.framesrc = this.isValidUrl(formref) ? formref : null;
   },
 };
 </script>

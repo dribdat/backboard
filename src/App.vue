@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="darkClass">
-    <Challenges
+    <router-view
       @closeToolbar="toggleOptions"
       @previewOff="previewOff"
       @previewOn="previewOn"
@@ -22,16 +22,13 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue"
-import Challenges from "./components/Challenges.vue"
+import { ref } from "vue"
 
 export default {
   name: "App",
-  components: {
-    Challenges,
-  },
+  components: {},
   setup() {
-    const dribdatApi = ref(null);
+    const dribdatApi = ref("/datapackage.json");
     const dribdatHome = ref("#top");
     const dribdatDribs = ref("");
     const voteUrl = ref("");
@@ -82,7 +79,7 @@ export default {
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/event/"));
       }
     } else if (baseUrl == null) {
-      baseUrl = "./datapackage.json";
+      baseUrl = "/datapackage.json";
     }
     if (baseUrl.endsWith("datapackage.json")) {
       apiUrl = baseUrl;

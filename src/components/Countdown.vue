@@ -31,7 +31,7 @@ export default {
     setTimeout(() => {
       const evt = this.event;
       if (!evt) return;
-      console.log(evt);
+      //console.log(evt);
       this.deadline =
         (!evt.has_started &&
           evt.starts_at
@@ -40,8 +40,7 @@ export default {
         ) || (!evt.has_finished &&
           evt.ends_at
           ? evt.ends_at.replace("T", " ")
-          : null
-        );
+          : null);
       this.timespan = evt.starts_at && evt.ends_at
         ? evt.starts_at + " → " + evt.ends_at
         : "";

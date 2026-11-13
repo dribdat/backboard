@@ -172,7 +172,8 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
+import { useRouter } from "vue-router";
 import moment from "moment";
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
@@ -187,6 +188,7 @@ export default {
     dribs: String,
     options: String,
     toolbar: Boolean,
+    id: String,
   },
   components: {
     Countdown,
@@ -196,6 +198,7 @@ export default {
     Footer,
   },
   setup(props, { emit }) {
+    const router = useRouter();
     const event = ref({});
     const projects = ref(null);
     const activities = ref(null);
@@ -246,7 +249,7 @@ export default {
     };
 
     const seeDetails = (project) => {
-      window.open(project.url);
+      router.push({ name: 'Project', params: { id: project.id } });
     };
 
     const changeDark = () => {
@@ -379,16 +382,17 @@ export default {
             p.date = moment(p.updated_at).format("MMM Do, YYYY");
             p.image_url =
               typeof p.image_url === "undefined" ? null : p.image_url;
+            /*
+            // Use the event iage if no logo is available
             if (!p.image_url && data.event && data.event.logo_url) {
               p.image_url = data.event.logo_url;
             }
+            */
             p.team =
               typeof p.team === "string"
                 ? p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ")
                 : p.team;
-            projects.value.push(p);
-          });
-          projects.value.forEach((p) => {
+            // Statistics and scores
             p.statistics = "";
             if (p.stats) {
               p.stats["bytes pitch"] = p.stats["sizepitch"];
@@ -401,6 +405,7 @@ export default {
               p.stats["score"] = p.score;
             }
             p.score = Math.min(p.score, 100);
+            projects.value.push(p);
           });
           if (data.title) {
             document.title = data.title;
@@ -424,19 +429,15 @@ export default {
                 activities.value = data.activities.sort((a, b) => {
                   return a.time < b.time;
                 });
+                const projectMap = new Map();
+                projects.value.forEach((p) => projectMap.set(String(p.id), p));
                 activities.value.forEach((el) => {
-                  let proj = projects.value.filter((p) => {
-                    if (p.id == el.project_id) {
-                      if (typeof p.activities === "undefined") {
-                        p.activities = [];
-                      }
-                      p.activities.push(el);
-                      return true;
+                  const p = projectMap.get(String(el.project_id));
+                  if (p) {
+                    if (typeof p.activities === "undefined") {
+                      p.activities = [];
                     }
-                    return false;
-                  });
-                  if (!proj) {
-                    return;
+                    p.activities.push(el);
                   }
                 });
               })
@@ -449,11 +450,22 @@ export default {
           if (err.message.indexOf('not valid JSON')) {
             errorMessage.value = 'Could not load valid hackathon metadata.'
             console.warn(err.message);
-            console.log(datasrc);
+            console.debug(datasrc);
           } else {
             errorMessage.value = err;
           }
         });
+    });
+
+    watch(projects, (newProjects) => {
+      if (props.id && newProjects && newProjects.length > 0) {
+        const project = newProjects.find(p => p.id == props.id);
+        if (project) {
+          activePreview.value = project.id;
+          isPreviews.value = true;
+          emit("previewOn");
+        }
+      }
     });
 
     return {

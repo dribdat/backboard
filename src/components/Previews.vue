@@ -97,6 +97,7 @@
                   class="webembed"
                   v-if="showExcerpt && isEmbeddable(project)"
                   :src="getEmbed(project)"
+                  sandbox="allow-scripts allow-same-origin allow-forms"
                 ></iframe>
 
                 <div
@@ -152,6 +153,7 @@
                     class="webembed"
                     id="webembedframe"
                     :src="getEmbed(project)"
+                    sandbox="allow-scripts allow-same-origin allow-forms"
                   ></iframe>
                 </div>
                 <button
@@ -290,12 +292,20 @@ export default {
       return project.webpage_url || isWithslides(project);
     };
 
+    const isValidUrl = (url) => {
+      return url && (url.startsWith("http://") || url.startsWith("https://"));
+    };
+
     const getEmbed = (project) => {
-      if (isWithslides(project)) return project.url + "/render";
-      if (!project.webpage_url) return "";
-      return project.webpage_url.endsWith(".pdf")
-        ? project.url + "/render"
-        : project.webpage_url;
+      let url = "";
+      if (isWithslides(project)) {
+        url = project.url + "/render";
+      } else if (project.webpage_url) {
+        url = project.webpage_url.endsWith(".pdf")
+          ? project.url + "/render"
+          : project.webpage_url;
+      }
+      return isValidUrl(url) ? url : "";
     };
 
     const seeEmbed = (project) => {
@@ -383,9 +393,7 @@ export default {
     };
 
     const countDown = () => {
-      const TIMER_LENGTH_MINUTES = 3;
-      // TODO: make configurable again
-      //  parseInt(process.env.VUE_APP_TIMER_LENGTH) || 3;
+      const TIMER_LENGTH_MINUTES = parseInt(import.meta.env.VITE_TIMER_LENGTH || 3);
       const pc_per_tick =
         TIMER_LENGTH_MINUTES > 0 ? 100 / (60 * TIMER_LENGTH_MINUTES) : 0;
       if (pc_per_tick == 0) return;

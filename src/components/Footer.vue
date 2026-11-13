@@ -7,6 +7,12 @@
         :html="true"
       />
     </div>
+    <p class="event-summary" v-if="event.summary">
+      {{ event.summary }}
+      <b class="event-hashtag" v-if="event.hashtag">
+        {{ event.hashtag }}
+      </b>
+    </p>
   </div>
 </template>
 
@@ -63,5 +69,14 @@ export default {
   .event-details {
     margin: 1em;
   }
+}
+
+.event-summary {
+  font-size: 90%;
+  font-style: italic;
+  text-align: center;
+  margin-top: 3em;
+  display: block;
+  opacity: 0.7;
 }
 </style>

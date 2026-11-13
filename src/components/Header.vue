@@ -2,7 +2,7 @@
   <div class="section-header">
     <div class="header-logo" v-if="event.logo_url">
       <a :href="event.webpage" :title="event.name" target="_blank">
-        <img id="event-logo" :src="event.logo_url" />
+        <img alt="Logo" :src="event.logo_url" />
       </a>
     </div>
     <div class="header-content">
@@ -33,9 +33,6 @@
         <i class="fa fa-map">🗺️</i>
         {{ event.location }}</span
       >
-      <p class="header-summary" v-if="event.summary">
-        {{ event.summary }}
-      </p>
     </div>
   </div>
 </template>
@@ -60,36 +57,30 @@ export default {
 }
 
 .header-logo {
-  display: block;
-  float: none;
-  margin: none;
-}
-
-.header-logo img {
-  height: 6em;
-  margin-bottom: 3em;
-}
-
-.header-logo {
   display: inline-block;
   float: left;
+  max-width: 14em;
+  min-height: 6em;
   margin-right: 2em;
+  margin-bottom: 1em;
+}
+.header-logo img {
+  width: 100%;
+  height: auto;
 }
 
 @media (max-width: 768px) {
-  #event-logo {
-    max-width: 128px;
-    max-height: 128px;
-    margin-bottom: 1em;
-  }
   .header-logo {
     display: block;
     float: none;
-    margin: none;
+    margin: 0px;
+    max-width: none;
+    max-height: none;
   }
-  .header-logo img {
-    width: 100%;
-    height: auto;
+  .header-logo a {
+    display: inline-block;
+    max-height: 128px;
+    margin-bottom: 1em;
   }
   .header-content {
     padding-bottom: 2em;
@@ -121,13 +112,5 @@ export default {
   text-decoration: none;
   box-shadow: none;
   float: right;
-}
-
-.header-summary {
-  font-size: 90%;
-  font-style: italic;
-  text-align: left;
-  margin-top: 0.5em;
-  opacity: 0.7;
 }
 </style>
