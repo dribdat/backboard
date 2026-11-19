@@ -62,6 +62,21 @@ Examples:
 - <https://meta.dribdat.cc/api/project/top.json>
 - <https://meta.dribdat.cc/api/event/current/datapackage.json>
 
+### Events index
+
+Point `VITE_DRIBDAT_URL` at a JSON file listing multiple events, like the included `events.json`:
+
+```json
+{
+  "events": [
+    { "name": "HACKnight 2025", "datapackage_url": "data/2025/datapackage.json" },
+    { "name": "HACKnight 2026", "datapackage_url": "data/2026/datapackage.json" }
+  ]
+}
+```
+
+A horizontal bar of links (e.g. `2017 | 2018 | ... | 2026`) is shown at the top of the page. Clicking a year loads the corresponding `datapackage.json` and refreshes the view. The address bar is updated with an `?event=<year>` parameter as you navigate, so you can link directly to a specific year, e.g. `https://backboard.vercel.app/?event=2021`. Relative `datapackage_url` values are resolved relative to the index file. If no `?event=` parameter is given, the last entry in the list is loaded.
+
 If you have any questions or bug reports, please leave them on our [Codeberg issues](https://codeberg.org/dribdat/backboard/issues).
 
 ## Development

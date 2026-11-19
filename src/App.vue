@@ -84,9 +84,12 @@ export default {
     } else if (baseUrl == null) {
       baseUrl = "./datapackage.json";
     }
-    if (baseUrl.endsWith("datapackage.json")) {
+    if (!eventId && baseUrl) {
+      // e.g. a Data Package (datapackage.json) or an events index (events.json)
       apiUrl = baseUrl;
-      dribUrl = baseUrl.replace("datapackage.json", "posts.json");
+      if (baseUrl.endsWith("datapackage.json")) {
+        dribUrl = baseUrl.replace("datapackage.json", "posts.json");
+      }
     }
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");

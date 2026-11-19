@@ -1,5 +1,17 @@
 <template>
   <div class="challenges">
+    <nav class="event-nav" v-if="eventList.length">
+      <template v-for="(item, index) in eventList" :key="item.datapackage_url">
+        <span v-if="index > 0" class="event-nav-sep">|</span>
+        <a
+          href="#"
+          :class="{ active: currentEvent && currentEvent.datapackage_url === item.datapackage_url }"
+          @click.prevent="selectEvent(item)"
+          >{{ eventLabel(item) }}</a
+        >
+      </template>
+    </nav>
+
     <Header v-if="isHeadline" :event="event"></Header>
 
     <div class="grid-container" v-if="!isHexagons">
@@ -172,7 +184,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import moment from "moment";
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
@@ -225,6 +237,61 @@ export default {
       { id: "light", name: "Light" },
       { id: "dark", name: "Dark" },
     ]);
+    const eventList = ref([]);
+    const currentEvent = ref(null);
+    let eventsBaseUrl = null;
+
+    const eventLabel = (ev) => {
+      const match = String(ev.datapackage_url || "").match(
+        /([^/]+)\/datapackage\.json(?:[?#]|$)/
+      );
+      return match ? match[1] : ev.name;
+    };
+
+    const isEventsList = (data) =>
+      Boolean(
+        data &&
+          Array.isArray(data.events) &&
+          data.events.length > 0 &&
+          data.events[0].datapackage_url
+      );
+
+    const pickInitialEvent = (list, param) => {
+      if (param) {
+        const match = list.find(
+          (item) => eventLabel(item) === param || item.name === param
+        );
+        if (match) return match;
+      }
+      return list[list.length - 1];
+    };
+
+    const resolveUrl = (url, base) => {
+      try {
+        return new URL(url, base || window.location.href).href;
+      } catch (err) {
+        return url;
+      }
+    };
+
+    const fetchJson = (url) =>
+      fetch(url).then(async (response) => {
+        if (!response.ok) {
+          return Promise.reject(response.statusText);
+        }
+        return response.json();
+      });
+
+    const handleLoadError = (url) => (err) => {
+      const message = err && err.message ? err.message : String(err);
+      if (message.indexOf("not valid JSON") > -1) {
+        errorMessage.value = "Could not load valid hackathon metadata.";
+        console.warn(message);
+        console.log(url);
+      } else {
+        errorMessage.value = message;
+      }
+    };
 
     const filterProjects = computed(() => {
       if (projects.value === null) return [];
@@ -301,6 +368,9 @@ export default {
         (isChallenges.value ? "&challenges=1" : "") +
         (darkMode.value ? "&dark=" + darkMode.value : "") +
         (sortOrder.value ? "&sort=" + sortOrder.value : "") +
+        (currentEvent.value
+          ? "&event=" + encodeURIComponent(eventLabel(currentEvent.value))
+          : "") +
         ""
       );
     };
@@ -337,6 +407,31 @@ export default {
         errorMessage.value = "No data source provided.";
         return;
       }
+      window.addEventListener("popstate", onPopState);
+      eventsBaseUrl = resolveUrl(datasrc);
+      fetchJson(eventsBaseUrl)
+        .then((data) => {
+          if (isEventsList(data)) {
+            const list = data.events.filter(
+              (item) => item && item.datapackage_url
+            );
+            if (!list.length) {
+              return Promise.reject(
+                "No events with a datapackage_url found in " + datasrc
+              );
+            }
+            eventList.value = list;
+            selectEvent(pickInitialEvent(list, urlParams.get("event")), {
+              push: false,
+            });
+            return;
+          }
+          applyDatapackage(data, eventsBaseUrl);
+        })
+        .catch(handleLoadError(datasrc));
+    });
+
+    function applyDatapackage(data, datasrc) {
       let dribs_url = props.dribs;
       if (!dribs_url && datasrc.endsWith("datapackage.json")) {
         dribs_url = datasrc.replace(
@@ -344,116 +439,146 @@ export default {
           "posts.json?limit=200"
         );
       }
-      fetch(datasrc)
-        .then(async (response) => {
-          if (!response.ok) {
-            return Promise.reject(response.statusText);
-          }
-          const data = await response.json();
-          if (props.src.indexOf("/api/") > 0) {
-            profileUrl.value = props.src.replace(/(.*)\/api\/.*/, "$1/user/");
-          } else if (data.sources && data.sources.length) {
-            profileUrl.value = data.sources[0].path + "user/";
-          } else {
-            profileUrl.value = null;
-          }
-          if (
-            typeof data.projects === "undefined" &&
-            data.resources.length > 0
-          ) {
-            data.projects = null;
-            data.resources.forEach(function (r) {
-              if (r.name == "projects") {
-                data.projects = r.data;
-              } else if (r.name == "events") {
-                data.event = r.data[0];
-              }
-            });
-            if (data.projects === null) {
-              return Promise.reject("Project data not found");
-            }
-          }
-          projects.value = [];
-          data.projects.forEach((p) => {
-            p.is_challenge = p.progress < 2;
-            p.date = moment(p.updated_at).format("MMM Do, YYYY");
-            p.image_url =
-              typeof p.image_url === "undefined" ? null : p.image_url;
-            if (!p.image_url && data.event && data.event.logo_url) {
-              p.image_url = data.event.logo_url;
-            }
-            p.team =
-              typeof p.team === "string"
-                ? p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ")
-                : p.team;
-            projects.value.push(p);
-          });
-          projects.value.forEach((p) => {
-            p.statistics = "";
-            if (p.stats) {
-              p.stats["bytes pitch"] = p.stats["sizepitch"];
-              delete p.stats["sizepitch"];
-              p.stats["bytes total"] = p.stats["sizetotal"];
-              delete p.stats["sizetotal"];
-              Object.keys(p.stats).forEach(function (k) {
-                p.statistics += k + ": " + p.stats[k] + "\n";
-              });
-              p.stats["score"] = p.score;
-            }
-            p.score = Math.min(p.score, 100);
-          });
-          if (data.title) {
-            document.title = data.title;
-          } else if (data.projects.length > 0) {
-            document.title = data.projects[0].event_name;
-          }
-          if (typeof data.event !== "undefined") {
-            event.value = data.event;
-            event.value.webpage =
-              event.value.webpage_url ||
-              event.value.community_url ||
-              data.homepage;
-            event.value.starts_at = event.value.starts_at || event.value.date;
-            event.value.ends_at =
-              event.value.ends_at || event.value.starts_at || event.value.date;
-          }
-          if (dribs_url) {
-            fetch(dribs_url)
-              .then(async (response) => {
-                const data = await response.json();
-                activities.value = data.activities.sort((a, b) => {
-                  return a.time < b.time;
-                });
-                activities.value.forEach((el) => {
-                  let proj = projects.value.filter((p) => {
-                    if (p.id == el.project_id) {
-                      if (typeof p.activities === "undefined") {
-                        p.activities = [];
-                      }
-                      p.activities.push(el);
-                      return true;
-                    }
-                    return false;
-                  });
-                  if (!proj) {
-                    return;
-                  }
-                });
-              })
-              .catch(() => {});
-          }
-          changeOrder();
-          changeDark();
-        })
-        .catch((err) => {
-          if (err.message.indexOf('not valid JSON')) {
-            errorMessage.value = 'Could not load valid hackathon metadata.'
-            console.warn(err.message);
-            console.log(datasrc);
-          } else {
-            errorMessage.value = err;
+      const srcProp = props.src || "";
+      if (srcProp.indexOf("/api/") > 0) {
+        profileUrl.value = srcProp.replace(/(.*)\/api\/.*/, "$1/user/");
+      } else if (data.sources && data.sources.length) {
+        profileUrl.value = data.sources[0].path + "user/";
+      } else {
+        profileUrl.value = null;
+      }
+      if (
+        typeof data.projects === "undefined" &&
+        data.resources.length > 0
+      ) {
+        data.projects = null;
+        data.resources.forEach(function (r) {
+          if (r.name == "projects") {
+            data.projects = r.data;
+          } else if (r.name == "events") {
+            data.event = r.data[0];
           }
         });
+        if (data.projects === null) {
+          throw new Error("Project data not found");
+        }
+      }
+      if (!Array.isArray(data.projects)) {
+        throw new Error("Project data not found");
+      }
+      projects.value = [];
+      data.projects.forEach((p) => {
+        p.is_challenge = p.progress < 2;
+        p.date = moment(p.updated_at).format("MMM Do, YYYY");
+        p.image_url =
+          typeof p.image_url === "undefined" ? null : p.image_url;
+        if (!p.image_url && data.event && data.event.logo_url) {
+          p.image_url = data.event.logo_url;
+        }
+        p.team =
+          typeof p.team === "string"
+            ? p.team.replaceAll(",", " ").replaceAll("  ", " ").split(" ")
+            : p.team;
+        projects.value.push(p);
+      });
+      projects.value.forEach((p) => {
+        p.statistics = "";
+        if (p.stats) {
+          p.stats["bytes pitch"] = p.stats["sizepitch"];
+          delete p.stats["sizepitch"];
+          p.stats["bytes total"] = p.stats["sizetotal"];
+          delete p.stats["sizetotal"];
+          Object.keys(p.stats).forEach(function (k) {
+            p.statistics += k + ": " + p.stats[k] + "\n";
+          });
+          p.stats["score"] = p.score;
+        }
+        p.score = Math.min(p.score, 100);
+      });
+      if (data.title) {
+        document.title = data.title;
+      } else if (data.projects.length > 0) {
+        document.title = data.projects[0].event_name;
+      }
+      if (typeof data.event !== "undefined") {
+        event.value = data.event;
+        event.value.webpage =
+          event.value.webpage_url ||
+          event.value.community_url ||
+          data.homepage;
+        event.value.starts_at = event.value.starts_at || event.value.date;
+        event.value.ends_at =
+          event.value.ends_at || event.value.starts_at || event.value.date;
+      }
+      if (dribs_url) {
+        fetch(dribs_url)
+          .then(async (response) => {
+            const data = await response.json();
+            activities.value = data.activities.sort((a, b) => {
+              return a.time < b.time;
+            });
+            activities.value.forEach((el) => {
+              let proj = projects.value.filter((p) => {
+                if (p.id == el.project_id) {
+                  if (typeof p.activities === "undefined") {
+                    p.activities = [];
+                  }
+                  p.activities.push(el);
+                  return true;
+                }
+                return false;
+              });
+              if (!proj) {
+                return;
+              }
+            });
+          })
+          .catch(() => {});
+      }
+      changeOrder();
+      changeDark();
+    }
+
+    const loadDatapackage = (datasrc) => {
+      errorMessage.value = null;
+      projects.value = null;
+      activePreview.value = -1;
+      const resolved = resolveUrl(datasrc);
+      fetchJson(resolved)
+        .then((data) => applyDatapackage(data, resolved))
+        .catch(handleLoadError(resolved));
+    };
+
+    const selectEvent = (item, { push = true } = {}) => {
+      if (!item) return;
+      currentEvent.value = item;
+      activePreview.value = -1;
+      emit("previewOff");
+      const url = new URL(window.location.href);
+      url.searchParams.set("event", eventLabel(item));
+      if (push) {
+        window.history.pushState({}, "", url);
+      } else {
+        window.history.replaceState({}, "", url);
+      }
+      loadDatapackage(resolveUrl(item.datapackage_url, eventsBaseUrl));
+    };
+
+    const onPopState = () => {
+      if (!eventList.value.length) return;
+      const param = new URLSearchParams(window.location.search).get("event");
+      const match = pickInitialEvent(eventList.value, param);
+      if (
+        !currentEvent.value ||
+        !match ||
+        match.datapackage_url !== currentEvent.value.datapackage_url
+      ) {
+        selectEvent(match, { push: false });
+      }
+    };
+
+    onUnmounted(() => {
+      window.removeEventListener("popstate", onPopState);
     });
 
     return {
@@ -483,6 +608,10 @@ export default {
       changeDark,
       changeOrder,
       seePreview,
+      eventList,
+      currentEvent,
+      eventLabel,
+      selectEvent,
       shareUrl,
     };
   },
@@ -509,6 +638,33 @@ export default {
   .challenges > .section-header {
     margin-left: 5%;
   }
+}
+
+.event-nav {
+  display: block;
+  text-align: center;
+  padding: 0.25em 0 0.75em;
+  font-size: 115%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 1em;
+}
+.event-nav a {
+  padding: 0 0.15em;
+  opacity: 0.6;
+  text-decoration: none;
+}
+.event-nav a.active {
+  font-weight: bold;
+  text-decoration: underline;
+  opacity: 1;
+}
+.event-nav-sep {
+  margin: 0 0.35em;
+  opacity: 0.35;
+}
+.dark .event-nav {
+  border-bottom-color: rgba(255, 255, 255, 0.15);
+  color: white;
 }
 
 .challenges {
