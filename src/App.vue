@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="darkClass">
-    <router-view
+    <Challenges
       @closeToolbar="toggleOptions"
       @previewOff="previewOff"
       @previewOn="previewOn"
@@ -22,13 +22,16 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, onMounted } from "vue"
+import Challenges from "./components/Challenges.vue"
 
 export default {
   name: "App",
-  components: {},
+  components: {
+    Challenges,
+  },
   setup() {
-    const dribdatApi = ref("/hackathon.json");
+    const dribdatApi = ref(null);
     const dribdatHome = ref("#top");
     const dribdatDribs = ref("");
     const voteUrl = ref("");
@@ -79,11 +82,14 @@ export default {
         baseUrl = baseUrl.substring(0, baseUrl.indexOf("/event/"));
       }
     } else if (baseUrl == null) {
-      baseUrl = "/hackathon.json";
+      baseUrl = "./datapackage.json";
     }
-    if (baseUrl.endsWith("datapackage.json") || baseUrl.endsWith("hackathon.json")) {
+    if (!eventId && baseUrl) {
+      // e.g. a Data Package (datapackage.json) or an events index (events.json)
       apiUrl = baseUrl;
-      dribUrl = baseUrl.replace("datapackage.json", "posts.json");
+      if (baseUrl.endsWith("datapackage.json")) {
+        dribUrl = baseUrl.replace("datapackage.json", "posts.json");
+      }
     }
     if (baseUrl && eventId) {
       apiUrl = [baseUrl, "api/event", eventId, "datapackage.json"].join("/");
