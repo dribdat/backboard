@@ -1,8 +1,12 @@
 <template>
   <div>
     <div v-for="project in projects" :key="project.id">
-      <div v-if="active == project.id" class="modal-backdrop">
-        <div class="modal">
+      <div
+        v-if="active == project.id"
+        class="modal-backdrop"
+        @click.self="selectNone"
+      >
+        <div class="modal" tabindex="-1">
           <div class="modal-body">
             <div
               class="titlebar"
@@ -223,7 +227,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import Dribs from "./Dribs.vue";
 import Markdown from 'vue3-markdown-it';
 
@@ -341,12 +345,55 @@ export default {
     };
 
     const goNext = () => {
-      active.value = letsGo().next;
+      const nav = letsGo();
+      if (!nav) return;
+      if (nav.next === null || typeof nav.next === "undefined") return;
+      active.value = nav.next;
     };
 
     const goPrev = () => {
-      active.value = letsGo().prev;
+      const nav = letsGo();
+      if (!nav) return;
+      if (nav.prev === null || typeof nav.prev === "undefined") return;
+      if (nav.prev === -1) return;
+      active.value = nav.prev;
     };
+
+    const onKeydown = (event) => {
+      if (active.value === -1 || typeof active.value === "undefined") return;
+      const target = event.target;
+      const tag = target && target.tagName ? target.tagName.toUpperCase() : "";
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        tag === "SELECT" ||
+        (target && target.isContentEditable)
+      ) {
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (fullscreen.value) {
+          toggleFullscreen();
+        } else {
+          selectNone();
+        }
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goPrev();
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goNext();
+      }
+    };
+
+    onMounted(() => {
+      window.addEventListener("keydown", onKeydown);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("keydown", onKeydown);
+    });
 
     const touchStart = (touchEvent) => {
       if (touchEvent.changedTouches.length !== 1) {
@@ -454,6 +501,9 @@ export default {
   width: 80%;
   height: 80%;
   border-radius: 10px;
+}
+.modal:focus {
+  outline: none;
 }
 
 .modal-header,
